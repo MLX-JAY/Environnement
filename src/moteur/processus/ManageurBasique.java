@@ -7,7 +7,7 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.mobile.EvenementMobile;
 import moteur.donne.evenement.statique.EvenementStatique;
 
-public class ManageurBasique implements Manageur 
+public class ManageurBasique implements ManageurInterface 
 {
 	
 	private Carte carte;

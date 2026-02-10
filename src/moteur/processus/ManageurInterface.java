@@ -1,6 +1,6 @@
 package moteur.processus;
 
-public interface Manageur 
+public interface ManageurInterface 
 {
 	
 	void addEvenement();
