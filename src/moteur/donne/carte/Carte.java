@@ -7,15 +7,15 @@ public class Carte
 	
 	
 	private Bloc[][] blocs;
-	private int grandeurX;
-	private int grandeurY;
+	private int lignes;
+	private int collones;
 	
 	
 	public Carte(Bloc[][] blocs, int grandeurX, int grandeurY) 
 	{
 		this.blocs = blocs;
-		this.grandeurX = grandeurX;
-		this.grandeurY = grandeurY;
+		this.lignes = grandeurX;
+		this.collones = grandeurY;
 	}
 
 	public Bloc[][] getBlocs() 
@@ -25,17 +25,17 @@ public class Carte
 	
 	public int getGrandeurX() 
 	{
-		return grandeurX;
+		return lignes;
 	}
 	
 	public int getGrandeurY() 
 	{
-		return grandeurY;
+		return collones;
 	}
 
 	@Override
 	public String toString() {
-		return "Carte [blocs=" + Arrays.toString(blocs) + ", grandeurX=" + grandeurX + ", grandeurY=" + grandeurY + "]";
+		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + lignes + ", collones=" + collones + "]";
 	}
 	
 	
