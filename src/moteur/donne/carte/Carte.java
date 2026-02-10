@@ -7,15 +7,29 @@ public class Carte
 	
 	
 	private Bloc[][] blocs;
-	private int lignes;
-	private int collones;
+	private int nombreLignes;
+	private int nombreColonnes;
 	
 	
-	public Carte(Bloc[][] blocs, int grandeurX, int grandeurY) 
-	{
-		this.blocs = blocs;
-		this.lignes = grandeurX;
-		this.collones = grandeurY;
+	public Carte(int nombreLignes, int nombreColonnes) {
+		init(nombreLignes, nombreColonnes);
+
+		for (int i = 0; i < nombreLignes; i++) {
+			for (int j = 0; j < nombreColonnes; j++) {
+				blocs[i][j] = new Bloc(i, j);
+			}
+		}
+	}
+	public Bloc getBloc(int line, int column) {
+		return blocs[line][column];
+	}
+	private void init(int nombreLignes, int nombreColonnes) {
+		this.nombreLignes = nombreLignes;	
+		this.nombreColonnes = nombreColonnes;
+
+		blocs = new Bloc[nombreLignes][nombreColonnes];
+		
+	
 	}
 
 	public Bloc[][] getBlocs() 
@@ -25,17 +39,40 @@ public class Carte
 	
 	public int getGrandeurX() 
 	{
-		return lignes;
+		return nombreLignes;
 	}
 	
 	public int getGrandeurY() 
 	{
-		return collones;
+		return nombreColonnes;
 	}
+	public boolean estEnHaut(Bloc bloc) {
+        int ligne = bloc.getX();
+        return ligne == 0;
+    }
 
+    public boolean estEnBas(Bloc bloc) {
+        int ligne = bloc.getX();
+        return ligne == nombreLignes - 1; 
+    }
+
+    public boolean estAGauche(Bloc bloc) {
+        int colonne = bloc.getY();
+        return colonne == 0;
+    }
+
+    public boolean estADroite(Bloc bloc) {
+        int colonne = bloc.getY();
+        return colonne == nombreColonnes - 1; 
+    }
+
+    public boolean estSurBordure(Bloc bloc) {
+        return estEnHaut(bloc) || estEnBas(bloc) || estAGauche(bloc) || estADroite(bloc);
+    }
+	
 	@Override
 	public String toString() {
-		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + lignes + ", collones=" + collones + "]";
+		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + nombreLignes + ", colonnes=" + nombreColonnes + "]";
 	}
 	
 	

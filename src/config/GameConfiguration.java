@@ -12,5 +12,6 @@ public class GameConfiguration {
 	
 	public static final int VITESSE_JEU = 1000;
 	
+	
 
 }

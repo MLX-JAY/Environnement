@@ -1,3 +1,5 @@
+
+
 package moteur.processus;
 
 import moteur.donne.carte.Carte;
@@ -7,12 +9,13 @@ public class Builder
 	
 	public static Carte construireCarte() 
 	{
-		return new Carte(null, 0, 0);  //valeurs au pif c'est juste pour que sa mette pas err
+		return new Carte(config.GameConfiguration.NOMBRE_LIGNES, config.GameConfiguration.NOMBRE_COLONNES);
 	}
-	
-	public static void construireBiome() 
+	public static Manageur initCarte (Carte carte)
 	{
-		
+		Manageur manageur = new ManageurBasique(carte);
+		manageur.CarteHasard();
+		return manageur;
 	}
 	
 }
