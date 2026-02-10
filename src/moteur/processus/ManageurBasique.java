@@ -20,7 +20,6 @@ public class ManageurBasique implements Manageur
 	public ManageurBasique(Carte carte, ArrayList<Biome> biomes, EvenementMobile eventMobile,
 			EvenementStatique eventStatique) 
 	{
-		super();
 		this.carte = carte;
 		this.biomes = biomes;
 		this.eventMobile = eventMobile;

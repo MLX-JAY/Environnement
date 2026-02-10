@@ -8,14 +8,26 @@ public class Carte
 	
 	private Bloc[][] blocs;
 	private int lignes;
-	private int collones;
+	private int colonnes;
 	
 	
-	public Carte(Bloc[][] blocs, int grandeurX, int grandeurY) 
-	{
-		this.blocs = blocs;
-		this.lignes = grandeurX;
-		this.collones = grandeurY;
+	public Carte(int lignes, int colonnes) {
+		init(lignes, colonnes);
+
+		for (int i = 0; i < lignes; i++) {
+			for (int j = 0; j < colonnes; j++) {
+				blocs[i][j] = new Bloc(i, j);
+			}
+		}
+	}
+	
+	private void init(int lignes, int colonnes) {
+		this.lignes = lignes;	
+		this.colonnes = colonnes;
+
+		blocs = new Bloc[lignes][colonnes];
+		
+	
 	}
 
 	public Bloc[][] getBlocs() 
@@ -30,12 +42,12 @@ public class Carte
 	
 	public int getGrandeurY() 
 	{
-		return collones;
+		return colonnes;
 	}
 
 	@Override
 	public String toString() {
-		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + lignes + ", collones=" + collones + "]";
+		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + lignes + ", colonnes=" + colonnes + "]";
 	}
 	
 	
