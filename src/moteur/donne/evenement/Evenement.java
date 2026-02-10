@@ -1,6 +1,5 @@
 package moteur.donne.evenement;
 
-import java.util.ArrayList;
 
 import moteur.donne.carte.Bloc;
 

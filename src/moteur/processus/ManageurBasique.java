@@ -11,14 +11,10 @@ import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
 import moteur.donne.biome.Village;
-import moteur.donne.biome.foret;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
-import moteur.donne.evenement.mobile.PluieAcide;
-import moteur.donne.evenement.mobile.VentChaud;
-import moteur.donne.evenement.mobile.VentFroid;
 
 public class ManageurBasique implements Manageur 
 {
