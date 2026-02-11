@@ -10,6 +10,7 @@ import gui.StrategiePeinture;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
+import moteur.donne.biome.Village;
 import moteur.donne.carte.Carte;
 import moteur.processus.Manageur;
 import moteur.processus.Builder;
@@ -39,13 +40,14 @@ public class TestGUI extends JPanel
             if (b instanceof Foret) strategie.paint((Foret) b, g);
             if (b instanceof Desert) strategie.paint((Desert) b, g);
             if (b instanceof Mer) strategie.paint((Mer) b, g);
+            if (b instanceof Village) strategie.paint((Village) b, g);
         }
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Test Manager & Strategie");
         frame.add(new TestGUI());
-        frame.setSize(600, 400);
+        frame.setSize(config.GameConfiguration.FENETRE_LONGEUR, config.GameConfiguration.FENETRE_LARGEUR);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
