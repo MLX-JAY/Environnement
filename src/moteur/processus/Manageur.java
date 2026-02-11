@@ -3,7 +3,6 @@ package moteur.processus;
 import java.util.ArrayList;
 
 import moteur.donne.biome.Biome;
-import moteur.donne.carte.Carte;
 
 public interface Manageur 
 {
