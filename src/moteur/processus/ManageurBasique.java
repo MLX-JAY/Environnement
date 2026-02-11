@@ -103,7 +103,8 @@ public class ManageurBasique implements Manageur
 	
 	public void nextRound()
 	{
-		
+		ajouterEvenement();
+		bougerEvementMobile();
 	}
 	public void transformation()
 	{
