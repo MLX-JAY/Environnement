@@ -13,4 +13,5 @@ public interface Manageur
 	void ajouterEvenement ();
 	void nextRound();
 	void transformation();
+	
 }

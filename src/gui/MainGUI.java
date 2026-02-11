@@ -10,7 +10,6 @@ import javax.swing.JTextField;
 
 import config.GameConfiguration;
 import moteur.donne.carte.Carte;
-import moteur.processus.ManageurInterface;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
 import config.GameConfiguration;
@@ -41,6 +40,7 @@ public class MainGUI extends JFrame implements Runnable
         this.pack(); // Ajuste la taille selon les PreferredSize du displayer
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        this.setSize(900, 500);
         this.setVisible(true);
     }
 
@@ -52,15 +52,9 @@ public class MainGUI extends JFrame implements Runnable
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // Logique de mise à jour
-            manageur.nextRound(); // Ton manager fait avancer la simulation
-            displayer.repaint(); // On redessine l'interface
+            manageur.nextRound(); 
+            displayer.repaint(); 
         }
     }
-
-    public static void main(String[] args) {
-        MainGUI gui = new MainGUI("Simulation Environnement Biomes");
-        Thread gameThread = new Thread(gui);
-        gameThread.start();
-    }
+    
 }
