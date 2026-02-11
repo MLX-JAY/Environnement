@@ -6,9 +6,9 @@ import moteur.donne.carte.Bloc;
 public abstract class Evenement 
 {
 	private Bloc position;
-	private int dureeRestante;
+	private double dureeRestante;
 
-	public Evenement(Bloc position, int dureeRestante) {
+	public Evenement(Bloc position, double dureeRestante) {
         this.position = position;
         this.dureeRestante = dureeRestante;
     }
@@ -20,7 +20,7 @@ public abstract class Evenement
 	}
     
 
-	public int getDuree() 
+	public double getDuree() 
 	{
 		return dureeRestante;
 	}
@@ -31,7 +31,7 @@ public abstract class Evenement
     }
 
 
-    public void setDureeRestante(int dureeRestante) {
+    public void setDureeRestante(double dureeRestante) {
         this.dureeRestante = dureeRestante;
     }
 }

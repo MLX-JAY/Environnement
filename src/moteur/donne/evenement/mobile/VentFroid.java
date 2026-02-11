@@ -6,7 +6,7 @@ import moteur.donne.evenement.Evenement;
 public class VentFroid extends Evenement
 {
 
-	public VentFroid(Bloc position, int dureeRestante) {
+	public VentFroid(Bloc position, double dureeRestante) {
 		super(position, dureeRestante);
 	}
 

@@ -100,4 +100,13 @@ public class ManageurBasique implements Manageur
 	{
 		return (int) (Math.random() * (max + 1 - min)) + min;
 	}
+	
+	public void nextRound()
+	{
+		
+	}
+	public void transformation()
+	{
+		
+	}
 }

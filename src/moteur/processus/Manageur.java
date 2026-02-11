@@ -7,8 +7,11 @@ import moteur.donne.biome.Biome;
 public interface Manageur 
 {
 	
-	public void CarteHasard ();
-	public ArrayList<Biome> getBiomes();
-	public void bougerEvementMobile ();
-	public void ajouterEvenement ();
+	void CarteHasard ();
+	ArrayList<Biome> getBiomes();
+	void bougerEvementMobile ();
+	void ajouterEvenement ();
+	void nextRound();
+	void transformation();
+	
 }
