@@ -16,7 +16,7 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 
-public class ManageurBasique implements ManageurInterface 
+public class ManageurBasique implements Manageur 
 {
 	
 	private Carte carte;
@@ -99,5 +99,14 @@ public class ManageurBasique implements ManageurInterface
 	private static int nombreAuxHasard(int min, int max) 
 	{
 		return (int) (Math.random() * (max + 1 - min)) + min;
+	}
+	
+	public void nextRound()
+	{
+		
+	}
+	public void transformation()
+	{
+		
 	}
 }

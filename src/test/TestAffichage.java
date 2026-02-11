@@ -11,7 +11,8 @@ import moteur.donne.carte.Bloc;
 
 public class TestAffichage extends JPanel {
 
-    private StrategiePeinture strategie = new StrategiePeinture();
+	private static final long serialVersionUID = 1L;
+	private StrategiePeinture strategie = new StrategiePeinture();
     private ArrayList<Object> biomesDeTest = new ArrayList<>();
 
     public TestAffichage() {
