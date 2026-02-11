@@ -96,6 +96,10 @@ public class ManageurBasique implements Manageur
 	{
 		return biomes;
 	}
+	public ArrayList<Evenement> getEvenements ()
+	{
+		return evenements;
+	}
 	private static int nombreAuxHasard(int min, int max) 
 	{
 		return (int) (Math.random() * (max + 1 - min)) + min;

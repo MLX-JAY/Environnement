@@ -117,6 +117,52 @@ public class StrategiePeinture
 		    graphics.drawRect(x, y, size, size);
 		    
 	}
+	// Méthode pour dessiner la pluie par dessus n'importe quel biome
+// Méthode pour dessiner une pluie très colorée (type pluie magique ou acide)
+    public void paintPluie(Bloc position, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = position.getX() * size;
+        int y = position.getY() * size;
+        
+        Shape oldClip = graphics.getClip(); 
+        // On étend un peu le clip pour que les gouttes en diagonale ne soient pas coupées net sur les bords
+        graphics.setClip(x - 5, y - 5, size + 10, size + 10);
+        
+        // Générateur aléatoire basé sur la position
+        Random rand = new Random(position.getX() * 17 + position.getY() * 23);
+        
+        // --- PALETTE DE COULEURS VIVES ---
+        // On définit une transparence moyenne (180/255) pour que ça reste un calque
+        int alpha = 180;
+        Color[] palette = {
+            new Color(255, 0, 128, alpha),  // Rose fuchsia vif
+            new Color(0, 255, 255, alpha),  // Cyan électrique
+            new Color(255, 255, 0, alpha),  // Jaune citron
+            new Color(57, 255, 20, alpha),  // Vert néon
+            new Color(138, 43, 226, alpha), // Violet vif
+            new Color(255, 69, 0, alpha)    // Orange rouge vif
+        };
+        
+        // On augmente le nombre de gouttes pour un effet plus dense (25 gouttes)
+        for (int i = 0; i < 25; i++) {
+            // On démarre un peu au dessus et à droite pour compenser la chute diagonale
+            int xGoutte = x + rand.nextInt(size + 10);
+            int yGoutte = y - 10 + rand.nextInt(size + 10);
+            
+            // CHOIX DE LA COULEUR : On prend une couleur au hasard dans la palette
+            graphics.setColor(palette[rand.nextInt(palette.length)]);
+            
+            // Dessin de la goutte : une ligne diagonale un peu plus longue
+            // xGoutte - 3 et yGoutte + 7 donne un angle de chute prononcé
+            graphics.drawLine(xGoutte, yGoutte, xGoutte - 3, yGoutte + 7);
+            
+            // Optionnel : pour rendre la pluie plus épaisse, on peut dessiner une 2ème ligne juste à côté
+            // graphics.drawLine(xGoutte + 1, yGoutte, xGoutte - 2, yGoutte + 7);
+        }
+        
+        graphics.setClip(oldClip);
+    }
 	
 	public void paint(Mer mer, Graphics graphics) 
 	{    
