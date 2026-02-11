@@ -6,7 +6,7 @@ import moteur.donne.evenement.Evenement;
 public class VentChaud extends Evenement
 {
 
-	public VentChaud(Bloc position, int dureeRestante) {
+	public VentChaud(Bloc position, double dureeRestante) {
 		super(position, dureeRestante);
 	}
 	

@@ -1,20 +1,18 @@
 package moteur.donne.evenement.mobile;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
 
-public class Pluie 
+public class Pluie extends Evenement
 {
 
 	private boolean evenementActif;
 	private Bloc depart;
-	private int duree;
+	private double duree;
 	
 	
-	public Pluie(boolean evenementActif, Bloc depart, int duree) 
-	{
-		this.evenementActif = evenementActif;
-		this.depart = depart;
-		this.duree = duree;
+	public Pluie(Bloc position, double dureeRestante) {
+		super(position, dureeRestante);
 	}
 
 
@@ -30,7 +28,7 @@ public class Pluie
 	}
 
 
-	public int getDuree() 
+	public double getDuree() 
 	{
 		return duree;
 	}
