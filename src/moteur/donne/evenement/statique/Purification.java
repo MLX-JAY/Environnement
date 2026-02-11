@@ -1,40 +1,13 @@
 package moteur.donne.evenement.statique;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement; 
 
-public class Purification 
+public class Purification extends Evenement
 {
 
-	private boolean evenementActif;
-	private Bloc position;
-	private int duree;
-	
-	
-	public Purification(boolean evenementActif, Bloc depart, int duree) 
-	{
-		this.evenementActif = evenementActif;
-		this.position = depart;
-		this.duree = duree;
+	public Purification(Bloc position, int dureeRestante) {
+		super(position, dureeRestante);
 	}
-
-
-	public boolean isEvenementActif() 
-	{
-		return evenementActif;
-	}
-
-
-	public Bloc getDepart() 
-	{
-		return position;
-	}
-
-
-	public int getDuree() 
-	{
-		return duree;
-	}
-	
-	
 	
 }

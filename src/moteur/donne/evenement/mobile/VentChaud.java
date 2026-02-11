@@ -1,40 +1,13 @@
 package moteur.donne.evenement.mobile;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
 
-public class VentChaud 
+public class VentChaud extends Evenement
 {
-	
-	private boolean evenementActif;
-	private Bloc depart;
-	private int duree;
-	
-	
-	public VentChaud(boolean evenementActif, Bloc depart, int duree) 
-	{
-		this.evenementActif = evenementActif;
-		this.depart = depart;
-		this.duree = duree;
+
+	public VentChaud(Bloc position, int dureeRestante) {
+		super(position, dureeRestante);
 	}
-
-
-	public boolean isEvenementActif() 
-	{
-		return evenementActif;
-	}
-
-
-	public Bloc getDepart() 
-	{
-		return depart;
-	}
-
-
-	public int getDuree() 
-	{
-		return duree;
-	}
-	
-	
 	
 }

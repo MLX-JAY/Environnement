@@ -1,40 +1,14 @@
 package moteur.donne.evenement.statique;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
 
-public class Pollution 
+public class Pollution extends Evenement
 {
-	
-	private boolean evenementActif;
-	private Bloc position;
-	private int duree;
-	
-	
-	public Pollution(boolean evenementActif, Bloc depart, int duree) 
-	{
-		this.evenementActif = evenementActif;
-		this.position = depart;
-		this.duree = duree;
+
+	public Pollution(Bloc position, int dureeRestante) {
+		super(position, dureeRestante);
 	}
 
-
-	public boolean isEvenementActif() 
-	{
-		return evenementActif;
-	}
-
-
-	public Bloc getDepart() 
-	{
-		return position;
-	}
-
-
-	public int getDuree() 
-	{
-		return duree;
-	}
-	
-	
 	
 }
