@@ -1,5 +1,7 @@
 package moteur.donne.carte;
 
+import java.util.Objects;
+
 public class Bloc 
 {
 	
@@ -22,7 +24,22 @@ public class Bloc
 	{
 		return y;
 	}
+	@Override
+	public boolean equals (Object o)
+	{
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bloc that = (Bloc) o;
+        return getX()==that.getX() && getY()==that.getY();
+    }
 
+    @Override
+    public int hashCode() 
+	{
+		//pas utile mais bon 
+        return Objects.hash(getX(),getY());
+    }
+	
 	@Override
 	public String toString() {
 		return "Bloc [x=" + x + ", y=" + y + "]";

@@ -7,7 +7,6 @@ public abstract class Evenement
 {
 	private Bloc position;
 	private double dureeRestante;
-
 	public Evenement(Bloc position, double dureeRestante) {
         this.position = position;
         this.dureeRestante = dureeRestante;

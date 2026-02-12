@@ -54,11 +54,40 @@ public abstract class Biome
 		return position;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Biome [temperature=" + temperature + ", pollution=" + pollution + ", purification=" + purification
 				+ ", humidite=" + humidite + ", evolution=" + evolution + ", position=" + position + "]";
+	}
+
+
+	public void setTemperature(double temperature) {
+		this.temperature = temperature;
+	}
+
+
+	public void setPollution(double pollution) {
+		this.pollution = pollution;
+	}
+
+
+	public void setPurification(double purification) {
+		this.purification = purification;
+	}
+
+
+	public void setHumidite(double humidite) {
+		this.humidite = humidite;
+	}
+
+
+	public void setEvolution(double evolution) {
+		this.evolution = evolution;
+	}
+
+
+	public void setPosition(Bloc position) {
+		this.position = position;
 	}
 	
 	
