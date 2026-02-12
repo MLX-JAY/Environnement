@@ -1,7 +1,12 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import config.ConfigurationEvenement;
+import config.GameConfiguration;
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
@@ -11,8 +16,10 @@ public class MainGUI extends JFrame implements Runnable
 {
 	
 	private MainDisplayer displayer;
-	private final static Dimension tailleFenetre = new Dimension(config.GameConfiguration.FENETRE_LONGEUR, config.GameConfiguration.FENETRE_LARGEUR);
+	private final static Dimension tailleFenetre = new Dimension(GameConfiguration.FENETRE_LONGEUR, GameConfiguration.FENETRE_LARGEUR);
 	private Carte carte;
+	private PanelStatistique panelStats;
+	private PanelTemps panelTemps;
 	private Manageur manageur;
     private PanelTemps panelTemps;
 
@@ -22,12 +29,11 @@ public class MainGUI extends JFrame implements Runnable
     }
 
     private void init() {
-        // 1. On construit la carte et le manager via le Builder
+        // Premiere chose a faire : On construit la carte et le manager via le Builder
         carte = Builder.construireCarte();
         manageur = Builder.initCarte(carte);
         manageur.ajouterEvenement();
-
-        // 2. On crée le panneau d'affichage (le GameDisplay)
+        
         displayer = new MainDisplayer(carte, manageur);
         this.setLayout(new BorderLayout());
         panelTemps = new PanelTemps(this);
