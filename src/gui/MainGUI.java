@@ -33,11 +33,13 @@ public class MainGUI extends JFrame implements Runnable
     
     displayer = new MainDisplayer(carte, manageur);
     panelTemps = new PanelTemps(this);
+    panelStats = new PanelStatistique();
 
     this.setLayout(new BorderLayout());
 
     this.add(panelTemps, BorderLayout.NORTH); 
-    this.add(displayer, BorderLayout.CENTER); 
+    this.add(displayer, BorderLayout.CENTER);
+    this.add(panelStats, BorderLayout.WEST);
     
     displayer.setPreferredSize(tailleFenetre);
     this.add(displayer);
@@ -56,7 +58,8 @@ public class MainGUI extends JFrame implements Runnable
                 e.printStackTrace();
             }
             manageur.nextRound(); 
-            displayer.repaint(); 
+            displayer.repaint();
+            panelStats.repaint();
         }
     }
     

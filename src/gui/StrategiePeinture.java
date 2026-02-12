@@ -8,6 +8,7 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 
 import moteur.donne.biome.Banquise;
+import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
@@ -211,4 +212,5 @@ public class StrategiePeinture
             graphics.fillRect(bx+2, by+8, 2, 2);
         }
     }
+    
 }
