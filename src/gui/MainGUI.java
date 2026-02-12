@@ -1,7 +1,10 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
@@ -10,8 +13,10 @@ public class MainGUI extends JFrame implements Runnable
 {
 	
 	private MainDisplayer displayer;
-	private final static Dimension tailleFenetre = new Dimension(config.GameConfiguration.FENETRE_LONGEUR, config.GameConfiguration.FENETRE_LARGEUR);
+	private final static Dimension tailleFenetre = new Dimension(10, 10);
 	private Carte carte;
+	private PanelStatistique panelStats;
+	private PanelTemps panelTemps;
 	private Manageur manageur;
 
 	public MainGUI(String title) {
@@ -20,17 +25,23 @@ public class MainGUI extends JFrame implements Runnable
     }
 
     private void init() {
-        // 1. On construit la carte et le manager via le Builder
+        // Premiere chose a faire : On construit la carte et le manager via le Builder
         carte = Builder.construireCarte();
         manageur = Builder.initCarte(carte);
         manageur.ajouterEvenement();
-
-        // 2. On crée le panneau d'affichage (le GameDisplay)
+        
         displayer = new MainDisplayer(carte, manageur);
         
+        panelStats = new PanelStatistique();
+        panelTemps = new PanelTemps();
         
-        // 3. Configuration de la fenêtre
-        this.add(displayer);
+        
+        // Configuration de la fenêtre
+        this.setLayout(new BorderLayout());
+        
+        this.add(displayer, BorderLayout.CENTER);
+        this.add(panelStats, BorderLayout.WEST);
+        this.add(panelTemps, BorderLayout.SOUTH);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
