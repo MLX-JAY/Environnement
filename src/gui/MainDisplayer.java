@@ -44,7 +44,7 @@ public class MainDisplayer extends JPanel
         }
 		for (Evenement e : manageur.getEvenements() )
 		{
-			if (e instanceof Pluie) stratDePeinture.paintPluie(e.getPosition(), g);
+			if (e instanceof Pluie) stratDePeinture.paint((Pluie)e, g);
 		}
 	}
 	

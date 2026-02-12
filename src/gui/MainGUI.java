@@ -31,9 +31,11 @@ public class MainGUI extends JFrame implements Runnable
         // 1. On construit la carte et le manager via le Builder
         carte = Builder.construireCarte();
         manageur = Builder.initCarte(carte);
+        manageur.ajouterEvenement();
 
         // 2. On crée le panneau d'affichage (le GameDisplay)
         displayer = new MainDisplayer(carte, manageur);
+        
         
         // 3. Configuration de la fenêtre
         this.add(displayer);

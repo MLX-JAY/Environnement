@@ -89,7 +89,8 @@ public class ManageurBasique implements Manageur
 		int colonneHasard = nombreAuxHasard(0, GameConfiguration.NOMBRE_COLONNES - 1);
 		int ligneHasard= nombreAuxHasard(0, GameConfiguration.NOMBRE_LIGNES-1);
 		Bloc position = carte.getBloc(ligneHasard, colonneHasard);
-		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_DUREE);
+		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_DUREE, ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,
+				ConfigurationEvenement.PLUIE_IMPACT_HUMIDITE, ConfigurationEvenement.PLUIE_IMPACT_POLLUTION, ConfigurationEvenement.PLUIE_IMPACT_PURIFICATION);  // PROVISOIRE POUR TEST PLUIE 
 		evenements.add(evenement);
 	}
 	public ArrayList<Biome> getBiomes ()
