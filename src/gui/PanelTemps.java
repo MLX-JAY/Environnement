@@ -1,44 +1,52 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BorderFactory; // Important pour les marges
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
+import config.GameConfiguration;
 
-public class PanelTemps extends JPanel 
-{
-    private static final long serialVersionUID = 1L;
-    private JButton boutonPause;
-    private JLabel labelTour;
-    private MainGUI mainGUI; // Référence vers la fenêtre principale pour contrôler la boucle
+public class PanelTemps extends JPanel {
+    private JButton btnPause, btnPlay, btnX2, btnStop;
+    private MainGUI mainGUI;
 
     public PanelTemps(MainGUI mainGUI) {
         this.mainGUI = mainGUI;
-        this.setBackground(Color.DARK_GRAY);
-		
-        this.setPreferredSize(new Dimension(0, 80));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
-        this.setLayout(new FlowLayout());
+        this.setBackground(new Color(45, 45, 45));
+        this.setPreferredSize(new Dimension(GameConfiguration.FENETRE_LONGEUR, 70));
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         initComposants();
     }
 
     private void initComposants() {
-        Font police = new Font("Arial", Font.BOLD, 24);
-        boutonPause = new JButton("Pause");
-		boutonPause.setFont(police);
-        boutonPause.setFocusable(false);
-		boutonPause.setPreferredSize(new Dimension(250, 50));
-        this.add(boutonPause);
-    }
+        Font police = new Font("SansSerif", Font.BOLD, 16);
 
-    public void mettreAJourTour(int numeroTour) {
-        labelTour.setText("Tour : " + numeroTour);
+        btnPlay = new JButton("Play");
+        btnPause = new JButton("Pause");
+        btnX2 = new JButton("Vitesse x2");
+        btnStop = new JButton("Stop (Bilan)");
+
+        JButton[] boutons = {btnPlay, btnPause, btnX2, btnStop};
+        for (JButton b : boutons) {
+            b.setFont(police);
+            b.setFocusable(false);
+            b.setPreferredSize(new Dimension(150, 40));
+            this.add(b);
+        }
+
+        btnPlay.setEnabled(false);
+
+        btnPause.addActionListener(e -> {
+            btnPause.setEnabled(false);
+            btnPlay.setEnabled(true);
+        });
+
+        btnPlay.addActionListener(e -> {
+            btnPlay.setEnabled(false);
+            btnPause.setEnabled(true);
+        });
+        
+        btnStop.addActionListener(e -> {
+            System.out.println("Ouverture du bilan de fin .");
+        });
     }
 }

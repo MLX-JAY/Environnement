@@ -21,33 +21,31 @@ public class MainGUI extends JFrame implements Runnable
 	private PanelStatistique panelStats;
 	private PanelTemps panelTemps;
 	private Manageur manageur;
-    private PanelTemps panelTemps;
 
 	public MainGUI(String title) {
         super(title);
         init();
     }
 
-    private void init() {
-        // Premiere chose a faire : On construit la carte et le manager via le Builder
-        carte = Builder.construireCarte();
-        manageur = Builder.initCarte(carte);
-        manageur.ajouterEvenement();
-        
-        displayer = new MainDisplayer(carte, manageur);
-        this.setLayout(new BorderLayout());
-        panelTemps = new PanelTemps(this);
-        
-        this.add(displayer, BorderLayout.CENTER); 
-        this.add(panelTemps, BorderLayout.SOUTH);
-        // 3. Configuration de la fenêtre
-        displayer.setPreferredSize(tailleFenetre);
-        this.add(displayer);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack(); 
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-    }
+    public void init() {
+    carte = Builder.construireCarte();
+    manageur = Builder.initCarte(carte);
+    
+    displayer = new MainDisplayer(carte, manageur);
+    panelTemps = new PanelTemps(this);
+
+    this.setLayout(new BorderLayout());
+
+    this.add(panelTemps, BorderLayout.NORTH); 
+    this.add(displayer, BorderLayout.CENTER); 
+    
+    displayer.setPreferredSize(tailleFenetre);
+    this.add(displayer);
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.pack(); 
+    this.setLocationRelativeTo(null);
+    this.setVisible(true);
+}
 
     @Override
     public void run() {
