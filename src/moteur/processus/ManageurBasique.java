@@ -89,7 +89,8 @@ public class ManageurBasique implements Manageur
 		int colonneHasard = nombreAuxHasard(0, GameConfiguration.NOMBRE_COLONNES - 1);
 		int ligneHasard= nombreAuxHasard(0, GameConfiguration.NOMBRE_LIGNES-1);
 		Bloc position = carte.getBloc(ligneHasard, colonneHasard);
-		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_DUREE);
+		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_DUREE, ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,
+				ConfigurationEvenement.PLUIE_IMPACT_HUMIDITE, ConfigurationEvenement.PLUIE_IMPACT_POLLUTION, ConfigurationEvenement.PLUIE_IMPACT_PURIFICATION);  // PROVISOIRE POUR TEST PLUIE 
 		evenements.add(evenement);
 	}
 	public ArrayList<Biome> getBiomes ()
@@ -108,10 +109,29 @@ public class ManageurBasique implements Manageur
 	public void nextRound()
 	{
 		ajouterEvenement();
+		ajouterEvenement();
+		ajouterEvenement();
 		bougerEvementMobile();
+		transformation();
 	}
 	public void transformation()
 	{
-		
+		for (int i = 0; i < biomes.size(); i++)
+		{
+			Biome biome = biomes.get(i);
+			for (Evenement evenement : evenements)
+			{
+				if (biome.getPosition().equals(evenement.getPosition()))
+				{
+					biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
+
+					if (biome.getHumidite() == 100 && !(biome instanceof Mer))
+					{
+						biome = new Mer(ConfigurationBiome.MER_TEMP, ConfigurationBiome.MER_POLLUTION, ConfigurationBiome.MER_PURIFICATION, ConfigurationBiome.MER_HUMIDITE, 0, biome.getPosition());
+						biomes.set(i, biome);
+					}
+				}
+			}
+		}
 	}
 }

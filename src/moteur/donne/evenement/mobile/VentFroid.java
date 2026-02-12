@@ -6,8 +6,11 @@ import moteur.donne.evenement.Evenement;
 public class VentFroid extends Evenement
 {
 
-	public VentFroid(Bloc position, double dureeRestante) {
-		super(position, dureeRestante);
+	public VentFroid(Bloc position, double dureeRestante, int impactTemperature, int impactHumidite,
+			int impactPollution, int impactPurification) {
+		super(position, dureeRestante, impactTemperature, impactHumidite, impactPollution, impactPurification);
+		// TODO Auto-generated constructor stub
 	}
+
 
 }

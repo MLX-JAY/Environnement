@@ -6,12 +6,12 @@ import moteur.donne.evenement.Evenement;
 public class PluieAcide extends Evenement
 {
 
-	public PluieAcide(Bloc position, double dureeRestante) {
-		super(position, dureeRestante);
+
+	public PluieAcide(Bloc position, double dureeRestante, int impactTemperature, int impactHumidite,
+			int impactPollution, int impactPurification) {
+		super(position, dureeRestante, impactTemperature, impactHumidite, impactPollution, impactPurification);
+		// TODO Auto-generated constructor stub
 	}
 
-	
-	
-	
 	
 }

@@ -23,7 +23,7 @@ public class MainDisplayer extends JPanel
 	private StrategiePeinture stratDePeinture=new StrategiePeinture();
 	private Manageur manageur;
 	
-	public MainDisplayer(Carte carte, Manageur manageur) {  //PROOVISOIR CAR on a pas encore fait les stats
+	public MainDisplayer(Carte carte, Manageur manageur) {  // il manque les panels
 		this.carte = carte;
 		this.manageur = manageur;
 	}
@@ -44,7 +44,7 @@ public class MainDisplayer extends JPanel
         }
 		for (Evenement e : manageur.getEvenements() )
 		{
-			if (e instanceof Pluie) stratDePeinture.paintPluie(e.getPosition(), g);
+			if (e instanceof Pluie) stratDePeinture.paint((Pluie)e, g);
 		}
 	}
 	

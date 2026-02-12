@@ -62,33 +62,28 @@ public abstract class Biome
 
 
 	public void setTemperature(double temperature) {
-		this.temperature = temperature;
-	}
+        this.temperature = (temperature > 100) ? 100 : temperature;
+    }
 
+    public void setPollution(double pollution) {
+        this.pollution = (pollution > 100) ? 100 : pollution;
+    }
 
-	public void setPollution(double pollution) {
-		this.pollution = pollution;
-	}
+    public void setPurification(double purification) {
+        this.purification = (purification > 100) ? 100 : purification;
+    }
 
+    public void setHumidite(double humidite) {
+        this.humidite = (humidite > 100) ? 100 : humidite;
+    }
 
-	public void setPurification(double purification) {
-		this.purification = purification;
-	}
+    public void setEvolution(double evolution) {
+        this.evolution = (evolution > 100) ? 100 : evolution;
+    }
 
-
-	public void setHumidite(double humidite) {
-		this.humidite = humidite;
-	}
-
-
-	public void setEvolution(double evolution) {
-		this.evolution = evolution;
-	}
-
-
-	public void setPosition(Bloc position) {
-		this.position = position;
-	}
+    public void setPosition(Bloc position) {
+        this.position = position;
+    }
 	
 	
 }

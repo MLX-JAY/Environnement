@@ -11,6 +11,7 @@ public class Builder
 	{
 		return new Carte(config.GameConfiguration.NOMBRE_LIGNES, config.GameConfiguration.NOMBRE_COLONNES);
 	}
+	
 	public static Manageur initCarte (Carte carte)
 	{
 		Manageur manageur = new ManageurBasique(carte);

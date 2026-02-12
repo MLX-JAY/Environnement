@@ -9,5 +9,7 @@ public class PanelStatistique extends JPanel
 	private JPanel humidite;
 	private JPanel pollution;
 	private JPanel purification;
+
+	
 	
 }

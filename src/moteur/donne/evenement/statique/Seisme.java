@@ -6,8 +6,11 @@ import moteur.donne.evenement.Evenement;
 public class Seisme extends Evenement
 {
 
-	public Seisme(Bloc position, int dureeRestante) {
-		super(position, dureeRestante);
+	public Seisme(Bloc position, double dureeRestante, int impactTemperature, int impactHumidite, int impactPollution,
+			int impactPurification) {
+		super(position, dureeRestante, impactTemperature, impactHumidite, impactPollution, impactPurification);
+		// TODO Auto-generated constructor stub
 	}
+
 	
 }
