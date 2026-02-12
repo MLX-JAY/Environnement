@@ -20,7 +20,7 @@ import moteur.donne.evenement.mobile.Pluie;
 
 public class StrategiePeinture 
 {
-    private Image nuage = new ImageIcon("src/image/pluie.png").getImage();
+    private Image nuage = new ImageIcon(getClass().getResource("/image/pluie.png")).getImage();
     
     public void paint(Foret foret, Graphics graphics) {    
         Bloc position = foret.getPosition();

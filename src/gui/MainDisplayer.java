@@ -21,7 +21,7 @@ public class MainDisplayer extends JPanel
 	private StrategiePeinture stratDePeinture=new StrategiePeinture();
 	private Manageur manageur;
 	
-	public MainDisplayer(Carte carte, Manageur manageur) {  // il manque les panels
+	public MainDisplayer(Carte carte, Manageur manageur) {  
 		this.carte = carte;
 		this.manageur = manageur;
 	}
@@ -31,8 +31,6 @@ public class MainDisplayer extends JPanel
 	{
 		super.paintComponent(g);
         
-        // TEST DE LA STRATEGIE : On dessine ce que le manager contient
-        // On récupère la liste des biomes du manager
         for (Biome b : manageur.getBiomes()) 
 			{
             if (b instanceof Foret) stratDePeinture.paint((Foret) b, g);
