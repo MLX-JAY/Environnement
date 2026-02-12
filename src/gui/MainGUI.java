@@ -30,11 +30,9 @@ public class MainGUI extends JFrame implements Runnable
         
         
         // 3. Configuration de la fenêtre
-        displayer.setPreferredSize(tailleFenetre);
         this.add(displayer);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack(); 
-        this.setLocationRelativeTo(null);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
 
