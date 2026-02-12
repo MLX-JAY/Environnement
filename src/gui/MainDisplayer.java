@@ -18,8 +18,6 @@ public class MainDisplayer extends JPanel
 {
 	
 	private Carte carte;
-	private PanelStatistique panneauStatistique;
-	private PanelTemps panneauTemps;
 	private StrategiePeinture stratDePeinture=new StrategiePeinture();
 	private Manageur manageur;
 	
