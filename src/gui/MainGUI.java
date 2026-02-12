@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import config.ConfigurationEvenement;
+import config.GameConfiguration;
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
@@ -13,7 +15,7 @@ public class MainGUI extends JFrame implements Runnable
 {
 	
 	private MainDisplayer displayer;
-	private final static Dimension tailleFenetre = new Dimension(10, 10);
+	private final static Dimension tailleFenetre = new Dimension(GameConfiguration.FENETRE_LONGEUR, GameConfiguration.FENETRE_LARGEUR);
 	private Carte carte;
 	private PanelStatistique panelStats;
 	private PanelTemps panelTemps;
@@ -35,20 +37,14 @@ public class MainGUI extends JFrame implements Runnable
         panelStats = new PanelStatistique();
         panelTemps = new PanelTemps();
         
-<<<<<<< HEAD
-        
         // Configuration de la fenêtre
         this.setLayout(new BorderLayout());
         
         this.add(displayer, BorderLayout.CENTER);
         this.add(panelStats, BorderLayout.WEST);
         this.add(panelTemps, BorderLayout.SOUTH);
-=======
-        // 3. Configuration de la fenêtre
-        
-        displayer.setPreferredSize(tailleFenetre);
-        this.add(displayer);
->>>>>>> branch 'main' of https://github.com/MLX-JAY/Environnement.git
+
+        this.setPreferredSize(tailleFenetre);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack(); 
         this.setLocationRelativeTo(null);
