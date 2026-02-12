@@ -35,6 +35,7 @@ public class MainGUI extends JFrame implements Runnable
         panelStats = new PanelStatistique();
         panelTemps = new PanelTemps();
         
+<<<<<<< HEAD
         
         // Configuration de la fenêtre
         this.setLayout(new BorderLayout());
@@ -42,8 +43,15 @@ public class MainGUI extends JFrame implements Runnable
         this.add(displayer, BorderLayout.CENTER);
         this.add(panelStats, BorderLayout.WEST);
         this.add(panelTemps, BorderLayout.SOUTH);
+=======
+        // 3. Configuration de la fenêtre
+        
+        displayer.setPreferredSize(tailleFenetre);
+        this.add(displayer);
+>>>>>>> branch 'main' of https://github.com/MLX-JAY/Environnement.git
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.pack(); 
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
