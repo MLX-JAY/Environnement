@@ -22,10 +22,12 @@ public class ManageurBasique implements Manageur
 	private Carte carte;
 	private ArrayList<Biome> biomes=new ArrayList<Biome> ();
 	private ArrayList<Evenement> evenements= new ArrayList<Evenement>();
+	private List<moteur.processus.regle.RegleTransformation> reglesTransformation = new ArrayList<>();
 	
 	public ManageurBasique(Carte carte) 
 	{
 		this.carte = carte;
+		this.reglesTransformation.add(new moteur.processus.regle.RegleInondation());
 	}
 	public void CarteHasard() 
     {
@@ -35,27 +37,7 @@ public class ManageurBasique implements Manageur
         {
             for (int j = 0; j < carte.getGrandeurY(); j++) 
             {
-                int choixHasard = (int) (Math.random() * 4);
-                Biome biome;
-
-                switch (choixHasard) 
-                {
-                    case 0:
-                        biome = new Foret(ConfigurationBiome.FORET_TEMP, ConfigurationBiome.FORET_POLLUTION, ConfigurationBiome.FORET_PURIFICATION, ConfigurationBiome.FORET_HUMIDITE, 0, carte.getBloc(i, j));
-                        break;
-                    case 1:
-                        biome = new Desert(ConfigurationBiome.DESERT_TEMP, ConfigurationBiome.DESERT_POLLUTION, ConfigurationBiome.DESERT_PURIFICATION, ConfigurationBiome.DESERT_HUMIDITE, 0, carte.getBloc(i, j));
-                        break;
-                    case 2:
-                        biome = new Mer(ConfigurationBiome.MER_TEMP, ConfigurationBiome.MER_POLLUTION, ConfigurationBiome.MER_PURIFICATION, ConfigurationBiome.MER_HUMIDITE, 0, carte.getBloc(i, j));
-                        break;
-                    case 3:
-                        biome = new Village(ConfigurationBiome.VILLAGE_TEMP, ConfigurationBiome.VILLAGE_POLLUTION, ConfigurationBiome.VILLAGE_PURIFICATION, ConfigurationBiome.VILLAGE_HUMIDITE, 0, carte.getBloc(i, j));
-                        break;
-                    default:
-                        biome = new Foret(ConfigurationBiome.FORET_TEMP, ConfigurationBiome.FORET_POLLUTION, ConfigurationBiome.FORET_PURIFICATION, ConfigurationBiome.FORET_HUMIDITE, 0, carte.getBloc(i, j));
-                        break;
-                }
+                Biome biome = moteur.processus.usine.BiomeFactory.creerBiomeAleatoire(carte.getBloc(i, j));
                 biomes.add(biome);
             }
         }
@@ -123,12 +105,19 @@ public class ManageurBasique implements Manageur
 			{
 				if (biome.getPosition().equals(evenement.getPosition()))
 				{
+					// Appliquer l'impact de l'evenement
 					biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
 
-					if (biome.getHumidite() == 100 && !(biome instanceof Mer))
+					// Evaluer toutes les regles de transformation
+					for (moteur.processus.regle.RegleTransformation regle : reglesTransformation)
 					{
-						biome = new Mer(ConfigurationBiome.MER_TEMP, ConfigurationBiome.MER_POLLUTION, ConfigurationBiome.MER_PURIFICATION, ConfigurationBiome.MER_HUMIDITE, 0, biome.getPosition());
-						biomes.set(i, biome);
+						Biome nouveauBiome = regle.evaluer(biome);
+						if (nouveauBiome != null)
+						{
+							biomes.set(i, nouveauBiome);
+							biome = nouveauBiome; // Mise a jour de la variable locale
+							break; // Une seule transformation par tour pour un meme biome
+						}
 					}
 				}
 			}
