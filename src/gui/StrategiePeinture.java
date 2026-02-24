@@ -17,10 +17,14 @@ import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Purification;
 
 public class StrategiePeinture 
 {
     private Image nuage = new ImageIcon(getClass().getResource("/image/pluie.png")).getImage();
+    private Image flocon = new ImageIcon(getClass().getResource("/image/flocon.png")).getImage();
+    private Image feuille = new ImageIcon(getClass().getResource("/image/feuille.png")).getImage(); 
     
     public void paint(Foret foret, Graphics graphics) {    
         Bloc position = foret.getPosition();
@@ -148,6 +152,30 @@ public class StrategiePeinture
         
         g.setColor(new Color(0xFFDEAD)); 
         g.fillRect(x + taille/2 - 2, y + taille/2, 4, taille/2);
+    }
+    
+    public void paint(VentFroid froid, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = froid.getPosition().getX() * size;
+        int y = froid.getPosition().getY() * size;
+        
+        graphics.setColor(new Color(0, 0, 50, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.drawImage(flocon, x, y, size, size, null);
+    }
+    
+    public void paint(Purification purification, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = purification.getPosition().getX() * size;
+        int y = purification.getPosition().getY() * size;
+        
+        graphics.setColor(new Color(0, 0, 50, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.drawImage(feuille, x, y, size, size, null);
     }
     
     public void paint(Banquise banquise, Graphics graphics) 

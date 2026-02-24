@@ -1,6 +1,7 @@
 package moteur.processus;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import config.ConfigurationBiome;
@@ -15,6 +16,9 @@ import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.VentChaud;
+import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Purification;
 
 public class ManageurBasique implements Manageur 
 {
@@ -29,6 +33,7 @@ public class ManageurBasique implements Manageur
 		this.carte = carte;
 		this.reglesTransformation.add(new moteur.processus.regle.RegleInondation());
 	}
+	
 	public void CarteHasard() 
     {
         biomes.clear();
@@ -71,8 +76,28 @@ public class ManageurBasique implements Manageur
 		int colonneHasard = nombreAuxHasard(0, GameConfiguration.NOMBRE_COLONNES - 1);
 		int ligneHasard= nombreAuxHasard(0, GameConfiguration.NOMBRE_LIGNES-1);
 		Bloc position = carte.getBloc(ligneHasard, colonneHasard);
-		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_DUREE, ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,
+		Evenement evenement = new Pluie(position,ConfigurationEvenement.PLUIE_IMPACT_DUREE, ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,
 				ConfigurationEvenement.PLUIE_IMPACT_HUMIDITE, ConfigurationEvenement.PLUIE_IMPACT_POLLUTION, ConfigurationEvenement.PLUIE_IMPACT_PURIFICATION);  // PROVISOIRE POUR TEST PLUIE 
+		evenements.add(evenement);
+		
+		colonneHasard = nombreAuxHasard(0, GameConfiguration.NOMBRE_COLONNES - 1);
+		ligneHasard= nombreAuxHasard(0, GameConfiguration.NOMBRE_LIGNES-1);
+		position = carte.getBloc(ligneHasard, colonneHasard);
+		evenement = new VentFroid(position,ConfigurationEvenement.VENTFROID_IMPACT_DUREE, ConfigurationEvenement.VENTFROID_IMPACT_TEMPERATURE,
+				ConfigurationEvenement.VENTFROID_IMPACT_HUMIDITE, ConfigurationEvenement.VENTFROID_IMPACT_POLLUTION, ConfigurationEvenement.VENTFROID_IMPACT_PURIFICATION);  // PROVISOIRE POUR TEST
+		evenements.add(evenement);
+		
+		//je fait une Arraylist pour repertorier les foret, comme sa purification part des fôrets
+		ArrayList<Foret> forets = new ArrayList<Foret>();
+		for (Biome biome : biomes) {
+			if (biome instanceof Foret) forets.add((Foret)biome);
+		}
+		
+		int foretChoisi = nombreAuxHasard(0, forets.size()-1);
+		
+		position = forets.get(foretChoisi).getPosition();
+		evenement = new Purification(position,ConfigurationEvenement.PURIFICATION_IMPACT_DUREE, ConfigurationEvenement.PURIFICATION_IMPACT_TEMPERATURE,
+				ConfigurationEvenement.PURIFICATION_IMPACT_HUMIDITE, ConfigurationEvenement.PURIFICATION_IMPACT_POLLUTION, ConfigurationEvenement.PURIFICATION_IMPACT_PURIFICATION);  // PROVISOIRE POUR TEST
 		evenements.add(evenement);
 	}
 	public ArrayList<Biome> getBiomes ()
@@ -107,6 +132,9 @@ public class ManageurBasique implements Manageur
 				{
 					// Appliquer l'impact de l'evenement
 					biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
+					biome.setPurification(biome.getPurification() + evenement.getImpactPurification());
+					biome.setPollution(biome.getPollution() + evenement.getImpactPollution());
+					biome.setTemperature(biome.getTemperature() + evenement.getImpactTemperature());
 
 					// Evaluer toutes les regles de transformation
 					for (moteur.processus.regle.RegleTransformation regle : reglesTransformation)

@@ -12,6 +12,8 @@ import moteur.donne.biome.Village;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Purification;
 import moteur.processus.Manageur;
 
 public class MainDisplayer extends JPanel 
@@ -41,6 +43,8 @@ public class MainDisplayer extends JPanel
 		for (Evenement e : manageur.getEvenements() )
 		{
 			if (e instanceof Pluie) stratDePeinture.paint((Pluie)e, g);
+			if (e instanceof VentFroid) stratDePeinture.paint((VentFroid)e, g);
+			if (e instanceof Purification) stratDePeinture.paint((Purification)e, g);
 		}
 	}
 	
