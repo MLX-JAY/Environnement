@@ -1,22 +1,16 @@
 package moteur.processus;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import config.ConfigurationBiome;
 import config.ConfigurationEvenement;
 import config.GameConfiguration;
 import moteur.donne.biome.Biome;
-import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
-import moteur.donne.biome.Mer;
-import moteur.donne.biome.Village;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
-import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Purification;
 
@@ -32,6 +26,13 @@ public class ManageurBasique implements Manageur
 	{
 		this.carte = carte;
 		this.reglesTransformation.add(new moteur.processus.regle.RegleInondation());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleDesertification());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleGlaciation());
+		this.reglesTransformation.add(new moteur.processus.regle.ReglePollutionExtreme());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleForestation());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleSecurite());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleErosion());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleDensification());
 	}
 	
 	public void CarteHasard() 

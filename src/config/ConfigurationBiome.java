@@ -21,4 +21,19 @@ public class ConfigurationBiome {
     public static final double VILLAGE_POLLUTION = 50.0;
     public static final double VILLAGE_PURIFICATION = 0.0;
     public static final double VILLAGE_HUMIDITE = 40.0;
+
+    public static final double BANQUISE_TEMP = -10.0;
+    public static final double BANQUISE_POLLUTION = 0.0;
+    public static final double BANQUISE_PURIFICATION = 5.0;
+    public static final double BANQUISE_HUMIDITE = 80.0;
+
+    public static final double MONTAGNE_TEMP = 5.0;
+    public static final double MONTAGNE_POLLUTION = 2.0;
+    public static final double MONTAGNE_PURIFICATION = 10.0;
+    public static final double MONTAGNE_HUMIDITE = 30.0;
+
+    public static final double VILLE_TEMP = 25.0;
+    public static final double VILLE_POLLUTION = 40.0;
+    public static final double VILLE_PURIFICATION = 5.0;
+    public static final double VILLE_HUMIDITE = 50.0;
 }
