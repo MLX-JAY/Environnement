@@ -3,6 +3,7 @@ package moteur.processus;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import config.ConfigurationEvenement;
 import config.GameConfiguration;
 import moteur.donne.biome.Biome;
@@ -30,7 +31,7 @@ public class ManageurBasique implements Manageur
 		this.reglesTransformation.add(new moteur.processus.regle.RegleGlaciation());
 		this.reglesTransformation.add(new moteur.processus.regle.ReglePollutionExtreme());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleForestation());
-		this.reglesTransformation.add(new moteur.processus.regle.RegleSecurite());
+		this.reglesTransformation.add(new moteur.processus.regle.RegleCivilisation());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleErosion());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleDensification());
 	}
@@ -54,8 +55,8 @@ public class ManageurBasique implements Manageur
 
 		for (Evenement evenement : evenements) {
 			Bloc position = evenement.getPosition();
-
-			if (!carte.estSurBordure(position) && evenement.getDuree()!=0) 
+			Bloc positionFuture = carte.getBloc(position.getX()+1, position.getY()+1);
+			if (!carte.estSurBordure(positionFuture) && evenement.getDuree()!=0) 
 			{
 				Bloc newPosition = carte.getBloc(position.getX()+1, position.getY()+1);
 				evenement.setPosition(newPosition);
@@ -144,7 +145,6 @@ public class ManageurBasique implements Manageur
 						if (nouveauBiome != null)
 						{
 							biomes.set(i, nouveauBiome);
-							biome = nouveauBiome; // Mise a jour de la variable locale
 							break; // Une seule transformation par tour pour un meme biome
 						}
 					}

@@ -2,15 +2,13 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-import config.ConfigurationEvenement;
+import javax.swing.JFrame;
+
 import config.GameConfiguration;
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
-import java.awt.BorderLayout;
 
 public class MainGUI extends JFrame implements Runnable 
 {
