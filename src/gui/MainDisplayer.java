@@ -13,12 +13,17 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Meteore;
 import moteur.donne.evenement.statique.Purification;
 import moteur.processus.Manageur;
 
 public class MainDisplayer extends JPanel 
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Carte carte;
 	private StrategiePeinture stratDePeinture=new StrategiePeinture();
 	private Manageur manageur;
@@ -46,7 +51,20 @@ public class MainDisplayer extends JPanel
 			if (e instanceof VentFroid) stratDePeinture.paint((VentFroid)e, g);
 			if (e instanceof Purification) stratDePeinture.paint((Purification)e, g);
 		}
+		for (Evenement danger : manageur.getDangers()) {
+			long tempsActuel = System.currentTimeMillis(); //permet de dire le temps actuel en ms permet de faire clignoter des chose dans mon cas (vu sur internet)
+			
+			if (danger instanceof Meteore) {
+				if (danger.getDuree() > 10) {
+					if (danger.getDuree() % 2 == 0) {
+						stratDePeinture.paintDanger(danger, g);
+					}
+				}
+				else{
+					stratDePeinture.paint((Meteore)danger, g);
+				}
+					
+			}
+		}
 	}
-	
-	
 }
