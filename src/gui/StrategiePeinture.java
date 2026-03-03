@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.Random;
-
 import javax.swing.ImageIcon;
-
 import moteur.donne.biome.Banquise;
-import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
@@ -209,14 +206,14 @@ public class StrategiePeinture
     public void paint(Pluie pluie, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = pluie.getPosition().getX() * size;
-        int y = pluie.getPosition().getY() * size;
+        int x = (int) (pluie.getAnimationX() * size);
+        int y = (int) (pluie.getAnimationY() * size);
         
         graphics.setColor(new Color(0, 0, 50, 50));
         graphics.fillRect(x, y, size, size);
 
         graphics.setColor(new Color(200, 230, 255)); 
-        Random rand = new Random(x + y);
+        Random rand = new Random((int)pluie.getAnimationX() + (int)pluie.getAnimationY());
         
         for (int i = 0; i < 8; i++) {
             int gx = x + rand.nextInt(size);
@@ -230,8 +227,8 @@ public class StrategiePeinture
     public void paint(VentFroid froid, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = froid.getPosition().getX() * size;
-        int y = froid.getPosition().getY() * size;
+        int x = (int) (froid.getAnimationX() * size);
+        int y = (int) (froid.getAnimationY() * size);
         
         graphics.setColor(new Color(0, 0, 50, 50));
         graphics.fillRect(x, y, size, size);
@@ -242,8 +239,8 @@ public class StrategiePeinture
     public void paint(Purification purification, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = purification.getPosition().getX() * size;
-        int y = purification.getPosition().getY() * size;
+        int x = (int) (purification.getAnimationX() * size);
+        int y = (int) (purification.getAnimationY() * size);
         
         graphics.setColor(new Color(0, 0, 50, 50));
         graphics.fillRect(x, y, size, size);
@@ -253,16 +250,16 @@ public class StrategiePeinture
     
     public void paintDanger(Evenement e,Graphics graphics) {
     	int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = e.getPosition().getX() * size;
-        int y = e.getPosition().getY() * size;
+        int x = (int) (e.getAnimationX() * size);
+        int y = (int) (e.getAnimationY() * size);
         graphics.drawImage(danger, x, y, size*2, size*2, null);
         
     }
     
     public void paint(Meteore meteore,Graphics graphics) {
     	int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = meteore.getPosition().getX() * size;
-        int y = meteore.getPosition().getY() * size;
+        int x = (int) (meteore.getAnimationX() * size);
+        int y = (int) (meteore.getAnimationY() * size);
         graphics.drawImage(this.meteore, x, y, size, size, null);
     }
     

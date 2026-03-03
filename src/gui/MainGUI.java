@@ -1,11 +1,9 @@
 package gui;
 
+import config.GameConfiguration;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import javax.swing.JFrame;
-
-import config.GameConfiguration;
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
@@ -49,15 +47,27 @@ public class MainGUI extends JFrame implements Runnable
 
     @Override
     public void run() {
+        long lastRoundTime = System.currentTimeMillis();
+        long frameRate = 16; // ~60 FPS
+        
         while (true) {
+            long currentTime = System.currentTimeMillis();
+            
+            // classique tour
+            if (currentTime - lastRoundTime >= config.GameConfiguration.VITESSE_JEU) {
+                manageur.nextRound();
+                lastRoundTime = currentTime;
+            }
+            
+            // Redessiner à ~60 FPS pour l'animation fluide
+            displayer.repaint();
+            panelStats.repaint();
+            
             try {
-                Thread.sleep(config.GameConfiguration.VITESSE_JEU);
+                Thread.sleep(frameRate);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            manageur.nextRound(); 
-            displayer.repaint();
-            panelStats.repaint();
         }
     }
     
