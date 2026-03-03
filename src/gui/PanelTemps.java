@@ -11,7 +11,7 @@ public class PanelTemps extends JPanel {
     public PanelTemps(MainGUI mainGUI) {
         this.mainGUI = mainGUI;
         this.setBackground(new Color(45, 45, 45));
-        this.setPreferredSize(new Dimension(GameConfiguration.FENETRE_LONGEUR, 70));
+        this.setPreferredSize(new Dimension(0, 70));
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         initComposants();

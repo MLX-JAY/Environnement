@@ -15,5 +15,5 @@ public interface Manageur
 	void nextRound();
 	void transformation();
 	ArrayList<Evenement> getEvenements ();
-	
+	ArrayList<Evenement> getDangers ();
 }

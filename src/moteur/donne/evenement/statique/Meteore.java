@@ -10,8 +10,6 @@ public class Meteore extends Evenement
 			int impactPurification) {
 		super(position, dureeRestante, impactTemperature, impactHumidite, impactPollution, impactPurification);
 		// TODO Auto-generated constructor stub
-	}
-
-	
+	}	
 	
 }

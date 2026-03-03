@@ -15,6 +15,7 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Meteore;
 import moteur.donne.evenement.statique.Purification;
 
 public class ManageurBasique implements Manageur 
@@ -25,6 +26,9 @@ public class ManageurBasique implements Manageur
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements= new ArrayList<Evenement>();
 	private List<moteur.processus.regle.RegleTransformation> reglesTransformation = new ArrayList<>();
+	private ArrayList<Evenement> dangers = new ArrayList<Evenement>();
+	
+	private boolean dangerCondition = false; // provisoire
 	
 	public ManageurBasique(Carte carte) 
 	{
@@ -64,13 +68,16 @@ public class ManageurBasique implements Manageur
 
 		for (Evenement evenement : evenements) {
 			Bloc position = evenement.getPosition();
-			Bloc positionFuture = carte.getBloc(position.getX()+1, position.getY()+1);
-			if (!carte.estSurBordure(positionFuture) && evenement.getDuree()!=0) 
-			{
-				Bloc newPosition = carte.getBloc(position.getX()+1, position.getY()+1);
-				evenement.setPosition(newPosition);
-				evenement.setDureeRestante(evenement.getDuree()-1);
-			} 
+			if (!carte.estSurBordure(position) && evenement.getDuree()!=0) {
+				Bloc positionFuture = carte.getBloc(position.getX()+1, position.getY()+1);
+			
+				if (!carte.estSurBordure(positionFuture) && evenement.getDuree()!=0) 
+				{
+					Bloc newPosition = carte.getBloc(position.getX()+1, position.getY()+1);
+					evenement.setPosition(newPosition);
+					evenement.setDureeRestante(evenement.getDuree()-1);
+				}
+			}
 			else 
 			{
 				FinEvenement.add(evenement);
@@ -82,6 +89,61 @@ public class ManageurBasique implements Manageur
 			evenements.remove(evenement);
 		}
 	}
+	
+	public void fonctionnementDanger () {
+		ArrayList<Evenement> finEvenement = new ArrayList<Evenement>();
+		for (Evenement evenement : dangers) {
+			if (evenement.getDuree()!=0) {
+				evenement.setDureeRestante(evenement.getDuree()-1);
+				if (evenement.getDuree() < 10) {
+					
+				}
+			}
+			else {
+				finEvenement.add(evenement);
+			}
+		}
+		for (Evenement evenement : finEvenement) {
+			dangers.remove(evenement);
+		}
+	}
+	
+	public void appliquerOndeDeChoc(Meteore m) {
+	    int posX = m.getPosition().getX();
+	    int posY = m.getPosition().getY();
+	    int rayon = 2; // Rayon de l'impact (2 cases autour)
+
+	    // On parcourt un carré autour du centre
+	    for (int i = posX - rayon; i <= posX + rayon; i++) {
+	        for (int j = posY - rayon; j <= posY + rayon; j++) {
+	            Bloc b = carte.getBloc(i, j);
+	            // On vérifie si on est bien dans la carte pour éviter les erreurs
+	            if (!carte.estSurBordure(b)) {
+	                
+	                // Calcul de la distance euclidienne pour faire un vrai cercle
+	                double distance = Math.sqrt(Math.pow(i - posX, 2) + Math.pow(j - posY, 2));
+	                
+	                if (distance <= rayon) {
+	                    // ON APPLIQUE LES DEGATS
+	                    
+	                    // Exemple : Transformation en désert/cratère
+	                    b.setBiome(new Desert()); 
+	                    // On impacte aussi les stats du manager
+	                    this.pollution += 5; 
+	                }
+	            }
+	        }
+	    }
+	}
+	
+	public void ajouterDanger() {
+		Bloc position = carte.getBloc(1, 1);
+		Evenement meteore = new Meteore(position, ConfigurationEvenement.METEORE_IMPACT_DUREE, ConfigurationEvenement.METEORE_IMPACT_TEMPERATURE, 
+				ConfigurationEvenement.METEORE_IMPACT_HUMIDITE, ConfigurationEvenement.METEORE_IMPACT_POLLUTION, 
+				ConfigurationEvenement.METEORE_IMPACT_PURIFICATION);
+		dangers.add(meteore);
+	}
+	
 	public void ajouterEvenement ()
 	{
 		int colonneHasard = nombreAuxHasard(0, GameConfiguration.NOMBRE_COLONNES - 1);
@@ -119,6 +181,11 @@ public class ManageurBasique implements Manageur
 	{
 		return evenements;
 	}
+	
+	public ArrayList<Evenement> getDangers() {
+		return dangers;
+	}
+
 	private static int nombreAuxHasard(int min, int max) 
 	{
 		return (int) (Math.random() * (max + 1 - min)) + min;
@@ -131,6 +198,12 @@ public class ManageurBasique implements Manageur
 		ajouterEvenement();
 		bougerEvementMobile();
 		transformation();
+		//proivisoire pour tester le meteore
+		if (dangerCondition == false) {
+			ajouterDanger();
+			dangerCondition = true;
+		}
+		fonctionnementDanger();
 	}
 	public void transformation()
 	{

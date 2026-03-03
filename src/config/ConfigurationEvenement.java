@@ -20,4 +20,10 @@ public class ConfigurationEvenement
     public static final int PURIFICATION_IMPACT_POLLUTION  = 0;
     public static final int PURIFICATION_IMPACT_PURIFICATION  = 5;
     
+    public static final int METEORE_IMPACT_DUREE = 20;
+    public static final int METEORE_IMPACT_TEMPERATURE  = 50;
+    public static final int METEORE_IMPACT_HUMIDITE  = 0;
+    public static final int METEORE_IMPACT_POLLUTION  = 20;
+    public static final int METEORE_IMPACT_PURIFICATION  = 0;
+    
 }

@@ -16,8 +16,10 @@ import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.statique.Meteore;
 import moteur.donne.evenement.statique.Purification;
 
 public class StrategiePeinture 
@@ -25,6 +27,11 @@ public class StrategiePeinture
     private Image nuage = new ImageIcon(getClass().getResource("/image/pluie.png")).getImage();
     private Image flocon = new ImageIcon(getClass().getResource("/image/flocon.png")).getImage();
     private Image feuille = new ImageIcon(getClass().getResource("/image/feuille.png")).getImage(); 
+    private Image danger = new ImageIcon(getClass().getResource("/image/danger.png")).getImage();
+    private Image meteore = new ImageIcon(getClass().getResource("/image/meteore.png")).getImage(); 
+    
+    
+//===========================================  LES BIOMES  ============================================================
     
     public void paint(Foret foret, Graphics graphics) {    
         Bloc position = foret.getPosition();
@@ -81,27 +88,6 @@ public class StrategiePeinture
             graphics.fillRect(cx+4, cy+1, 2, 4); 
         }
     }
-
-    public void paint(Pluie pluie, Graphics graphics) 
-    {
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = pluie.getPosition().getX() * size;
-        int y = pluie.getPosition().getY() * size;
-        
-        graphics.setColor(new Color(0, 0, 50, 50));
-        graphics.fillRect(x, y, size, size);
-
-        graphics.setColor(new Color(200, 230, 255)); 
-        Random rand = new Random(x + y);
-        
-        for (int i = 0; i < 8; i++) {
-            int gx = x + rand.nextInt(size);
-            int gy = y + rand.nextInt(size);
-            graphics.drawLine(gx, gy, gx - 2, gy + 8); 
-        }
-
-        graphics.drawImage(nuage, x, y, size, size, null);
-    }
     
     public void paint(Mer mer, Graphics graphics) 
     {    
@@ -154,30 +140,6 @@ public class StrategiePeinture
         g.fillRect(x + taille/2 - 2, y + taille/2, 4, taille/2);
     }
     
-    public void paint(VentFroid froid, Graphics graphics) 
-    {
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = froid.getPosition().getX() * size;
-        int y = froid.getPosition().getY() * size;
-        
-        graphics.setColor(new Color(0, 0, 50, 50));
-        graphics.fillRect(x, y, size, size);
-
-        graphics.drawImage(flocon, x, y, size, size, null);
-    }
-    
-    public void paint(Purification purification, Graphics graphics) 
-    {
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = purification.getPosition().getX() * size;
-        int y = purification.getPosition().getY() * size;
-        
-        graphics.setColor(new Color(0, 0, 50, 50));
-        graphics.fillRect(x, y, size, size);
-
-        graphics.drawImage(feuille, x, y, size, size, null);
-    }
-    
     public void paint(Banquise banquise, Graphics graphics) 
     {    
         Bloc position = banquise.getPosition();
@@ -190,28 +152,6 @@ public class StrategiePeinture
         
         graphics.setColor(new Color(0xA8E6FF));
         graphics.drawLine(x, y, x+size, y+size);
-    }
-    
-    public void paint(Montagne montagne, Graphics graphics) 
-    {    
-        Bloc position = montagne.getPosition();
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = position.getX() * size;
-        int y = position.getY() * size;
-        
-        graphics.setColor(new Color(0x7D7D7D)); 
-        graphics.fillRect(x, y, size, size);
-        
-        int[] px = {x, x + size/2, x + size};
-        int[] py = {y + size, y, y + size};
-        
-        graphics.setColor(new Color(0x404040)); 
-        graphics.fillPolygon(px, py, 3);
-        
-        int[] sx = {x + size/3 + 2, x + size/2, x + (size*2)/3 - 2};
-        int[] sy = {y + size/3 + 5, y, y + size/3 + 5};
-        graphics.setColor(Color.WHITE);
-        graphics.fillPolygon(sx, sy, 3);
     }
     
     public void paint(Ville ville, Graphics graphics) 
@@ -241,4 +181,102 @@ public class StrategiePeinture
         }
     }
     
+    public void paint(Montagne montagne, Graphics graphics) 
+    {    
+        Bloc position = montagne.getPosition();
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = position.getX() * size;
+        int y = position.getY() * size;
+        
+        graphics.setColor(new Color(0x7D7D7D)); 
+        graphics.fillRect(x, y, size, size);
+        
+        int[] px = {x, x + size/2, x + size};
+        int[] py = {y + size, y, y + size};
+        
+        graphics.setColor(new Color(0x404040)); 
+        graphics.fillPolygon(px, py, 3);
+        
+        int[] sx = {x + size/3 + 2, x + size/2, x + (size*2)/3 - 2};
+        int[] sy = {y + size/3 + 5, y, y + size/3 + 5};
+        graphics.setColor(Color.WHITE);
+        graphics.fillPolygon(sx, sy, 3);
+    }
+    
+//===========================================  LES EVENEMENTS  ============================================================
+    
+
+    public void paint(Pluie pluie, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = pluie.getPosition().getX() * size;
+        int y = pluie.getPosition().getY() * size;
+        
+        graphics.setColor(new Color(0, 0, 50, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.setColor(new Color(200, 230, 255)); 
+        Random rand = new Random(x + y);
+        
+        for (int i = 0; i < 8; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            graphics.drawLine(gx, gy, gx - 2, gy + 8); 
+        }
+
+        graphics.drawImage(nuage, x, y, size, size, null);
+    }
+    
+    public void paint(VentFroid froid, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = froid.getPosition().getX() * size;
+        int y = froid.getPosition().getY() * size;
+        
+        graphics.setColor(new Color(0, 0, 50, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.drawImage(flocon, x, y, size, size, null);
+    }
+    
+    public void paint(Purification purification, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = purification.getPosition().getX() * size;
+        int y = purification.getPosition().getY() * size;
+        
+        graphics.setColor(new Color(0, 0, 50, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.drawImage(feuille, x, y, size, size, null);
+    }
+    
+    public void paintDanger(Evenement e,Graphics graphics) {
+    	int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = e.getPosition().getX() * size;
+        int y = e.getPosition().getY() * size;
+        graphics.drawImage(danger, x, y, size*2, size*2, null);
+        
+    }
+    
+    public void paint(Meteore meteore,Graphics graphics) {
+    	int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = meteore.getPosition().getX() * size;
+        int y = meteore.getPosition().getY() * size;
+        graphics.drawImage(this.meteore, x, y, size, size, null);
+    }
+    
+    
+    public void paintDangerZone(Evenement e, Graphics graphics) 
+    {    
+        Bloc position = e.getPosition();
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = position.getX() * size;
+        int y = position.getY() * size;
+        
+        graphics.setColor(new Color(0xfb8500));
+        graphics.fillRect(x, y, size, size);
+    }
+    
+
 }
