@@ -1,7 +1,9 @@
 package moteur.processus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import config.ConfigurationEvenement;
@@ -20,6 +22,7 @@ public class ManageurBasique implements Manageur
 	
 	private Carte carte;
 	private ArrayList<Biome> biomes=new ArrayList<Biome> ();
+	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements= new ArrayList<Evenement>();
 	private List<moteur.processus.regle.RegleTransformation> reglesTransformation = new ArrayList<>();
 	
@@ -39,6 +42,7 @@ public class ManageurBasique implements Manageur
 	public void CarteHasard() 
     {
         biomes.clear();
+        biomeMap.clear();
 
         for (int i = 0; i < carte.getGrandeurX(); i++) 
         {
@@ -46,8 +50,13 @@ public class ManageurBasique implements Manageur
             {
                 Biome biome = moteur.processus.usine.BiomeFactory.creerBiomeAleatoire(carte.getBloc(i, j));
                 biomes.add(biome);
+                biomeMap.put(biome.getPosition(), biome);
             }
         }
+    }
+    
+    public Biome getBiomeByPosition(Bloc position) {
+        return biomeMap.get(position);
     }
 	public void bougerEvementMobile ()
 	{
@@ -125,28 +134,27 @@ public class ManageurBasique implements Manageur
 	}
 	public void transformation()
 	{
-		for (int i = 0; i < biomes.size(); i++)
+		for (Evenement evenement : evenements)
 		{
-			Biome biome = biomes.get(i);
-			for (Evenement evenement : evenements)
+			Biome biome = getBiomeByPosition(evenement.getPosition());
+			if (biome != null)
 			{
-				if (biome.getPosition().equals(evenement.getPosition()))
-				{
-					// Appliquer l'impact de l'evenement
-					biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
-					biome.setPurification(biome.getPurification() + evenement.getImpactPurification());
-					biome.setPollution(biome.getPollution() + evenement.getImpactPollution());
-					biome.setTemperature(biome.getTemperature() + evenement.getImpactTemperature());
+				biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
+				biome.setPurification(biome.getPurification() + evenement.getImpactPurification());
+				biome.setPollution(biome.getPollution() + evenement.getImpactPollution());
+				biome.setTemperature(biome.getTemperature() + evenement.getImpactTemperature());
 
-					// Evaluer toutes les regles de transformation
-					for (moteur.processus.regle.RegleTransformation regle : reglesTransformation)
+				for (moteur.processus.regle.RegleTransformation regle : reglesTransformation)
+				{
+					Biome nouveauBiome = regle.evaluer(biome);
+					if (nouveauBiome != null)
 					{
-						Biome nouveauBiome = regle.evaluer(biome);
-						if (nouveauBiome != null)
-						{
-							biomes.set(i, nouveauBiome);
-							break; // Une seule transformation par tour pour un meme biome
+						biomeMap.put(biome.getPosition(), nouveauBiome);
+						int index = biomes.indexOf(biome);
+						if (index >= 0) {
+							biomes.set(index, nouveauBiome);
 						}
+						break;
 					}
 				}
 			}

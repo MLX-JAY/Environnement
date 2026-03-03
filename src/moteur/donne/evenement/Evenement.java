@@ -6,7 +6,10 @@ import moteur.donne.carte.Bloc;
 public abstract class Evenement 
 {
 	private Bloc position;
-	
+
+	private int directionX; 
+    private int directionY;
+
 	private double dureeRestante;
 	
 	private int impactTemperature;
@@ -31,7 +34,13 @@ public abstract class Evenement
 		this.impactPurification = impactPurification;
 	}
     
+    public int getDirectionX() { return directionX; }
+    public int getDirectionY() { return directionY; }
     
+    public void setDirection(int dx, int dy) {
+        this.directionX = dx;
+        this.directionY = dy;
+    }
 
 
 	public double getDureeRestante() {

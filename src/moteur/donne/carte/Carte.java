@@ -69,7 +69,9 @@ public class Carte
     public boolean estSurBordure(Bloc bloc) {
         return estEnHaut(bloc) || estEnBas(bloc) || estAGauche(bloc) || estADroite(bloc);
     }
-	
+	public boolean estCoordonneeValide(int x, int y) {
+        return x >= 0 && x < nombreLignes && y >= 0 && y < nombreColonnes;
+    }
 	@Override
 	public String toString() {
 		return "Carte [blocs=" + Arrays.toString(blocs) + ", lignes=" + nombreLignes + ", colonnes=" + nombreColonnes + "]";
