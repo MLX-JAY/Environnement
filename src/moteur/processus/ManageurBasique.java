@@ -22,11 +22,11 @@ public class ManageurBasique implements Manageur
 {
 	
 	private Carte carte;
-	private ArrayList<Biome> biomes=new ArrayList<Biome> ();
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements= new ArrayList<Evenement>();
 	private List<moteur.processus.regle.RegleTransformation> reglesTransformation = new ArrayList<>();
 	private ArrayList<Evenement> dangers = new ArrayList<Evenement>();
+	private int pollution = 0;
 	
 	private boolean dangerCondition = false; // provisoire
 	
@@ -45,7 +45,6 @@ public class ManageurBasique implements Manageur
 	
 	public void CarteHasard() 
     {
-        biomes.clear();
         biomeMap.clear();
 
         for (int i = 0; i < carte.getGrandeurX(); i++) 
@@ -53,7 +52,6 @@ public class ManageurBasique implements Manageur
             for (int j = 0; j < carte.getGrandeurY(); j++) 
             {
                 Biome biome = moteur.processus.usine.BiomeFactory.creerBiomeAleatoire(carte.getBloc(i, j));
-                biomes.add(biome);
                 biomeMap.put(biome.getPosition(), biome);
             }
         }
@@ -108,33 +106,33 @@ public class ManageurBasique implements Manageur
 		}
 	}
 	
-	public void appliquerOndeDeChoc(Meteore m) {
-	    int posX = m.getPosition().getX();
-	    int posY = m.getPosition().getY();
-	    int rayon = 2; // Rayon de l'impact (2 cases autour)
+	// public void appliquerOndeDeChoc(Meteore m) {
+	//     int posX = m.getPosition().getX();
+	//     int posY = m.getPosition().getY();
+	//     int rayon = 2; // Rayon de l'impact (2 cases autour)
 
-	    // On parcourt un carré autour du centre
-	    for (int i = posX - rayon; i <= posX + rayon; i++) {
-	        for (int j = posY - rayon; j <= posY + rayon; j++) {
-	            Bloc b = carte.getBloc(i, j);
-	            // On vérifie si on est bien dans la carte pour éviter les erreurs
-	            if (!carte.estSurBordure(b)) {
+	//     // On parcourt un carré autour du centre
+	//     for (int i = posX - rayon; i <= posX + rayon; i++) {
+	//         for (int j = posY - rayon; j <= posY + rayon; j++) {
+	//             Bloc b = carte.getBloc(i, j);
+	//             // On vérifie si on est bien dans la carte pour éviter les erreurs
+	//             if (!carte.estSurBordure(b)) {
 	                
-	                // Calcul de la distance euclidienne pour faire un vrai cercle
-	                double distance = Math.sqrt(Math.pow(i - posX, 2) + Math.pow(j - posY, 2));
+	//                 // Calcul de la distance euclidienne pour faire un vrai cercle
+	//                 double distance = Math.sqrt(Math.pow(i - posX, 2) + Math.pow(j - posY, 2));
 	                
-	                if (distance <= rayon) {
-	                    // ON APPLIQUE LES DEGATS
-	                    
-	                    // Exemple : Transformation en désert/cratère
-	                    b.setBiome(new Desert()); 
-	                    // On impacte aussi les stats du manager
-	                    this.pollution += 5; 
-	                }
-	            }
-	        }
-	    }
-	}
+	// 				if (distance <= rayon) {
+	// 					// ON APPLIQUE LES DEGATS
+						
+	// 					// Exemple : Transformation en désert/cratère
+	// 					b.setBiome(new Desert()); 
+	// 					// On impacte aussi les stats du manager
+	// 					this.pollution += 5;
+	// 				}
+	//             }
+	//         }
+	//     }
+	// }
 	
 	public void ajouterDanger() {
 		Bloc position = carte.getBloc(1, 1);
@@ -162,7 +160,7 @@ public class ManageurBasique implements Manageur
 		
 		//je fait une Arraylist pour repertorier les foret, comme sa purification part des fôrets
 		ArrayList<Foret> forets = new ArrayList<Foret>();
-		for (Biome biome : biomes) {
+		for (Biome biome : biomeMap.values()) {
 			if (biome instanceof Foret) forets.add((Foret)biome);
 		}
 		
@@ -175,7 +173,7 @@ public class ManageurBasique implements Manageur
 	}
 	public ArrayList<Biome> getBiomes ()
 	{
-		return biomes;
+		return new ArrayList<>(biomeMap.values());
 	}
 	public ArrayList<Evenement> getEvenements ()
 	{
@@ -223,10 +221,6 @@ public class ManageurBasique implements Manageur
 					if (nouveauBiome != null)
 					{
 						biomeMap.put(biome.getPosition(), nouveauBiome);
-						int index = biomes.indexOf(biome);
-						if (index >= 0) {
-							biomes.set(index, nouveauBiome);
-						}
 						break;
 					}
 				}
