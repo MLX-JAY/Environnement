@@ -1,9 +1,7 @@
 package gui;
 
 import java.awt.Graphics;
-
 import javax.swing.JPanel;
-
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
@@ -37,6 +35,14 @@ public class MainDisplayer extends JPanel
 	public void paintComponent (Graphics g)
 	{
 		super.paintComponent(g);
+		
+		// Mettre à jour les animations de tous les événements
+		for (Evenement e : manageur.getEvenements()) {
+			e.updateAnimation();
+		}
+		for (Evenement danger : manageur.getDangers()) {
+			danger.updateAnimation();
+		}
         
         for (Biome b : manageur.getBiomes()) 
 			{

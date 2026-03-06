@@ -15,6 +15,8 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.mobile.VentChaud;
+import moteur.donne.evenement.mobile.PluieAcide;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.donne.evenement.statique.Purification;
 
@@ -62,25 +64,60 @@ public class ManageurBasique implements Manageur
     }
 	public void bougerEvementMobile ()
 	{
+		
+		int[][] directions = {
+			{0, -1},   // Haut
+			{0, 1},    // Bas
+			{-1, 0},   // Gauche
+			{1, 0},    // Droite
+			{-1, -1},  // Haut-gauche
+			{1, -1},   // Haut-droite
+			{-1, 1},   // Bas-gauche
+			{1, 1}     // Bas-droite
+		};
+		
 		List<Evenement> FinEvenement = new ArrayList<Evenement>();
 
 		for (Evenement evenement : evenements) {
-			Bloc position = evenement.getPosition();
-			if (!carte.estSurBordure(position) && evenement.getDuree()!=0) {
-				Bloc positionFuture = carte.getBloc(position.getX()+1, position.getY()+1);
+			// Vérifier que c'est un événement mobile
+			boolean isMobile = (evenement instanceof Pluie || 
+							   evenement instanceof VentFroid ||
+							   evenement instanceof VentChaud ||
+							   evenement instanceof PluieAcide);
 			
-				if (!carte.estSurBordure(positionFuture) && evenement.getDuree()!=0) 
-				{
-					Bloc newPosition = carte.getBloc(position.getX()+1, position.getY()+1);
-					evenement.setPosition(newPosition);
-					evenement.setDureeRestante(evenement.getDuree()-1);
+			if (isMobile) {
+				// Si l'animation est terminée, calculer la prochaine position
+				if (evenement.isAnimationComplete()) {
+					Bloc position = evenement.getPosition();
+					if (!carte.estSurBordure(position) && evenement.getDuree()!=0) {
+						// Choisir une direction aléatoire
+						int directionAleatoire = nombreAuxHasard(0, directions.length - 1);
+						int dx = directions[directionAleatoire][0];
+						int dy = directions[directionAleatoire][1];
+						
+						Bloc positionFuture = carte.getBloc(position.getX() + dx, position.getY() + dy);
+					
+						if (!carte.estSurBordure(positionFuture) && evenement.getDuree()!=0) 
+						{
+							Bloc newPosition = carte.getBloc(position.getX() + dx, position.getY() + dy);
+							evenement.setTargetPosition(newPosition);
+							evenement.setDureeRestante(evenement.getDuree()-1);
+						}
+					}
+					else 
+					{
+						FinEvenement.add(evenement);
+					}
 				}
 			}
-			else 
-			{
-				FinEvenement.add(evenement);
+			else {
+				// Pour les événements statiques, juste mettre à jour la durée
+				if (evenement.getDuree() != 0) {
+					evenement.setDureeRestante(evenement.getDuree()-1);
+				} else {
+					FinEvenement.add(evenement);
+				}
 			}
-
 		}
 
 		for (Evenement evenement : FinEvenement) {
