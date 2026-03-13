@@ -10,9 +10,9 @@ import moteur.donne.biome.Village;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
-import moteur.donne.evenement.statique.Purification;
 import moteur.processus.Manageur;
 
 public class MainDisplayer extends JPanel 

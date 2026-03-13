@@ -1,7 +1,7 @@
-package moteur.donne.evenement.statique;
-
+package moteur.donne.evenement.mobile;
 import moteur.donne.carte.Bloc;
-import moteur.donne.evenement.Evenement; 
+import moteur.donne.evenement.Evenement;
+import moteur.processus.visitor.EvenementVisitor;
 
 public class Purification extends Evenement
 {
@@ -9,7 +9,11 @@ public class Purification extends Evenement
 	public Purification(Bloc position, double dureeRestante, int impactTemperature, int impactHumidite,
 			int impactPollution, int impactPurification) {
 		super(position, dureeRestante, impactTemperature, impactHumidite, impactPollution, impactPurification);
-		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void accept(EvenementVisitor visitor) {
+		visitor.visit(this);
 	}
 
 

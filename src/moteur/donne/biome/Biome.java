@@ -1,6 +1,8 @@
 package moteur.donne.biome;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
+import moteur.processus.visitor.BiomeVisitor;
 
 public abstract class Biome 
 {
@@ -84,6 +86,8 @@ public abstract class Biome
     public void setPosition(Bloc position) {
         this.position = position;
     }
+    
+    public abstract Evenement accept(BiomeVisitor visitor);
 	
 	
 }

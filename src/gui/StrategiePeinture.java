@@ -15,9 +15,9 @@ import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
-import moteur.donne.evenement.statique.Purification;
 
 public class StrategiePeinture 
 {

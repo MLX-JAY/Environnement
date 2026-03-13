@@ -1,6 +1,8 @@
 package moteur.donne.biome;
 
 import moteur.donne.carte.Bloc;
+import moteur.donne.evenement.Evenement;
+import moteur.processus.visitor.BiomeVisitor;
 
 public class Banquise extends Biome 
 {
@@ -9,7 +11,11 @@ public class Banquise extends Biome
 			Bloc position) 
 	{
 		super(temperature, pollution, purification, humidite, evolution, position);
-		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public Evenement accept(BiomeVisitor visitor) {
+		return visitor.visit(this);
 	}
 
 }

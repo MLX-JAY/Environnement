@@ -2,6 +2,7 @@ package moteur.donne.evenement;
 
 
 import moteur.donne.carte.Bloc;
+import moteur.processus.visitor.EvenementVisitor;
 
 public abstract class Evenement 
 {
@@ -155,4 +156,6 @@ public abstract class Evenement
     public boolean isAnimationComplete() {
     	return animationProgress >= 1.0;
     }
+    
+    public abstract void accept(EvenementVisitor visitor);
 }
