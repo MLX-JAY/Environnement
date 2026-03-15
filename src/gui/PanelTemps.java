@@ -10,43 +10,47 @@ public class PanelTemps extends JPanel {
 
     public PanelTemps(MainGUI mainGUI) {
         this.mainGUI = mainGUI;
-        this.setBackground(new Color(45, 45, 45));
-        this.setPreferredSize(new Dimension(0, 70));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        this.setBackground(new Color(40, 54, 24));
+        this.setPreferredSize(new Dimension(0, 80)); // Un peu plus haut pour l'esthétique
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 15));
 
         initComposants();
     }
 
     private void initComposants() {
-        Font police = new Font("SansSerif", Font.BOLD, 16);
-
-        btnPlay = new JButton("Play");
-        btnPause = new JButton("Pause");
-        btnX2 = new JButton("Vitesse x2");
-        btnStop = new JButton("Stop (Bilan)");
-
-        JButton[] boutons = {btnPlay, btnPause, btnX2, btnStop};
-        for (JButton b : boutons) {
-            b.setFont(police);
-            b.setFocusable(false);
-            b.setPreferredSize(new Dimension(150, 40));
-            this.add(b);
-        }
+        btnPause = deseign.creerBeauBouton("Pause", new Color(200, 60, 60));
+        this.add(btnPause);
+        btnPlay = deseign.creerBeauBouton("Play", new Color(60, 200, 60));
+        this.add(btnPlay);
+        btnX2 = deseign.creerBeauBouton("Vitesse x2", new Color(60, 60, 200));
+        this.add(btnX2);
+        btnStop = deseign.creerBeauBouton("Bilan de fin", new Color(200, 200, 60));
+        this.add(btnStop);
 
         btnPlay.setEnabled(false);
 
         btnPause.addActionListener(e -> {
             btnPause.setEnabled(false);
             btnPlay.setEnabled(true);
+            mainGUI.arreterSimulation();
         });
 
         btnPlay.addActionListener(e -> {
             btnPlay.setEnabled(false);
             btnPause.setEnabled(true);
+            mainGUI.reprendresimulation();
         });
         
         btnStop.addActionListener(e -> {
             System.out.println("Ouverture du bilan de fin .");
         });
+
+        btnX2.addActionListener(e -> {
+            if (GameConfiguration.VITESSE_JEU > 250) { // Limite pour éviter une vitesse trop rapide
+                GameConfiguration.VITESSE_JEU /= 2;
+                System.out.println("Vitesse de simulation doublée : " + GameConfiguration.VITESSE_JEU + " ms par tour.");
+            }
+        });
+
     }
 }

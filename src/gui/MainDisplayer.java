@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Graphics;
 import javax.swing.JPanel;
+
+import java.awt.Color;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
@@ -29,6 +31,7 @@ public class MainDisplayer extends JPanel
 	public MainDisplayer(Carte carte, Manageur manageur) {  
 		this.carte = carte;
 		this.manageur = manageur;
+		this.setBackground(new Color(163, 177, 138));
 	}
 
 	@Override
@@ -58,7 +61,6 @@ public class MainDisplayer extends JPanel
 			if (e instanceof Purification) stratDePeinture.paint((Purification)e, g);
 		}
 		for (Evenement danger : manageur.getDangers()) {
-			long tempsActuel = System.currentTimeMillis(); //permet de dire le temps actuel en ms permet de faire clignoter des chose dans mon cas (vu sur internet)
 			
 			if (danger instanceof Meteore) {
 				if (danger.getDuree() > 10) {
