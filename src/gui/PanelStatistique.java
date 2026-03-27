@@ -3,6 +3,7 @@ package gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +14,8 @@ import java.awt.geom.Path2D;
 
 import javax.swing.JPanel;
 
+import moteur.donne.biome.Biome;
+
 public class PanelStatistique extends JPanel 
 {
 	
@@ -20,6 +23,8 @@ public class PanelStatistique extends JPanel
         private int humidite;
         private int pollution;
         private int purification;
+        private String biomeNom;
+        private Biome biomeSelectionne;
         private Dimension taillePanel = new Dimension(250, 0);
 
 
@@ -28,15 +33,43 @@ public class PanelStatistique extends JPanel
         this.setPreferredSize(taillePanel);
         }
 
+        public void setBiomeSelectionne(Biome biome) {
+                this.biomeSelectionne = biome;
+                if (biome != null) {
+                        temperature = (int) biome.getTemperature();
+                        humidite = (int) biome.getHumidite();
+                        pollution = (int) biome.getPollution();
+                        purification = (int) biome.getPurification();
+                        biomeNom = biome.getClass().getSimpleName();
+                }
+                repaint();
+        }
+
         public void paintComponent (Graphics g) 
         {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
 
-                dessinerCercle(g2, 75, 100, 100, "Température", 70, Color.ORANGE);
-                dessinerCercle(g2, 75, 300, 100, "Humidité", 45, Color.CYAN);
-                dessinerCercle(g2, 75, 500, 100, "Pollution", 20, Color.RED);
-                dessinerCercle(g2, 75, 700, 100, "Purification", 90, Color.GREEN);
+                if (biomeSelectionne != null) {
+                        g2.setColor(Color.WHITE);
+                        g2.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                        g2.drawString("Biome: " + biomeNom, 20, 40);
+                        g2.drawString("Pos: (" + biomeSelectionne.getPosition().getX() + 
+                                     ", " + biomeSelectionne.getPosition().getY() + ")", 20, 60);
+                        
+                        dessinerCercle(g2, 75, 100, 100, "Température", temperature, Color.ORANGE);
+                        dessinerCercle(g2, 75, 300, 100, "Humidité", humidite, Color.CYAN);
+                        dessinerCercle(g2, 75, 500, 100, "Pollution", pollution, Color.RED);
+                        dessinerCercle(g2, 75, 700, 100, "Purification", purification, Color.GREEN);
+                } else {
+                        g2.setColor(Color.WHITE);
+                        g2.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                        String msg = "Cliquez sur un biome";
+                        g2.drawString(msg, 50, 400);
+                        g2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                        String msg2 = "pour voir ses statistiques";
+                        g2.drawString(msg2, 40, 430);
+                }
         }
 
         private void dessinerCercle(Graphics2D g2, int x, int y, int taille, String nom, double pourcentage, Color couleurLiquide) {

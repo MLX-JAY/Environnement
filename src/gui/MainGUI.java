@@ -47,6 +47,7 @@ public class MainGUI extends JFrame implements Runnable
         displayer = new MainDisplayer(carte, manageur);
         panelTemps = new PanelTemps(this);
         panelStats = new PanelStatistique();
+        displayer.setPanelStats(panelStats);
 
         // 2. Configuration du CardLayout pour les changements de vue
         cardLayout = new CardLayout();
