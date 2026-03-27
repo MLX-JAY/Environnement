@@ -11,6 +11,8 @@ import moteur.donne.biome.Montagne;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
+import moteur.donne.evenement.mobile.GroupePluie;
+import moteur.donne.evenement.mobile.GroupePluieAcide;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.PluieAcide;
 import moteur.donne.evenement.mobile.Pollution;
@@ -81,25 +83,32 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
         }
         
         Bloc position = evenement.getPosition();
+        Bloc nouvellePosition = null;
         
-        int directionAleatoire = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
-        int dx = ConfigurationDirection.DIRECTIONS[directionAleatoire][0];
-        int dy = ConfigurationDirection.DIRECTIONS[directionAleatoire][1];
-        
-        int nouvelleX = position.getX() + dx;
-        int nouvelleY = position.getY() + dy;
-        
-        if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-            evenementsExpirés.add(evenement);
-            return;
+        for (int i = 0; i < ConfigurationDirection.DIRECTIONS.length; i++) {
+            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
+            int dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            int dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            
+            int nouvelleX = position.getX() + dx;
+            int nouvelleY = position.getY() + dy;
+            
+            if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
+                continue;
+            }
+            
+            Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
+            Biome biomeDestination = biomeMap.get(candidate);
+            
+            if (biomeDestination instanceof Montagne) {
+                continue;
+            }
+            
+            nouvellePosition = candidate;
+            break;
         }
         
-        Bloc nouvellePosition = carte.getBloc(nouvelleX, nouvelleY);
-        
-        // Vérifier si une montagne bloque l'événement
-        Biome biomeDestination = biomeMap.get(nouvellePosition);
-        if (biomeDestination instanceof Montagne) {
-            // L'événement est bloqué par la montagne, il reste sur place
+        if (nouvellePosition == null) {
             return;
         }
         
@@ -112,6 +121,92 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
             evenement.setDureeRestante(evenement.getDureeRestante() - 1);
         } else {
             evenementsExpirés.add(evenement);
+        }
+    }
+    
+    @Override
+    public void visit(GroupePluie groupePluie) {
+        deplacerGroupe(groupePluie);
+    }
+    
+    @Override
+    public void visit(GroupePluieAcide groupePluieAcide) {
+        deplacerGroupe(groupePluieAcide);
+    }
+    
+    private void deplacerGroupe(Evenement groupe) {
+        if (!groupe.isAnimationComplete()) {
+            return;
+        }
+        
+        if (groupe.getDureeRestante() == 0) {
+            evenementsExpirés.add(groupe);
+            return;
+        }
+        
+        List<Evenement> unites = new ArrayList<>();
+        if (groupe instanceof GroupePluie) {
+            unites = new ArrayList<>(((GroupePluie) groupe).getPluieUnitaires());
+        } else if (groupe instanceof GroupePluieAcide) {
+            unites = new ArrayList<>(((GroupePluieAcide) groupe).getPluieAcideUnitaires());
+        }
+        
+        Bloc positionPrincipale = groupe.getPosition();
+        boolean deplacementReussi = false;
+        
+        for (int attempt = 0; attempt < ConfigurationDirection.DIRECTIONS.length; attempt++) {
+            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
+            int dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            int dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            
+            boolean directionValide = true;
+            boolean mortCollective = false;
+            
+            for (Evenement unite : unites) {
+                Bloc posUnite = unite.getPosition();
+                int nouvelleX = posUnite.getX() + dx;
+                int nouvelleY = posUnite.getY() + dy;
+                
+                if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
+                    mortCollective = true;
+                    directionValide = false;
+                    break;
+                }
+                
+                Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
+                Biome biomeDestination = biomeMap.get(candidate);
+                
+                if (biomeDestination instanceof Montagne) {
+                    directionValide = false;
+                    break;
+                }
+            }
+            
+            if (mortCollective) {
+                evenementsExpirés.add(groupe);
+                return;
+            }
+            
+            if (directionValide) {
+                for (Evenement unite : unites) {
+                    Bloc posUnite = unite.getPosition();
+                    int nouvelleX = posUnite.getX() + dx;
+                    int nouvelleY = posUnite.getY() + dy;
+                    Bloc nouvellePosition = carte.getBloc(nouvelleX, nouvelleY);
+                    unite.setTargetPosition(nouvellePosition);
+                }
+                
+                int nouvelleXPrincipale = positionPrincipale.getX() + dx;
+                int nouvelleYPrincipale = positionPrincipale.getY() + dy;
+                groupe.setTargetPosition(carte.getBloc(nouvelleXPrincipale, nouvelleYPrincipale));
+                
+                deplacementReussi = true;
+                break;
+            }
+        }
+        
+        if (deplacementReussi) {
+            groupe.setDureeRestante(groupe.getDureeRestante() - 1);
         }
     }
     

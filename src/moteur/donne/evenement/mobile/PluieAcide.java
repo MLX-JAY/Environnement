@@ -18,5 +18,15 @@ public class PluieAcide extends Evenement
 		visitor.visit(this);
 	}
 
+	@Override
+	public boolean isPluie() {
+		return true;
+	}
+
+	@Override
+	public boolean isPluieAcide() {
+		return true;
+	}
+
 	
 }

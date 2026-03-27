@@ -15,7 +15,10 @@ import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.PluieAcide;
+import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
 
@@ -224,6 +227,27 @@ public class StrategiePeinture
         graphics.drawImage(nuage, x, y, size, size, null);
     }
     
+    public void paint(PluieAcide pluieAcide, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (pluieAcide.getAnimationX() * size);
+        int y = (int) (pluieAcide.getAnimationY() * size);
+        
+        graphics.setColor(new Color(50, 100, 0, 80));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.setColor(new Color(100, 255, 100)); 
+        Random rand = new Random((int)pluieAcide.getAnimationX() + (int)pluieAcide.getAnimationY());
+        
+        for (int i = 0; i < 8; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            graphics.drawLine(gx, gy, gx - 2, gy + 8); 
+        }
+
+        graphics.drawImage(nuage, x, y, size, size, null);
+    }
+    
     public void paint(VentFroid froid, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
@@ -246,6 +270,48 @@ public class StrategiePeinture
         graphics.fillRect(x, y, size, size);
 
         graphics.drawImage(feuille, x, y, size, size, null);
+    }
+    
+    public void paint(VentChaud ventChaud, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (ventChaud.getAnimationX() * size);
+        int y = (int) (ventChaud.getAnimationY() * size);
+        
+        graphics.setColor(new Color(255, 100, 0, 50));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.setColor(new Color(255, 150, 0)); 
+        Random rand = new Random((int)ventChaud.getAnimationX() + (int)ventChaud.getAnimationY());
+        
+        for (int i = 0; i < 5; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            graphics.drawLine(gx, gy, gx + 10, gy - 5); 
+        }
+
+        graphics.drawImage(nuage, x, y, size, size, null);
+    }
+    
+    public void paint(Pollution pollution, Graphics graphics) 
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (pollution.getAnimationX() * size);
+        int y = (int) (pollution.getAnimationY() * size);
+        
+        graphics.setColor(new Color(50, 50, 50, 80));
+        graphics.fillRect(x, y, size, size);
+
+        graphics.setColor(new Color(100, 100, 100)); 
+        Random rand = new Random((int)pollution.getAnimationX() + (int)pollution.getAnimationY());
+        
+        for (int i = 0; i < 8; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            graphics.fillOval(gx, gy, 3, 3);
+        }
+
+        graphics.drawImage(nuage, x, y, size, size, null);
     }
     
     public void paintDanger(Evenement e,Graphics graphics) {

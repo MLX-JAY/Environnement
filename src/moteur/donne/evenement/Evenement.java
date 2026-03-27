@@ -157,5 +157,8 @@ public abstract class Evenement
     	return animationProgress >= 1.0;
     }
     
+    public abstract boolean isPluie();
+    public abstract boolean isPluieAcide();
+    
     public abstract void accept(EvenementVisitor visitor);
 }

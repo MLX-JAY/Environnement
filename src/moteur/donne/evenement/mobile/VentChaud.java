@@ -17,4 +17,14 @@ public class VentChaud extends Evenement
 		visitor.visit(this);
 	}
 
+	@Override
+	public boolean isPluie() {
+		return false;
+	}
+
+	@Override
+	public boolean isPluieAcide() {
+		return false;
+	}
+
 }

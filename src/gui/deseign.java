@@ -2,8 +2,6 @@ package gui;
 
 import javax.swing.JButton;
 
-import javafx.scene.Cursor;
-
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;

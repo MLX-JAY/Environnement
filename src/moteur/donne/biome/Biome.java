@@ -64,19 +64,19 @@ public abstract class Biome
 
 
 	public void setTemperature(double temperature) {
-        this.temperature = (temperature > 100) ? 100 : temperature;
+        this.temperature = Math.max(0, Math.min(100, temperature));
     }
 
     public void setPollution(double pollution) {
-        this.pollution = (pollution > 100) ? 100 : pollution;
+        this.pollution = Math.max(0, Math.min(100, pollution));
     }
 
     public void setPurification(double purification) {
-        this.purification = (purification > 100) ? 100 : purification;
+        this.purification = Math.max(0, Math.min(100, purification));
     }
 
     public void setHumidite(double humidite) {
-        this.humidite = (humidite > 100) ? 100 : humidite;
+        this.humidite = Math.max(0, Math.min(100, humidite));
     }
 
     public void setEvolution(double evolution) {

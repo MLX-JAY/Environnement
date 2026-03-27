@@ -13,7 +13,7 @@ import moteur.donne.biome.Ville;
 import moteur.donne.biome.Village;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
-import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.GroupePluie;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentChaud;
@@ -59,7 +59,7 @@ public class GenerateurEvenementVisitor implements BiomeVisitor {
     public Evenement visit(Mer mer) {
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER) {
             Bloc position = mer.getPosition();
-            return new Pluie(
+            return new GroupePluie(
                 position,
                 ConfigurationEvenement.PLUIE_IMPACT_DUREE,
                 ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,

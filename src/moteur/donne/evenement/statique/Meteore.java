@@ -15,6 +15,16 @@ public class Meteore extends Evenement
 	@Override
 	public void accept(EvenementVisitor visitor) {
 		visitor.visit(this);
-	}	
+	}
+
+	@Override
+	public boolean isPluie() {
+		return false;
+	}
+
+	@Override
+	public boolean isPluieAcide() {
+		return false;
+	}
 	
 }

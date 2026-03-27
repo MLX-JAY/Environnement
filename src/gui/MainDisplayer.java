@@ -4,15 +4,22 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import moteur.donne.biome.Banquise;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
+import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
+import moteur.donne.biome.Ville;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
+import moteur.donne.evenement.mobile.GroupePluie;
+import moteur.donne.evenement.mobile.GroupePluieAcide;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
@@ -48,17 +55,34 @@ public class MainDisplayer extends JPanel
 		}
         
         for (Biome b : manageur.getBiomes()) 
-			{
+		{
             if (b instanceof Foret) stratDePeinture.paint((Foret) b, g);
             if (b instanceof Desert) stratDePeinture.paint((Desert) b, g);
             if (b instanceof Mer) stratDePeinture.paint((Mer) b, g);
             if (b instanceof Village) stratDePeinture.paint((Village) b, g);
+            if (b instanceof Ville) stratDePeinture.paint((Ville) b, g);
+            if (b instanceof Montagne) stratDePeinture.paint((Montagne) b, g);
+            if (b instanceof Banquise) stratDePeinture.paint((Banquise) b, g);
         }
 		for (Evenement e : manageur.getEvenements() )
 		{
-			if (e instanceof Pluie) stratDePeinture.paint((Pluie)e, g);
+			if (e instanceof GroupePluie) {
+				GroupePluie groupe = (GroupePluie) e;
+				for (Pluie pluie : groupe.getPluieUnitaires()) {
+					stratDePeinture.paint(pluie, g);
+				}
+			} else if (e instanceof GroupePluieAcide) {
+				GroupePluieAcide groupe = (GroupePluieAcide) e;
+				for (moteur.donne.evenement.mobile.PluieAcide pluie : groupe.getPluieAcideUnitaires()) {
+					stratDePeinture.paint(pluie, g);
+				}
+			} else if (e instanceof Pluie) {
+				stratDePeinture.paint((Pluie)e, g);
+			}
 			if (e instanceof VentFroid) stratDePeinture.paint((VentFroid)e, g);
+			if (e instanceof VentChaud) stratDePeinture.paint((VentChaud)e, g);
 			if (e instanceof Purification) stratDePeinture.paint((Purification)e, g);
+			if (e instanceof Pollution) stratDePeinture.paint((Pollution)e, g);
 		}
 		for (Evenement danger : manageur.getDangers()) {
 			
