@@ -5,13 +5,13 @@ import javax.swing.*;
 import config.GameConfiguration;
 
 public class PanelTemps extends JPanel {
-    private JButton btnPause, btnPlay, btnX2, btnStop;
+    private JButton btnPause, btnPlay, btnX2, btnStop, btnStats;
     private MainGUI mainGUI;
 
     public PanelTemps(MainGUI mainGUI) {
         this.mainGUI = mainGUI;
         this.setBackground(new Color(40, 54, 24));
-        this.setPreferredSize(new Dimension(0, 80)); // Un peu plus haut pour l'esthétique
+        this.setPreferredSize(new Dimension(0, 80));
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 15));
 
         initComposants();
@@ -26,6 +26,8 @@ public class PanelTemps extends JPanel {
         this.add(btnX2);
         btnStop = deseign.creerBeauBouton("Bilan de fin", new Color(200, 200, 60));
         this.add(btnStop);
+        btnStats = deseign.creerBeauBouton("Statistiques", new Color(100, 100, 180));
+        this.add(btnStats);
 
         btnPlay.setEnabled(false);
 
@@ -46,9 +48,16 @@ public class PanelTemps extends JPanel {
         });
 
         btnX2.addActionListener(e -> {
-            if (GameConfiguration.VITESSE_JEU > 250) { // Limite pour éviter une vitesse trop rapide
+            if (GameConfiguration.VITESSE_JEU > 250) {
                 GameConfiguration.VITESSE_JEU /= 2;
                 System.out.println("Vitesse de simulation doublée : " + GameConfiguration.VITESSE_JEU + " ms par tour.");
+            }
+        });
+        
+        btnStats.addActionListener(e -> {
+            if (mainGUI.getManageur() != null) {
+                JFrameStatistiques frame = new JFrameStatistiques(mainGUI.getManageur());
+                frame.setVisible(true);
             }
         });
 
