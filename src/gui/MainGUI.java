@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
+import moteur.processus.ManageurBasique;
 
 public class MainGUI extends JFrame implements Runnable 
 {
@@ -106,6 +107,17 @@ public class MainGUI extends JFrame implements Runnable
 
     public void reprendresimulation() {
         this.simulationEnCours = true;
+    }
+    
+    public Manageur getManageur() {
+        return manageur;
+    }
+    
+    public int getRoundActuel() {
+        if (manageur instanceof ManageurBasique) {
+            return ((ManageurBasique) manageur).getRoundActuel();
+        }
+        return 0;
     }
 
     @Override

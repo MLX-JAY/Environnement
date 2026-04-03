@@ -28,6 +28,29 @@ public class ManageurBasique implements Manageur
 	private EvenementFactory factory;
 	private GenerateurEvenementVisitor generateurEvenementVisitor;
 	
+	private List<StatRound> historique = new ArrayList<>();
+	private int roundActuel = 0;
+	
+	public static class StatRound {
+		public int round;
+		public Map<String, Integer> compteBiomes;
+		public Map<String, Integer> compteEvenements;
+		public double[] moyennes;
+		public int nbTransformations;
+		public Map<String, Integer> transformationParType;
+		
+		public StatRound(int round, Map<String, Integer> compteBiomes, 
+				Map<String, Integer> compteEvenements, double[] moyennes,
+				int nbTransformations, Map<String, Integer> transformationParType) {
+			this.round = round;
+			this.compteBiomes = compteBiomes;
+			this.compteEvenements = compteEvenements;
+			this.moyennes = moyennes;
+			this.nbTransformations = nbTransformations;
+			this.transformationParType = transformationParType;
+		}
+	}
+	
 	public ManageurBasique(Carte carte) 
 	{
 		this.carte = carte;
@@ -147,11 +170,87 @@ public class ManageurBasique implements Manageur
 	@Override
 	public void nextRound()
 	{
+		collecterStats();
+		
 		ajouterEvenement();
 		genererEvenementsDepuisBiomes();
 		
 		bougerEvementMobile();
 		transformation();
+		
+		roundActuel++;
+	}
+	
+	private void collecterStats() {
+		Map<String, Integer> compteBiomes = new HashMap<>();
+		for (Biome biome : biomeMap.values()) {
+			String type = biome.getClass().getSimpleName();
+			compteBiomes.put(type, compteBiomes.getOrDefault(type, 0) + 1);
+		}
+		
+		Map<String, Integer> compteEvenements = new HashMap<>();
+		for (Evenement evt : evenements) {
+			String type = evt.getClass().getSimpleName();
+			compteEvenements.put(type, compteEvenements.getOrDefault(type, 0) + 1);
+		}
+		
+		double sumTemp = 0, sumHumid = 0, sumPoll = 0, sumPurif = 0;
+		for (Biome biome : biomeMap.values()) {
+			sumTemp += biome.getTemperature();
+			sumHumid += biome.getHumidite();
+			sumPoll += biome.getPollution();
+			sumPurif += biome.getPurification();
+		}
+		int nbBiomes = biomeMap.size();
+		double[] moyennes = nbBiomes > 0 ? new double[] {
+			sumTemp / nbBiomes,
+			sumHumid / nbBiomes,
+			sumPoll / nbBiomes,
+			sumPurif / nbBiomes
+		} : new double[] {0, 0, 0, 0};
+		
+		StatRound stat = new StatRound(roundActuel, compteBiomes, compteEvenements, moyennes, 0, new HashMap<>());
+		historique.add(stat);
+	}
+	
+	public List<StatRound> getHistorique() {
+		return historique;
+	}
+	
+	public int getRoundActuel() {
+		return roundActuel;
+	}
+	
+	public Map<String, Integer> getCompteBiomesActuel() {
+		Map<String, Integer> compteBiomes = new HashMap<>();
+		for (Biome biome : biomeMap.values()) {
+			String type = biome.getClass().getSimpleName();
+			compteBiomes.put(type, compteBiomes.getOrDefault(type, 0) + 1);
+		}
+		return compteBiomes;
+	}
+	
+	public Map<String, Integer> getCompteEvenementsActuel() {
+		Map<String, Integer> compteEvenements = new HashMap<>();
+		for (Evenement evt : evenements) {
+			String type = evt.getClass().getSimpleName();
+			compteEvenements.put(type, compteEvenements.getOrDefault(type, 0) + 1);
+		}
+		return compteEvenements;
+	}
+	
+	public double[] getMoyennesActuelles() {
+		if (biomeMap.isEmpty()) return new double[] {0, 0, 0, 0};
+		
+		double sumTemp = 0, sumHumid = 0, sumPoll = 0, sumPurif = 0;
+		for (Biome biome : biomeMap.values()) {
+			sumTemp += biome.getTemperature();
+			sumHumid += biome.getHumidite();
+			sumPoll += biome.getPollution();
+			sumPurif += biome.getPurification();
+		}
+		int nb = biomeMap.size();
+		return new double[] {sumTemp / nb, sumHumid / nb, sumPoll / nb, sumPurif / nb};
 	}
 	
 	@Override
