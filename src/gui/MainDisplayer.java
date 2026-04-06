@@ -1,21 +1,19 @@
 package gui;
 
+import config.GameConfiguration;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
-
-import java.awt.Color;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
-import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
-import moteur.donne.biome.Banquise;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
@@ -23,17 +21,16 @@ import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
-import config.GameConfiguration;
 
 public class MainDisplayer extends JPanel 
 {
 	
 	private static final long serialVersionUID = 1L;
-	private Carte carte;
-	private StrategiePeinture stratDePeinture=new StrategiePeinture();
-	private Manageur manageur;
+	private final transient Carte carte;
+	private final transient StrategiePeinture stratDePeinture = new StrategiePeinture();
+	private final transient Manageur manageur;
 	private PanelStatistique panelStats;
-	private Biome biomeSelectionne;
+	private transient Biome biomeSelectionne;
 	
 	public MainDisplayer(Carte carte, Manageur manageur) {  
 		this.carte = carte;
@@ -46,7 +43,7 @@ public class MainDisplayer extends JPanel
 				int blocX = e.getX() / GameConfiguration.TAILLE_BLOC;
 				int blocY = e.getY() / GameConfiguration.TAILLE_BLOC;
 				
-				if (carte.estCoordonneeValide(blocX, blocY)) {
+				if (MainDisplayer.this.carte.estCoordonneeValide(blocX, blocY)) {
 					Biome biomeClique = trouverBiome(blocX, blocY);
 					if (biomeClique != null) {
 						biomeSelectionne = biomeClique;
@@ -84,36 +81,62 @@ public class MainDisplayer extends JPanel
 			danger.updateAnimation();
 		}
         
-        for (Biome b : manageur.getBiomes()) 
+		for (Biome b : manageur.getBiomes()) 
 		{
-            if (b instanceof Foret) stratDePeinture.paint((Foret) b, g);
-            if (b instanceof Desert) stratDePeinture.paint((Desert) b, g);
-            if (b instanceof Mer) stratDePeinture.paint((Mer) b, g);
-            if (b instanceof Village) stratDePeinture.paint((Village) b, g);
+			dessinerBiome(g, b);
         }
 		for (Evenement e : manageur.getEvenements() )
 		{
-			if (e instanceof Pluie) stratDePeinture.paint((Pluie)e, g);
-			if (e instanceof VentFroid) stratDePeinture.paint((VentFroid)e, g);
-			if (e instanceof Purification) stratDePeinture.paint((Purification)e, g);
+			dessinerEvenement(g, e);
 		}
 		for (Evenement danger : manageur.getDangers()) {
-			
-			if (danger instanceof Meteore) {
-				if (danger.getDuree() > 10) {
-					if (danger.getDuree() % 2 == 0) {
-						stratDePeinture.paintDanger(danger, g);
-					}
-				}
-				else{
-					stratDePeinture.paint((Meteore)danger, g);
-				}
-					
-			}
+			dessinerDanger(g, danger);
 		}
 		
 		if (biomeSelectionne != null) {
 			dessinerSurbrillance(g, biomeSelectionne);
+		}
+	}
+
+	private void dessinerBiome(Graphics g, Biome biome) {
+		if (biome instanceof Foret foret) {
+			stratDePeinture.paint(foret, g);
+		}
+		if (biome instanceof Desert desert) {
+			stratDePeinture.paint(desert, g);
+		}
+		if (biome instanceof Mer mer) {
+			stratDePeinture.paint(mer, g);
+		}
+		if (biome instanceof Village village) {
+			stratDePeinture.paint(village, g);
+		}
+		if (biome instanceof Ville ville) {
+			stratDePeinture.paint(ville, g);
+		}
+	}
+
+	private void dessinerEvenement(Graphics g, Evenement evenement) {
+		if (evenement instanceof Pluie pluie) {
+			stratDePeinture.paint(pluie, g);
+		}
+		if (evenement instanceof VentFroid ventFroid) {
+			stratDePeinture.paint(ventFroid, g);
+		}
+		if (evenement instanceof Purification purification) {
+			stratDePeinture.paint(purification, g);
+		}
+	}
+
+	private void dessinerDanger(Graphics g, Evenement danger) {
+		if (danger instanceof Meteore meteore) {
+			if (danger.getDuree() > 10) {
+				if (danger.getDuree() % 2 == 0) {
+					stratDePeinture.paintDanger(danger, g);
+				}
+			} else {
+				stratDePeinture.paint(meteore, g);
+			}
 		}
 	}
 	

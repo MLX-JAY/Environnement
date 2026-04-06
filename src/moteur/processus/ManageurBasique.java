@@ -1,11 +1,10 @@
 package moteur.processus;
 
+import config.ConfigurationCreationEvenement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import config.ConfigurationCreationEvenement;
 import moteur.donne.biome.Biome;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
@@ -73,15 +72,7 @@ public class ManageurBasique implements Manageur
 	public void CarteHasard() 
     {
         biomeMap.clear();
-
-        for (int i = 0; i < carte.getGrandeurX(); i++) 
-        {
-            for (int j = 0; j < carte.getGrandeurY(); j++) 
-            {
-                Biome biome = moteur.processus.usine.BiomeFactory.creerBiomeAleatoire(carte.getBloc(i, j));
-                biomeMap.put(biome.getPosition(), biome);
-            }
-        }
+		biomeMap.putAll(moteur.processus.usine.BiomeFactory.creerBiomesCoherents(carte));
     }
     
     public Biome getBiomeByPosition(Bloc position) {
