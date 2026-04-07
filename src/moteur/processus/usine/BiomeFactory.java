@@ -286,7 +286,8 @@ public class BiomeFactory {
         int nombreLignes = eau.length;
         int nombreColonnes = nombreLignes == 0 ? 0 : eau[0].length;
         boolean[][] desert = new boolean[nombreLignes][nombreColonnes];
-        int[][] centres = trouverCentresDesert(eau, distanceAEau, random);
+	    int distanceMinimaleAEau = Math.max(1, Math.min(nombreLignes, nombreColonnes) / 6);
+	    int[][] centres = trouverCentresDesert(eau, distanceAEau, distanceMinimaleAEau, random);
 
         if (centres.length == 0) {
             return desert;
@@ -296,7 +297,6 @@ public class BiomeFactory {
             Math.max(2.6, nombreLignes / 3.7),
             Math.max(2.1, nombreColonnes / 5.0)
         };
-        int distanceMinimaleAEau = Math.max(1, Math.min(nombreLignes, nombreColonnes) / 6);
 
         for (int i = 0; i < nombreLignes; i++) {
             for (int j = 0; j < nombreColonnes; j++) {
@@ -311,7 +311,7 @@ public class BiomeFactory {
             }
         }
 
-        assurerDeuxZonesDesertiques(desert, eau, distanceAEau, centres, random);
+	    assurerDeuxZonesDesertiques(desert, eau, distanceAEau, centres, distanceMinimaleAEau, random);
         assurerTailleMinimaleDuDesert(desert, eau, centres);
         supprimerDesertsAdjacentsAEau(desert, eau);
 
@@ -320,14 +320,8 @@ public class BiomeFactory {
 
     private static boolean appartientAUneZoneDesertique(int x, int y, int[][] centres, int distanceAEau,
             int distanceMinimaleAEau, double[] rayons, Random random) {
-        int milieu = centres.length <= 1 ? y : calculerMilieuDesert(centres);
-
         for (int[] centre : centres) {
             if (centre.length == 0) {
-                continue;
-            }
-
-            if (!estDuBonCoteDuDesert(y, centre[1], milieu)) {
                 continue;
             }
 
@@ -344,73 +338,86 @@ public class BiomeFactory {
         return false;
     }
 
-    private static int[][] trouverCentresDesert(boolean[][] eau, int[][] distanceAEau, Random random) {
-        int nombreColonnes = eau.length == 0 ? 0 : eau[0].length;
-        int limiteGauche = Math.max(0, nombreColonnes / 2 - 1);
-        int limiteDroite = Math.min(nombreColonnes - 1, nombreColonnes / 2);
-        int[] centreGauche = trouverCentreDesertDansPlage(eau, distanceAEau, 0, limiteGauche, random);
-        int[] centreDroite = trouverCentreDesertDansPlage(eau, distanceAEau, limiteDroite, nombreColonnes - 1, random);
+    private static int[][] trouverCentresDesert(boolean[][] eau, int[][] distanceAEau,
+            int distanceMinimaleAEau, Random random) {
+        int[] premierCentre = trouverCentreDesertAleatoire(eau, distanceAEau, distanceMinimaleAEau,
+            new int[0], random);
 
-        if (centreGauche.length == 0 && centreDroite.length == 0) {
+        if (premierCentre.length == 0) {
             return new int[0][];
         }
-        if (centreGauche.length == 0) {
-            return new int[][] { centreDroite };
-        }
-        if (centreDroite.length == 0) {
-            return new int[][] { centreGauche };
+
+        int[] secondCentre = trouverCentreDesertAleatoire(eau, distanceAEau, distanceMinimaleAEau,
+            premierCentre, random);
+
+        if (secondCentre.length == 0) {
+            return new int[][] { premierCentre };
         }
 
-        return new int[][] { centreGauche, centreDroite };
+        return new int[][] { premierCentre, secondCentre };
     }
 
-    private static int[] trouverCentreDesertDansPlage(boolean[][] eau, int[][] distanceAEau, int minY, int maxY,
-            Random random) {
-        int nombreLignes = eau.length;
-        int[] meilleurCentre = new int[0];
-        double meilleurScore = Double.NEGATIVE_INFINITY;
+    private static int[] trouverCentreDesertAleatoire(boolean[][] eau, int[][] distanceAEau,
+            int distanceMinimaleAEau, int[] centreExistant, Random random) {
+        int[] centreChoisi = new int[0];
+        int candidats = 0;
+        int separationMinimale = Math.max(3, Math.min(eau.length, eau[0].length) / 4);
 
-        for (int i = 0; i < nombreLignes; i++) {
-            for (int j = minY; j <= maxY; j++) {
-                if (j < 0 || j >= eau[i].length || eau[i][j]) {
+        for (int i = 0; i < eau.length; i++) {
+            for (int j = 0; j < eau[i].length; j++) {
+                if (!estCelluleValidePourCentreDesert(eau, distanceAEau, i, j, distanceMinimaleAEau)) {
                     continue;
                 }
 
-                double score = calculerScoreCentreDesert(distanceAEau, i, j, minY, maxY, nombreLignes, random);
+                if (centreExistant.length > 0
+                    && Math.abs(centreExistant[0] - i) + Math.abs(centreExistant[1] - j) < separationMinimale) {
+                    continue;
+                }
 
-                if (score > meilleurScore) {
-                    meilleurScore = score;
-                    meilleurCentre = new int[] { i, j };
+                candidats++;
+                if (random.nextInt(candidats) == 0) {
+                    centreChoisi = new int[] { i, j };
                 }
             }
         }
 
-        return meilleurCentre;
+        return centreChoisi;
+    }
+
+    private static boolean estCelluleValidePourCentreDesert(boolean[][] eau, int[][] distanceAEau, int x, int y,
+            int distanceMinimaleAEau) {
+        return !eau[x][y]
+            && distanceAEau[x][y] >= Math.max(2, distanceMinimaleAEau)
+            && !estAdjacentAEau(eau, x, y);
     }
 
     private static void assurerDeuxZonesDesertiques(boolean[][] desert, boolean[][] eau, int[][] distanceAEau,
-            int[][] centres, Random random) {
+            int[][] centres, int distanceMinimaleAEau, Random random) {
         if (compterZonesConnectees(desert) >= 2) {
             return;
         }
 
-        int[] centreSecondaire = trouverCentreSecondaireDesert(eau, desert, distanceAEau, random);
+        int[] centreReference = centres.length == 0 ? new int[0] : centres[0];
+        int[] centreSecondaire = trouverCentreDesertAleatoire(eau, distanceAEau, distanceMinimaleAEau,
+            centreReference, random);
+        if (centreSecondaire.length == 0) {
+            centreSecondaire = trouverCentreSecondaireDesert(eau, desert, distanceAEau, random);
+        }
         if (centreSecondaire.length == 0) {
             return;
         }
 
-        creerPatchDesertique(desert, eau, centreSecondaire, 1, calculerMilieuDesert(centres));
+        creerPatchDesertique(desert, eau, centreSecondaire, 1);
     }
 
     private static void assurerTailleMinimaleDuDesert(boolean[][] desert, boolean[][] eau, int[][] centres) {
         int tailleMinimale = Math.max(6, (desert.length * desert[0].length) / 4);
-        int milieu = calculerMilieuDesert(centres);
         int rayon = 1;
 
         while (compterCasesActives(desert) < tailleMinimale && rayon <= 3) {
             for (int[] centre : centres) {
                 if (centre.length > 0) {
-                    creerPatchDesertique(desert, eau, centre, rayon, milieu);
+                    creerPatchDesertique(desert, eau, centre, rayon);
                 }
             }
             rayon++;
@@ -433,8 +440,7 @@ public class BiomeFactory {
                     continue;
                 }
 
-                double chaleur = eau.length <= 1 ? 0.5 : (double) i / (double) (eau.length - 1);
-                double score = distanceAEau[i][j] * 3.0 + chaleur * 4.0 + distanceAuDesert * 0.35 + random.nextDouble();
+	            double score = distanceAEau[i][j] * 2.8 + distanceAuDesert * 0.45 + random.nextDouble() * 2.0;
                 if (score > meilleurScore) {
                     meilleurScore = score;
                     meilleurCentre = new int[] { i, j };
@@ -462,13 +468,12 @@ public class BiomeFactory {
         return meilleureDistance == Integer.MAX_VALUE ? Math.max(desert.length, desert[0].length) : meilleureDistance;
     }
 
-    private static void creerPatchDesertique(boolean[][] desert, boolean[][] eau, int[] centre, int rayon, int milieu) {
+	private static void creerPatchDesertique(boolean[][] desert, boolean[][] eau, int[] centre, int rayon) {
         for (int i = centre[0] - rayon; i <= centre[0] + rayon; i++) {
             for (int j = centre[1] - rayon; j <= centre[1] + rayon; j++) {
                 if (i >= 0 && i < desert.length && j >= 0 && j < desert[i].length
                     && !eau[i][j]
-                    && !estAdjacentAEau(eau, i, j)
-                    && estDuBonCoteDuDesert(j, centre[1], milieu)) {
+	                && !estAdjacentAEau(eau, i, j)) {
                     desert[i][j] = true;
                 }
             }
@@ -683,38 +688,6 @@ public class BiomeFactory {
 
     private static boolean peutDevenirVillage(boolean[][] eau, boolean[][] desert, int[][] distanceAEau, int x, int y) {
         return !eau[x][y] && !desert[x][y] && distanceAEau[x][y] >= 1 && distanceAEau[x][y] <= 4;
-    }
-
-    private static double calculerScoreCentreDesert(int[][] distanceAEau, int x, int y, int minY, int maxY,
-            int nombreLignes, Random random) {
-        double chaleur = nombreLignes <= 1 ? 0.5 : (double) x / (double) (nombreLignes - 1);
-        double excentricite = maxY <= minY ? 0.0 : Math.abs(y - ((minY + maxY) / 2.0));
-        double score = distanceAEau[x][y] * 3.2 + chaleur * 4.5 + excentricite * 0.15 + random.nextDouble();
-        if (x < nombreLignes / 4) {
-            score -= 1.5;
-        }
-        return score;
-    }
-
-    private static int calculerMilieuDesert(int[][] centres) {
-        int somme = 0;
-        int compteur = 0;
-
-        for (int[] centre : centres) {
-            if (centre.length > 0) {
-                somme += centre[1];
-                compteur++;
-            }
-        }
-
-        return compteur == 0 ? 0 : somme / compteur;
-    }
-
-    private static boolean estDuBonCoteDuDesert(int y, int centreY, int milieu) {
-        if (centreY <= milieu) {
-            return y <= milieu;
-        }
-        return y >= milieu;
     }
 
     private static boolean estDansCouronneAride(int distanceAEau, int distanceMinimaleAEau,

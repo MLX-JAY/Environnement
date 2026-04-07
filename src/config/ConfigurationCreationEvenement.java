@@ -1,6 +1,12 @@
 package config;
 
 public class ConfigurationCreationEvenement {
+
+    public static final int MAX_EVENEMENTS_SIMULTANES = 30;
+
+    public static final int DUREE_MINIMALE_EVENEMENT = 10;
+
+    public static final int CHANCE_TERMINAISON_APRES_DUREE_MINIMALE = 3;
     
     public static final int NB_EVENEMENTS_ALEATOIRES_PAR_ROUND = 3;
     

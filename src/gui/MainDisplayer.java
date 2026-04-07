@@ -17,7 +17,9 @@ import moteur.donne.biome.Ville;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
@@ -73,12 +75,22 @@ public class MainDisplayer extends JPanel
 	public void paintComponent (Graphics g)
 	{
 		super.paintComponent(g);
+
+		if (biomeSelectionne != null) {
+			biomeSelectionne = trouverBiome(
+				biomeSelectionne.getPosition().getX(),
+				biomeSelectionne.getPosition().getY()
+			);
+			if (panelStats != null) {
+				panelStats.actualiserBiomeSelectionne(biomeSelectionne);
+			}
+		}
 		
 		for (Evenement e : manageur.getEvenements()) {
-			e.updateAnimation();
+			e.mettreAJourAnimation();
 		}
 		for (Evenement danger : manageur.getDangers()) {
-			danger.updateAnimation();
+			danger.mettreAJourAnimation();
 		}
         
 		for (Biome b : manageur.getBiomes()) 
@@ -122,6 +134,12 @@ public class MainDisplayer extends JPanel
 		}
 		if (evenement instanceof VentFroid ventFroid) {
 			stratDePeinture.paint(ventFroid, g);
+		}
+		if (evenement instanceof VentChaud ventChaud) {
+			stratDePeinture.paint(ventChaud, g);
+		}
+		if (evenement instanceof Pollution pollution) {
+			stratDePeinture.paint(pollution, g);
 		}
 		if (evenement instanceof Purification purification) {
 			stratDePeinture.paint(purification, g);

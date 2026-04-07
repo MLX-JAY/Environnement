@@ -4,6 +4,8 @@ import java.util.ArrayDeque;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.*;
+import config.ConfigurationCreationEvenement;
+import moteur.donne.evenement.Evenement;
 import moteur.donne.carte.Carte;
 import moteur.donne.carte.Bloc;
 import moteur.donne.biome.Biome;
@@ -51,6 +53,41 @@ public class TestManageur {
             }
         }
         assertTrue(!manageur.getEvenements().isEmpty());
+    }
+
+    @Test
+    public void testNombreMaximumEvenementsSimultanes() {
+        for (int i = 0; i < 200; i++) {
+            manageur.ajouterEvenement();
+        }
+
+        assertTrue(manageur.getEvenements().size() <= ConfigurationCreationEvenement.MAX_EVENEMENTS_SIMULTANES);
+    }
+
+    @Test
+    public void testEvenementsGardentUneDureeMinimale() {
+        for (int i = 0; i < 200; i++) {
+            manageur.ajouterEvenement();
+            if (!manageur.getEvenements().isEmpty()) {
+                break;
+            }
+        }
+
+        assertFalse(manageur.getEvenements().isEmpty());
+        for (Evenement evenement : manageur.getEvenements()) {
+            assertTrue(evenement.getDureeRestante() >= ConfigurationCreationEvenement.DUREE_MINIMALE_EVENEMENT);
+        }
+    }
+
+    @Test
+    public void testGenerationDepuisBiomesRespecteLeMaximum() {
+        manageur.CarteHasard();
+
+        for (int i = 0; i < 10; i++) {
+            manageur.genererEvenementsDepuisBiomes();
+        }
+
+        assertTrue(manageur.getEvenements().size() <= ConfigurationCreationEvenement.MAX_EVENEMENTS_SIMULTANES);
     }
     
     @Test
@@ -154,6 +191,21 @@ public class TestManageur {
         assertTrue(compterZonesDesertiques() >= 2);
     }
 
+    @Test
+    public void testCarteHasardPeutPlacerDuDesertAuMilieu() {
+        boolean vuDesertAuMilieu = false;
+
+        for (int tentative = 0; tentative < 60; tentative++) {
+            manageur.CarteHasard();
+            if (estDuDesertAuMilieu()) {
+                vuDesertAuMilieu = true;
+                break;
+            }
+        }
+
+        assertTrue(vuDesertAuMilieu);
+    }
+
     private int compterMasseEauConnectee(boolean[][] eau, Bloc depart) {
         boolean[][] visite = new boolean[eau.length][eau[0].length];
         ArrayDeque<Bloc> file = new ArrayDeque<>();
@@ -216,6 +268,23 @@ public class TestManageur {
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
                 if (manageur.getBiomeByPosition(carte.getBloc(i, j)) instanceof Mer) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean estDuDesertAuMilieu() {
+        int minX = carte.getGrandeurX() / 3;
+        int maxX = (carte.getGrandeurX() * 2) / 3;
+        int minY = carte.getGrandeurY() / 3;
+        int maxY = (carte.getGrandeurY() * 2) / 3;
+
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minY; j <= maxY; j++) {
+                if (manageur.getBiomeByPosition(carte.getBloc(i, j)) instanceof Desert) {
                     return true;
                 }
             }

@@ -1,7 +1,9 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.Random;
 import javax.swing.ImageIcon;
@@ -15,17 +17,64 @@ import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.statique.Meteore;
 
 public class StrategiePeinture 
 {
-    private Image nuage = new ImageIcon(getClass().getResource("/image/pluie.png")).getImage();
     private Image flocon = new ImageIcon(getClass().getResource("/image/flocon.png")).getImage();
-    private Image feuille = new ImageIcon(getClass().getResource("/image/feuille.png")).getImage(); 
     private Image danger = new ImageIcon(getClass().getResource("/image/danger.png")).getImage();
     private Image meteore = new ImageIcon(getClass().getResource("/image/meteore.png")).getImage(); 
+
+    private void dessinerNuage(Graphics2D g2, int x, int y, int size) {
+        g2.setColor(new Color(210, 220, 228, 220));
+        g2.fillOval(x + size / 8, y + size / 3, size / 3, size / 4);
+        g2.fillOval(x + size / 3, y + size / 5, size / 2, size / 2);
+        g2.fillOval(x + size / 2, y + size / 3, size / 3, size / 4);
+        g2.setColor(new Color(240, 245, 250, 180));
+        g2.fillOval(x + size / 3, y + size / 4, size / 3, size / 5);
+    }
+
+    private void dessinerPollution(Graphics2D g2, int x, int y, int size) {
+        g2.setColor(new Color(70, 70, 70, 150));
+        g2.fillOval(x + size / 10, y + size / 4, size / 2, size / 2);
+        g2.fillOval(x + size / 3, y + size / 8, size / 2, size / 2);
+        g2.fillOval(x + size / 2, y + size / 3, size / 3, size / 3);
+        g2.setColor(new Color(110, 110, 110, 100));
+        g2.fillOval(x + size / 4, y + size / 6, size / 2, size / 2);
+    }
+
+    private void dessinerFeuille(Graphics2D g2, int x, int y, int size) {
+        g2.setColor(new Color(52, 140, 78));
+        g2.fillOval(x + size / 4, y + size / 5, size / 2, (size * 3) / 5);
+        g2.setColor(new Color(84, 190, 104));
+        g2.fillOval(x + size / 3, y + size / 4, size / 4, size / 3);
+        g2.setColor(new Color(210, 245, 210, 180));
+        g2.setStroke(new BasicStroke(2f));
+        g2.drawLine(x + size / 2, y + size / 4, x + size / 2, y + (size * 3) / 4);
+        g2.drawLine(x + size / 2, y + size / 2, x + (size * 2) / 3, y + size / 3);
+        g2.drawLine(x + size / 2, y + (size * 3) / 5, x + size / 3, y + size / 2);
+    }
+
+    private void dessinerVentChaud(Graphics2D g2, int x, int y, int size) {
+        g2.setStroke(new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2.setColor(new Color(210, 35, 35, 220));
+
+        int baseY = y + (size * 4) / 5;
+        g2.drawLine(x + size / 6, baseY, x + (size * 5) / 6, baseY);
+
+        g2.drawArc(x + size / 10, y + size / 8, size / 4, (size * 5) / 8, 280, 190);
+        g2.drawArc(x + (size * 7) / 20, y + size / 8, size / 4, (size * 5) / 8, 280, 190);
+        g2.drawArc(x + (size * 3) / 5, y + size / 8, size / 4, (size * 5) / 8, 280, 190);
+
+        g2.setColor(new Color(255, 110, 110, 120));
+        g2.drawArc(x + size / 8, y + size / 5, size / 5, size / 2, 285, 170);
+        g2.drawArc(x + (size * 2) / 5, y + size / 5, size / 5, size / 2, 285, 170);
+        g2.drawArc(x + (size * 13) / 20, y + size / 5, size / 5, size / 2, 285, 170);
+    }
     
     
 //===========================================  LES BIOMES  ============================================================
@@ -206,29 +255,57 @@ public class StrategiePeinture
     public void paint(Pluie pluie, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = (int) (pluie.getAnimationX() * size);
-        int y = (int) (pluie.getAnimationY() * size);
+        int x = (int) (pluie.getPositionAnimationX() * size);
+        int y = (int) (pluie.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
         
-        graphics.setColor(new Color(0, 0, 50, 50));
-        graphics.fillRect(x, y, size, size);
+        g2.setColor(new Color(0, 0, 50, 50));
+        g2.fillRect(x, y, size, size);
 
-        graphics.setColor(new Color(200, 230, 255)); 
-        Random rand = new Random((int)pluie.getAnimationX() + (int)pluie.getAnimationY());
+        g2.setColor(new Color(200, 230, 255)); 
+        Random rand = new Random((int)pluie.getPositionAnimationX() + (int)pluie.getPositionAnimationY());
         
         for (int i = 0; i < 8; i++) {
             int gx = x + rand.nextInt(size);
             int gy = y + rand.nextInt(size);
-            graphics.drawLine(gx, gy, gx - 2, gy + 8); 
+            g2.drawLine(gx, gy, gx - 2, gy + 8); 
         }
 
-        graphics.drawImage(nuage, x, y, size, size, null);
+        dessinerNuage(g2, x, y, size);
+        g2.dispose();
+    }
+
+	public void paint(Pollution pollution, Graphics graphics)
+	{
+		int size = config.GameConfiguration.TAILLE_BLOC;
+		int x = (int) (pollution.getPositionAnimationX() * size);
+		int y = (int) (pollution.getPositionAnimationY() * size);
+		Graphics2D g2 = (Graphics2D) graphics.create();
+
+		g2.setColor(new Color(45, 20, 20, 55));
+		g2.fillRect(x, y, size, size);
+		dessinerPollution(g2, x, y, size);
+		g2.dispose();
+	}
+
+    public void paint(VentChaud ventChaud, Graphics graphics)
+    {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (ventChaud.getPositionAnimationX() * size);
+        int y = (int) (ventChaud.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+
+        g2.setColor(new Color(120, 0, 0, 28));
+        g2.fillRect(x, y, size, size);
+        dessinerVentChaud(g2, x, y, size);
+        g2.dispose();
     }
     
     public void paint(VentFroid froid, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = (int) (froid.getAnimationX() * size);
-        int y = (int) (froid.getAnimationY() * size);
+        int x = (int) (froid.getPositionAnimationX() * size);
+        int y = (int) (froid.getPositionAnimationY() * size);
         
         graphics.setColor(new Color(0, 0, 50, 50));
         graphics.fillRect(x, y, size, size);
@@ -239,27 +316,29 @@ public class StrategiePeinture
     public void paint(Purification purification, Graphics graphics) 
     {
         int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = (int) (purification.getAnimationX() * size);
-        int y = (int) (purification.getAnimationY() * size);
+        int x = (int) (purification.getPositionAnimationX() * size);
+        int y = (int) (purification.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
         
-        graphics.setColor(new Color(0, 0, 50, 50));
-        graphics.fillRect(x, y, size, size);
+        g2.setColor(new Color(0, 80, 40, 35));
+        g2.fillRect(x, y, size, size);
 
-        graphics.drawImage(feuille, x, y, size, size, null);
+        dessinerFeuille(g2, x, y, size);
+        g2.dispose();
     }
     
     public void paintDanger(Evenement e,Graphics graphics) {
     	int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = (int) (e.getAnimationX() * size);
-        int y = (int) (e.getAnimationY() * size);
+        int x = (int) (e.getPositionAnimationX() * size);
+        int y = (int) (e.getPositionAnimationY() * size);
         graphics.drawImage(danger, x, y, size*2, size*2, null);
         
     }
     
     public void paint(Meteore meteore,Graphics graphics) {
     	int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = (int) (meteore.getAnimationX() * size);
-        int y = (int) (meteore.getAnimationY() * size);
+        int x = (int) (meteore.getPositionAnimationX() * size);
+        int y = (int) (meteore.getPositionAnimationY() * size);
         graphics.drawImage(this.meteore, x, y, size, size, null);
     }
     
