@@ -11,9 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-
 import javax.swing.JPanel;
-
 import moteur.donne.biome.Biome;
 
 public class PanelStatistique extends JPanel 
@@ -33,22 +31,35 @@ public class PanelStatistique extends JPanel
         this.setPreferredSize(taillePanel);
         }
 
+		private void synchroniserStatistiquesSelection() {
+				if (biomeSelectionne == null) {
+					return;
+				}
+
+				temperature = (int) biomeSelectionne.getTemperature();
+				humidite = (int) biomeSelectionne.getHumidite();
+				pollution = (int) biomeSelectionne.getPollution();
+				purification = (int) biomeSelectionne.getPurification();
+				biomeNom = biomeSelectionne.getClass().getSimpleName();
+		}
+
         public void setBiomeSelectionne(Biome biome) {
                 this.biomeSelectionne = biome;
-                if (biome != null) {
-                        temperature = (int) biome.getTemperature();
-                        humidite = (int) biome.getHumidite();
-                        pollution = (int) biome.getPollution();
-                        purification = (int) biome.getPurification();
-                        biomeNom = biome.getClass().getSimpleName();
-                }
+				synchroniserStatistiquesSelection();
                 repaint();
         }
 
+		public void actualiserBiomeSelectionne(Biome biome) {
+				this.biomeSelectionne = biome;
+				synchroniserStatistiquesSelection();
+		}
+
+		@Override
         public void paintComponent (Graphics g) 
         {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
+				synchroniserStatistiquesSelection();
 
                 if (biomeSelectionne != null) {
                         g2.setColor(Color.WHITE);

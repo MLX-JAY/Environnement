@@ -1,11 +1,10 @@
 package moteur.processus;
 
+import config.ConfigurationCreationEvenement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import config.ConfigurationCreationEvenement;
 import moteur.donne.biome.Biome;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
@@ -73,15 +72,7 @@ public class ManageurBasique implements Manageur
 	public void CarteHasard() 
     {
         biomeMap.clear();
-
-        for (int i = 0; i < carte.getGrandeurX(); i++) 
-        {
-            for (int j = 0; j < carte.getGrandeurY(); j++) 
-            {
-                Biome biome = moteur.processus.usine.BiomeFactory.creerBiomeAleatoire(carte.getBloc(i, j));
-                biomeMap.put(biome.getPosition(), biome);
-            }
-        }
+		biomeMap.putAll(moteur.processus.usine.BiomeFactory.creerBiomesCoherents(carte));
     }
     
     public Biome getBiomeByPosition(Bloc position) {
@@ -128,25 +119,40 @@ public class ManageurBasique implements Manageur
 			}
 		}
 	}
+
+	private boolean peutAjouterEvenement() {
+		return evenements.size() < ConfigurationCreationEvenement.MAX_EVENEMENTS_SIMULTANES;
+	}
+
+	private void ajouterEvenementAvecContraintes(Evenement evenement) {
+		if (evenement == null || !peutAjouterEvenement()) {
+			return;
+		}
+
+		evenement.setDureeRestante(Math.max(
+			evenement.getDureeRestante(),
+			ConfigurationCreationEvenement.DUREE_MINIMALE_EVENEMENT
+		));
+		evenements.add(evenement);
+	}
 	
 	//la fonction est la mais sah elle sert a rien imo 
 	@Override
 	public void ajouterEvenement()
 	{
-		for (int i = 0; i < ConfigurationCreationEvenement.NB_EVENEMENTS_ALEATOIRES_PAR_ROUND; i++) {
+		for (int i = 0; i < ConfigurationCreationEvenement.NB_EVENEMENTS_ALEATOIRES_PAR_ROUND && peutAjouterEvenement(); i++) {
 			Evenement evenement = factory.creerEvenementAleatoire();
-			if (evenement != null) {
-				evenements.add(evenement);
-			}
+			ajouterEvenementAvecContraintes(evenement);
 		}
 	}
 	
 	public void genererEvenementsDepuisBiomes() {
 		for (Biome biome : biomeMap.values()) {
-			Evenement e = biome.accept(generateurEvenementVisitor);
-			if (e != null) {
-				evenements.add(e);
+			if (!peutAjouterEvenement()) {
+				break;
 			}
+			Evenement e = biome.accept(generateurEvenementVisitor);
+			ajouterEvenementAvecContraintes(e);
 		}
 	}
 	

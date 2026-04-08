@@ -13,7 +13,7 @@ public class GameConfiguration {
 	public static final int NOMBRE_LIGNES = CARTE_LONGEUR/ TAILLE_BLOC;
 	public static final int NOMBRE_COLONNES = CARTE_LARGEUR / TAILLE_BLOC;
 	
-	public static int VITESSE_JEU = 1000;
+	public static int VITESSE_JEU = 2000;
 	
 	
 

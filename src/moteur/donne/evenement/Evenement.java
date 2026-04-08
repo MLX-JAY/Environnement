@@ -1,6 +1,7 @@
 package moteur.donne.evenement;
 
 
+import config.GameConfiguration;
 import moteur.donne.carte.Bloc;
 import moteur.processus.visitor.EvenementVisitor;
 
@@ -22,14 +23,25 @@ public abstract class Evenement
 	private int impactPurification;
 	
 	// Coordonnées fluides pour l'animation
-	private double positionX; // Position en pourcentage (0 à 1) pour interpolation
-	private double positionY;
-	private double fromX; // Position de départ pour l'interpolation
-	private double fromY;
-	private double targetPositionX; // Position cible
-	private double targetPositionY;
-	private double animationProgress = 0.0; // 0.0 à 1.0
-	private static final double ANIMATION_SPEED = 0.05; // Vitesse de l'animation (ajuster selon les besoins)
+	private double positionAnimationX;
+	private double positionAnimationY;
+	private double positionDepartAnimationX;
+	private double positionDepartAnimationY;
+	private double positionCibleAnimationX;
+	private double positionCibleAnimationY;
+	private double progressionAnimation = 0.0;
+	private long tempsDebutAnimationMs;
+	private long dureeAnimationMs;
+
+	private double calculerProgressionAnimationActuelle() {
+		if (progressionAnimation >= 1.0) {
+			return 1.0;
+		}
+
+		long tempsEcouleMs = System.currentTimeMillis() - tempsDebutAnimationMs;
+		double duree = Math.max(1L, dureeAnimationMs);
+		return Math.min(1.0, tempsEcouleMs / duree);
+	}
 
 	
 
@@ -45,13 +57,15 @@ public abstract class Evenement
 		this.impactPurification = impactPurification;
 		
 		// Initialiser les coordonnées fluides
-		this.fromX = position.getX();
-		this.fromY = position.getY();
-		this.positionX = position.getX();
-		this.positionY = position.getY();
-		this.targetPositionX = position.getX();
-		this.targetPositionY = position.getY();
-		this.animationProgress = 1.0; // Animation complète au démarrage
+		this.positionDepartAnimationX = position.getX();
+		this.positionDepartAnimationY = position.getY();
+		this.positionAnimationX = position.getX();
+		this.positionAnimationY = position.getY();
+		this.positionCibleAnimationX = position.getX();
+		this.positionCibleAnimationY = position.getY();
+		this.progressionAnimation = 1.0;
+		this.tempsDebutAnimationMs = System.currentTimeMillis();
+		this.dureeAnimationMs = Math.max(16, GameConfiguration.VITESSE_JEU);
 	}
     
     public int getDirectionX() { return directionX; }
@@ -120,41 +134,46 @@ public abstract class Evenement
     }
     
     // Méthodes pour l'animation fluide
-    public void updateAnimation() {
-    	if (animationProgress < 1.0) {
-    		animationProgress += ANIMATION_SPEED;
-    		if (animationProgress > 1.0) animationProgress = 1.0;
-    		
-    		// Interpolation linéaire entre fromX/fromY et targetPositionX/targetPositionY
-    		positionX = fromX + (targetPositionX - fromX) * animationProgress;
-    		positionY = fromY + (targetPositionY - fromY) * animationProgress;
-    	}
+    public void mettreAJourAnimation() {
+	    	if (progressionAnimation >= 1.0) {
+	    		positionAnimationX = positionCibleAnimationX;
+	    		positionAnimationY = positionCibleAnimationY;
+	    		return;
+	    	}
+
+	    	progressionAnimation = calculerProgressionAnimationActuelle();
+
+	    	positionAnimationX = positionDepartAnimationX + (positionCibleAnimationX - positionDepartAnimationX) * progressionAnimation;
+	    	positionAnimationY = positionDepartAnimationY + (positionCibleAnimationY - positionDepartAnimationY) * progressionAnimation;
     }
     
-    public void setTargetPosition(Bloc target) {
+    public void definirPositionCible(Bloc cible) {
     	// Sauvegarder la position actuelle comme point de départ
-    	this.fromX = positionX;
-    	this.fromY = positionY;
+	    	mettreAJourAnimation();
+	    	this.positionDepartAnimationX = positionAnimationX;
+	    	this.positionDepartAnimationY = positionAnimationY;
     	
     	// Définir la cible et réinitialiser l'animation
-    	this.targetPositionX = target.getX();
-    	this.targetPositionY = target.getY();
-    	this.animationProgress = 0.0;
+	    	this.positionCibleAnimationX = cible.getX();
+	    	this.positionCibleAnimationY = cible.getY();
+	    	this.progressionAnimation = 0.0;
+	    	this.tempsDebutAnimationMs = System.currentTimeMillis();
+	    	this.dureeAnimationMs = Math.max(16, GameConfiguration.VITESSE_JEU);
     	
     	// maj de la position
-    	this.position = target;
+	    	this.position = cible;
     }
     
-    public double getAnimationX() {
-    	return positionX;
+    public double getPositionAnimationX() {
+	    	return positionAnimationX;
     }
     
-    public double getAnimationY() {
-    	return positionY;
+    public double getPositionAnimationY() {
+	    	return positionAnimationY;
     }
     
-    public boolean isAnimationComplete() {
-    	return animationProgress >= 1.0;
+    public boolean estAnimationTerminee() {
+	    	return calculerProgressionAnimationActuelle() >= 1.0;
     }
     
     public abstract boolean isPluie();

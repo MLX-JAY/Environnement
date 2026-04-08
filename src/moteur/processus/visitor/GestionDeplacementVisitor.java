@@ -1,11 +1,11 @@
 package moteur.processus.visitor;
 
+import config.ConfigurationCreationEvenement;
+import config.ConfigurationDirection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import config.ConfigurationDirection;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Montagne;
 import moteur.donne.carte.Bloc;
@@ -71,13 +71,21 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
     public void visit(Purification purification) {
         deplacerEvenementMobile(purification);
     }
+
+    private boolean doitSeTerminer(Evenement evenement) {
+        if (evenement.getDureeRestante() > 0) {
+            return false;
+        }
+
+        return random.nextInt(ConfigurationCreationEvenement.CHANCE_TERMINAISON_APRES_DUREE_MINIMALE) == 0;
+    }
     
     private void deplacerEvenementMobile(Evenement evenement) {
-        if (!evenement.isAnimationComplete()) {
+        if (!evenement.estAnimationTerminee()) {
             return;
         }
         
-        if (evenement.getDureeRestante() == 0) {
+        if (doitSeTerminer(evenement)) {
             evenementsExpirés.add(evenement);
             return;
         }
@@ -112,14 +120,16 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
             return;
         }
         
-        evenement.setTargetPosition(nouvellePosition);
-        evenement.setDureeRestante(evenement.getDureeRestante() - 1);
+        evenement.definirPositionCible(nouvellePosition);
+        if (evenement.getDureeRestante() > 0) {
+            evenement.setDureeRestante(evenement.getDureeRestante() - 1);
+        }
     }
     
     private void traiterEvenementStatique(Evenement evenement) {
         if (evenement.getDureeRestante() > 0) {
             evenement.setDureeRestante(evenement.getDureeRestante() - 1);
-        } else {
+        } else if (doitSeTerminer(evenement)) {
             evenementsExpirés.add(evenement);
         }
     }
