@@ -14,7 +14,7 @@ public class Banquise extends Biome
 	}
 
 	@Override
-	public Evenement accept(BiomeVisitor visitor) {
+	public <T> T accept(BiomeVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
 

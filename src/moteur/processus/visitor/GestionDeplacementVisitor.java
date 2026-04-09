@@ -11,17 +11,23 @@ import moteur.donne.biome.Montagne;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
-import moteur.donne.evenement.mobile.GroupePluie;
-import moteur.donne.evenement.mobile.GroupePluieAcide;
+import moteur.donne.evenement.mobile.Grele;
+import moteur.donne.evenement.mobile.NuageToxique;
+import moteur.donne.evenement.mobile.Orage;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.PluieAcide;
+import moteur.donne.evenement.mobile.PluieBenite;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.Smog;
+import moteur.donne.evenement.mobile.Tonnerre;
+import moteur.donne.evenement.mobile.Tornade;
 import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.mobile.Zephyr;
 import moteur.donne.evenement.statique.Meteore;
 
-public class GestionDeplacementVisitor implements EvenementVisitor {
+public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
     
     private final Carte carte;
     private final Map<Bloc, Biome> biomeMap;
@@ -38,38 +44,93 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
     }
     
     @Override
-    public void visit(Pluie pluie) {
+    public Void visit(Pluie pluie) {
         deplacerEvenementMobile(pluie);
+        return null;
     }
     
     @Override
-    public void visit(PluieAcide pluieAcide) {
+    public Void visit(PluieAcide pluieAcide) {
         deplacerEvenementMobile(pluieAcide);
+        return null;
     }
     
     @Override
-    public void visit(Pollution pollution) {
+    public Void visit(Pollution pollution) {
         deplacerEvenementMobile(pollution);
+        return null;
     }
     
     @Override
-    public void visit(VentChaud ventChaud) {
+    public Void visit(VentChaud ventChaud) {
         deplacerEvenementMobile(ventChaud);
+        return null;
     }
     
     @Override
-    public void visit(VentFroid ventFroid) {
+    public Void visit(VentFroid ventFroid) {
         deplacerEvenementMobile(ventFroid);
+        return null;
     }
     
     @Override
-    public void visit(Meteore meteore) {
+    public Void visit(Meteore meteore) {
         traiterEvenementStatique(meteore);
+        return null;
     }
     
     @Override
-    public void visit(Purification purification) {
+    public Void visit(Purification purification) {
         deplacerEvenementMobile(purification);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Orage orage) {
+        deplacerEvenementMobile(orage);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Grele grele) {
+        deplacerEvenementMobile(grele);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Tornade tornade) {
+        deplacerEvenementMobile(tornade);
+        return null;
+    }
+    
+    @Override
+    public Void visit(PluieBenite pluieBenite) {
+        deplacerEvenementMobile(pluieBenite);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Zephyr zephyr) {
+        deplacerEvenementMobile(zephyr);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Tonnerre tonnerre) {
+        deplacerEvenementMobile(tonnerre);
+        return null;
+    }
+    
+    @Override
+    public Void visit(Smog smog) {
+        deplacerEvenementMobile(smog);
+        return null;
+    }
+    
+    @Override
+    public Void visit(NuageToxique nuageToxique) {
+        deplacerEvenementMobile(nuageToxique);
+        return null;
     }
 
     private boolean doitSeTerminer(Evenement evenement) {
@@ -92,29 +153,61 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
         
         Bloc position = evenement.getPosition();
         Bloc nouvellePosition = null;
+        int dx, dy;
         
-        for (int i = 0; i < ConfigurationDirection.DIRECTIONS.length; i++) {
+        // Utiliser la direction existante si elle existe, sinon aléatoire
+        if (evenement.getDirectionX() != 0 || evenement.getDirectionY() != 0) {
+            dx = evenement.getDirectionX();
+            dy = evenement.getDirectionY();
+        } else {
             int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
-            int dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
-            int dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
-            
-            int nouvelleX = position.getX() + dx;
-            int nouvelleY = position.getY() + dy;
+            dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            evenement.setDirection(dx, dy);
+        }
+        
+        int nouvelleX = position.getX() + dx;
+        int nouvelleY = position.getY() + dy;
+        
+        if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
+            // Si hors carte, changer de direction
+            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
+            dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            nouvelleX = position.getX() + dx;
+            nouvelleY = position.getY() + dy;
             
             if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-                continue;
+                return;
+            }
+        }
+        
+        Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
+        Biome biomeDestination = biomeMap.get(candidate);
+        
+        if (biomeDestination instanceof Montagne) {
+            // Si montagne, changer de direction
+            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
+            dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            evenement.setDirection(dx, dy);
+            
+            nouvelleX = position.getX() + dx;
+            nouvelleY = position.getY() + dy;
+            
+            if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
+                return;
             }
             
-            Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
-            Biome biomeDestination = biomeMap.get(candidate);
+            candidate = carte.getBloc(nouvelleX, nouvelleY);
+            biomeDestination = biomeMap.get(candidate);
             
             if (biomeDestination instanceof Montagne) {
-                continue;
+                return;
             }
-            
-            nouvellePosition = candidate;
-            break;
         }
+        
+        nouvellePosition = candidate;
         
         if (nouvellePosition == null) {
             return;
@@ -131,92 +224,6 @@ public class GestionDeplacementVisitor implements EvenementVisitor {
             evenement.setDureeRestante(evenement.getDureeRestante() - 1);
         } else if (doitSeTerminer(evenement)) {
             evenementsExpirés.add(evenement);
-        }
-    }
-    
-    @Override
-    public void visit(GroupePluie groupePluie) {
-        deplacerGroupe(groupePluie);
-    }
-    
-    @Override
-    public void visit(GroupePluieAcide groupePluieAcide) {
-        deplacerGroupe(groupePluieAcide);
-    }
-    
-    private void deplacerGroupe(Evenement groupe) {
-        if (!groupe.isAnimationComplete()) {
-            return;
-        }
-        
-        if (groupe.getDureeRestante() == 0) {
-            evenementsExpirés.add(groupe);
-            return;
-        }
-        
-        List<Evenement> unites = new ArrayList<>();
-        if (groupe instanceof GroupePluie) {
-            unites = new ArrayList<>(((GroupePluie) groupe).getPluieUnitaires());
-        } else if (groupe instanceof GroupePluieAcide) {
-            unites = new ArrayList<>(((GroupePluieAcide) groupe).getPluieAcideUnitaires());
-        }
-        
-        Bloc positionPrincipale = groupe.getPosition();
-        boolean deplacementReussi = false;
-        
-        for (int attempt = 0; attempt < ConfigurationDirection.DIRECTIONS.length; attempt++) {
-            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
-            int dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
-            int dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
-            
-            boolean directionValide = true;
-            boolean mortCollective = false;
-            
-            for (Evenement unite : unites) {
-                Bloc posUnite = unite.getPosition();
-                int nouvelleX = posUnite.getX() + dx;
-                int nouvelleY = posUnite.getY() + dy;
-                
-                if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-                    mortCollective = true;
-                    directionValide = false;
-                    break;
-                }
-                
-                Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
-                Biome biomeDestination = biomeMap.get(candidate);
-                
-                if (biomeDestination instanceof Montagne) {
-                    directionValide = false;
-                    break;
-                }
-            }
-            
-            if (mortCollective) {
-                evenementsExpirés.add(groupe);
-                return;
-            }
-            
-            if (directionValide) {
-                for (Evenement unite : unites) {
-                    Bloc posUnite = unite.getPosition();
-                    int nouvelleX = posUnite.getX() + dx;
-                    int nouvelleY = posUnite.getY() + dy;
-                    Bloc nouvellePosition = carte.getBloc(nouvelleX, nouvelleY);
-                    unite.setTargetPosition(nouvellePosition);
-                }
-                
-                int nouvelleXPrincipale = positionPrincipale.getX() + dx;
-                int nouvelleYPrincipale = positionPrincipale.getY() + dy;
-                groupe.setTargetPosition(carte.getBloc(nouvelleXPrincipale, nouvelleYPrincipale));
-                
-                deplacementReussi = true;
-                break;
-            }
-        }
-        
-        if (deplacementReussi) {
-            groupe.setDureeRestante(groupe.getDureeRestante() - 1);
         }
     }
     

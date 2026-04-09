@@ -179,5 +179,5 @@ public abstract class Evenement
     public abstract boolean isPluie();
     public abstract boolean isPluieAcide();
     
-    public abstract void accept(EvenementVisitor visitor);
+    public abstract <T> T accept(EvenementVisitor<T> visitor);
 }

@@ -13,8 +13,8 @@ public class Pollution extends Evenement
 	}
 
 	@Override
-	public void accept(EvenementVisitor visitor) {
-		visitor.visit(this);
+	public <T> T accept(EvenementVisitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 	@Override

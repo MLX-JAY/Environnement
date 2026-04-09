@@ -54,7 +54,7 @@ public class ManageurBasique implements Manageur
 	{
 		this.carte = carte;
 		this.factory = new EvenementFactory(carte);
-		this.generateurEvenementVisitor = new GenerateurEvenementVisitor();
+		this.generateurEvenementVisitor = new GenerateurEvenementVisitor(factory);
 		
 		this.reglesTransformation.add(new moteur.processus.regle.RegleInondation());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleDesertification());
@@ -64,8 +64,6 @@ public class ManageurBasique implements Manageur
 		this.reglesTransformation.add(new moteur.processus.regle.RegleCivilisation());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleErosion());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleDensification());
-		
-		this.reglesTransformationEvenement.add(new moteur.processus.regle.ReglePluieEnAcide());
 	}
 	
 	@Override
@@ -119,20 +117,16 @@ public class ManageurBasique implements Manageur
 			}
 		}
 	}
-
+	
 	private boolean peutAjouterEvenement() {
 		return evenements.size() < ConfigurationCreationEvenement.MAX_EVENEMENTS_SIMULTANES;
 	}
-
+	
 	private void ajouterEvenementAvecContraintes(Evenement evenement) {
 		if (evenement == null || !peutAjouterEvenement()) {
 			return;
 		}
 
-		evenement.setDureeRestante(Math.max(
-			evenement.getDureeRestante(),
-			ConfigurationCreationEvenement.DUREE_MINIMALE_EVENEMENT
-		));
 		evenements.add(evenement);
 	}
 	
@@ -140,19 +134,31 @@ public class ManageurBasique implements Manageur
 	@Override
 	public void ajouterEvenement()
 	{
-		for (int i = 0; i < ConfigurationCreationEvenement.NB_EVENEMENTS_ALEATOIRES_PAR_ROUND && peutAjouterEvenement(); i++) {
+		for (int i = 0; i < 3 && peutAjouterEvenement(); i++) {
 			Evenement evenement = factory.creerEvenementAleatoire();
 			ajouterEvenementAvecContraintes(evenement);
 		}
 	}
 	
 	public void genererEvenementsDepuisBiomes() {
+		if (!peutAjouterEvenement()) {
+			return;
+		}
+		
 		for (Biome biome : biomeMap.values()) {
 			if (!peutAjouterEvenement()) {
 				break;
 			}
-			Evenement e = biome.accept(generateurEvenementVisitor);
-			ajouterEvenementAvecContraintes(e);
+			
+			List<Evenement> nouveauxEvenements = generateurEvenementVisitor.genererTousEvenements(biome);
+			
+			if (nouveauxEvenements != null) {
+				for (Evenement e : nouveauxEvenements) {
+					if (e != null && peutAjouterEvenement()) {
+						evenements.add(e);
+					}
+				}
+			}
 		}
 	}
 	

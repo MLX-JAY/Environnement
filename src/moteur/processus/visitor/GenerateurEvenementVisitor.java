@@ -1,10 +1,13 @@
 package moteur.processus.visitor;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 import config.ConfigurationCreationEvenement;
 import config.ConfigurationEvenement;
 import moteur.donne.biome.Banquise;
+import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
@@ -13,60 +16,92 @@ import moteur.donne.biome.Ville;
 import moteur.donne.biome.Village;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
-import moteur.donne.evenement.mobile.GroupePluie;
-import moteur.donne.evenement.mobile.Pollution;
-import moteur.donne.evenement.mobile.Purification;
-import moteur.donne.evenement.mobile.VentChaud;
-import moteur.donne.evenement.mobile.VentFroid;
+import moteur.processus.usine.EvenementFactory;
 
-public class GenerateurEvenementVisitor implements BiomeVisitor {
+public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
     
     private final Random random = new Random();
+    private final EvenementFactory factory;
+    
+    public GenerateurEvenementVisitor(EvenementFactory factory) {
+        this.factory = factory;
+    }
     
     @Override
     public Evenement visit(Foret foret) {
+        // Purification
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET) {
             Bloc position = foret.getPosition();
-            return new Purification(
-                position,
-                ConfigurationEvenement.PURIFICATION_DUREE,
-                ConfigurationEvenement.PURIFICATION_IMPACT_TEMPERATURE,
-                ConfigurationEvenement.PURIFICATION_IMPACT_HUMIDITE,
-                ConfigurationEvenement.PURIFICATION_IMPACT_POLLUTION,
-                ConfigurationEvenement.PURIFICATION_IMPACT_PURIFICATION
-            );
+            List<Evenement> liste = factory.creerPurificationMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Pluie Bénite
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUIEBENITE_PAR_FORET) {
+            Bloc position = foret.getPosition();
+            List<Evenement> liste = factory.creerPluieBeniteMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
         }
         return null;
     }
     
     @Override
     public Evenement visit(Desert desert) {
+        // Vent Chaud
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT) {
             Bloc position = desert.getPosition();
-            return new VentChaud(
-                position,
-                ConfigurationEvenement.VENT_CHAUD_DUREE,
-                ConfigurationEvenement.VENTFROID_IMPACT_TEMPERATURE,
-                ConfigurationEvenement.VENTFROID_IMPACT_HUMIDITE,
-                ConfigurationEvenement.VENTFROID_IMPACT_POLLUTION,
-                ConfigurationEvenement.VENTFROID_IMPACT_PURIFICATION
-            );
+            List<Evenement> liste = factory.creerVentChaudMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Zephyr
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT) {
+            Bloc position = desert.getPosition();
+            List<Evenement> liste = factory.creerZephyrMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Tornade
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT) {
+            Bloc position = desert.getPosition();
+            List<Evenement> liste = factory.creerTornadeMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
         }
         return null;
     }
     
     @Override
     public Evenement visit(Mer mer) {
+        // Pluie
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER) {
             Bloc position = mer.getPosition();
-            return new GroupePluie(
-                position,
-                ConfigurationEvenement.PLUIE_IMPACT_DUREE,
-                ConfigurationEvenement.PLUIE_IMPACT_TEMPERATURE,
-                ConfigurationEvenement.PLUIE_IMPACT_HUMIDITE,
-                ConfigurationEvenement.PLUIE_IMPACT_POLLUTION,
-                ConfigurationEvenement.PLUIE_IMPACT_PURIFICATION
-            );
+            List<Evenement> liste = factory.creerPluieMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Orage
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER) {
+            Bloc position = mer.getPosition();
+            List<Evenement> liste = factory.creerOrageMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Tonnerre
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER) {
+            Bloc position = mer.getPosition();
+            List<Evenement> liste = factory.creerTonnerreMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
         }
         return null;
     }
@@ -78,39 +113,128 @@ public class GenerateurEvenementVisitor implements BiomeVisitor {
     
     @Override
     public Evenement visit(Ville ville) {
+        // Pollution
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE) {
             Bloc position = ville.getPosition();
-            return new Pollution(
-                position,
-                ConfigurationEvenement.POLLUTION_IMPACT_DUREE,
-                ConfigurationEvenement.POLLUTION_IMPACT_TEMPERATURE,
-                ConfigurationEvenement.POLLUTION_IMPACT_HUMIDITE,
-                ConfigurationEvenement.POLLUTION_IMPACT_POLLUTION,
-                ConfigurationEvenement.POLLUTION_IMPACT_PURIFICATION
-            );
+            List<Evenement> liste = factory.creerPollutionMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Smog
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE) {
+            Bloc position = ville.getPosition();
+            List<Evenement> liste = factory.creerSmogMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Nuage Toxique
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE) {
+            Bloc position = ville.getPosition();
+            List<Evenement> liste = factory.creerNuageToxiqueMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
         }
         return null;
     }
     
     @Override
     public Evenement visit(Village village) {
+        // Pollution
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE) {
+            Bloc position = village.getPosition();
+            List<Evenement> liste = factory.creerPollutionMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
         return null;
     }
     
     @Override
     public Evenement visit(Banquise banquise) {
+        // Vent Froid
         if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE) {
             Bloc position = banquise.getPosition();
-            return new VentFroid(
-                position,
-                ConfigurationEvenement.VENT_FROID_DUREE,
-                ConfigurationEvenement.VENTFROID_IMPACT_TEMPERATURE,
-                ConfigurationEvenement.VENTFROID_IMPACT_HUMIDITE,
-                ConfigurationEvenement.VENTFROID_IMPACT_POLLUTION,
-                ConfigurationEvenement.VENTFROID_IMPACT_PURIFICATION
-            );
+            List<Evenement> liste = factory.creerVentFroidMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
+        }
+        // Grèle
+        if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE) {
+            Bloc position = banquise.getPosition();
+            List<Evenement> liste = factory.creerGreleMultiple(position);
+            if (liste != null && !liste.isEmpty()) {
+                return liste.get(0);
+            }
         }
         return null;
+    }
+    
+    public List<Evenement> genererTousEvenements(Biome biome) {
+        List<Evenement> resultats = new ArrayList<>();
+        
+        if (biome instanceof Foret foret) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET) {
+                List<Evenement> liste = factory.creerPurificationMultiple(foret.getPosition());
+                resultats.addAll(liste);
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUIEBENITE_PAR_FORET) {
+                List<Evenement> liste = factory.creerPluieBeniteMultiple(foret.getPosition());
+                resultats.addAll(liste);
+            }
+        }
+        else if (biome instanceof Desert desert) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT) {
+                resultats.addAll(factory.creerVentChaudMultiple(desert.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT) {
+                resultats.addAll(factory.creerZephyrMultiple(desert.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT) {
+                resultats.addAll(factory.creerTornadeMultiple(desert.getPosition()));
+            }
+        }
+        else if (biome instanceof Mer mer) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER) {
+                resultats.addAll(factory.creerPluieMultiple(mer.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER) {
+                resultats.addAll(factory.creerOrageMultiple(mer.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER) {
+                resultats.addAll(factory.creerTonnerreMultiple(mer.getPosition()));
+            }
+        }
+        else if (biome instanceof Ville ville) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE) {
+                resultats.addAll(factory.creerPollutionMultiple(ville.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE) {
+                resultats.addAll(factory.creerSmogMultiple(ville.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE) {
+                resultats.addAll(factory.creerNuageToxiqueMultiple(ville.getPosition()));
+            }
+        }
+        else if (biome instanceof Village village) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE) {
+                resultats.addAll(factory.creerPollutionMultiple(village.getPosition()));
+            }
+        }
+        else if (biome instanceof Banquise banquise) {
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE) {
+                resultats.addAll(factory.creerVentFroidMultiple(banquise.getPosition()));
+            }
+            if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE) {
+                resultats.addAll(factory.creerGreleMultiple(banquise.getPosition()));
+            }
+        }
+        
+        return resultats;
     }
     
 }

@@ -21,6 +21,14 @@ import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.mobile.Orage;
+import moteur.donne.evenement.mobile.Grele;
+import moteur.donne.evenement.mobile.Tornade;
+import moteur.donne.evenement.mobile.PluieBenite;
+import moteur.donne.evenement.mobile.Zephyr;
+import moteur.donne.evenement.mobile.Tonnerre;
+import moteur.donne.evenement.mobile.Smog;
+import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.statique.Meteore;
 
 public class StrategiePeinture 
@@ -28,6 +36,7 @@ public class StrategiePeinture
     private Image flocon = new ImageIcon(getClass().getResource("/image/flocon.png")).getImage();
     private Image danger = new ImageIcon(getClass().getResource("/image/danger.png")).getImage();
     private Image meteore = new ImageIcon(getClass().getResource("/image/meteore.png")).getImage(); 
+    private Random rand = new Random(); 
 
     private void dessinerNuage(Graphics2D g2, int x, int y, int size) {
         g2.setColor(new Color(210, 220, 228, 220));
@@ -342,6 +351,181 @@ public class StrategiePeinture
         graphics.drawImage(this.meteore, x, y, size, size, null);
     }
     
+    public void paint(Orage orage, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (orage.getPositionAnimationX() * size);
+        int y = (int) (orage.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(50, 50, 80, 60));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(255, 255, 200, 180));
+        g2.fillOval(x + size/4, y + size/4, size/2, size/2);
+        
+        g2.setColor(new Color(100, 100, 150, 150));
+        for (int i = 0; i < 5; i++) {
+            int lightningX = x + rand.nextInt(size);
+            int startY = y + size/4;
+            int endY = y + size;
+            g2.setStroke(new BasicStroke(2));
+            g2.drawLine(lightningX, startY, lightningX - 5, startY + 10);
+            g2.drawLine(lightningX - 5, startY + 10, lightningX + 3, startY + 20);
+            g2.drawLine(lightningX + 3, startY + 20, lightningX - 2, endY);
+        }
+        
+        dessinerNuage(g2, x, y, size);
+        g2.dispose();
+    }
+    
+    public void paint(Grele grele, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (grele.getPositionAnimationX() * size);
+        int y = (int) (grele.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(200, 200, 255, 50));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(Color.WHITE);
+        Random rand = new Random((int)grele.getPositionAnimationX() + (int)grele.getPositionAnimationY());
+        for (int i = 0; i < 12; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            g2.fillOval(gx, gy, 4, 4);
+        }
+        
+        dessinerNuage(g2, x, y, size);
+        g2.dispose();
+    }
+    
+    public void paint(Tornade tornade, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (tornade.getPositionAnimationX() * size);
+        int y = (int) (tornade.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(80, 80, 90, 50));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(150, 150, 160, 200));
+        int centerX = x + size/2;
+        int centerY = y + size/2;
+        
+        for (int i = 0; i < 4; i++) {
+            int offset = 8 * (i + 1);
+            g2.drawArc(centerX - offset, centerY - offset/2, offset*2, offset, 0, 180);
+        }
+        
+        g2.setColor(new Color(200, 200, 210, 150));
+        g2.fillOval(x + size/4, y + size/4, size/2, size/3);
+        
+        g2.dispose();
+    }
+    
+    public void paint(PluieBenite pluieBenite, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (pluieBenite.getPositionAnimationX() * size);
+        int y = (int) (pluieBenite.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(100, 200, 255, 40));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(200, 255, 255, 180));
+        Random rand = new Random((int)pluieBenite.getPositionAnimationX() + (int)pluieBenite.getPositionAnimationY());
+        for (int i = 0; i < 8; i++) {
+            int gx = x + rand.nextInt(size);
+            int gy = y + rand.nextInt(size);
+            g2.drawLine(gx, gy, gx - 2, gy + 8);
+        }
+        
+        g2.setColor(new Color(255, 215, 0, 100));
+        g2.fillOval(x + size/3, y + size/3, size/3, size/3);
+        
+        dessinerNuage(g2, x, y, size);
+        g2.dispose();
+    }
+    
+    public void paint(Zephyr zephyr, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (zephyr.getPositionAnimationX() * size);
+        int y = (int) (zephyr.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(200, 255, 200, 30));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setStroke(new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2.setColor(new Color(200, 255, 200, 150));
+        
+        int baseY = y + size/2;
+        g2.drawLine(x + size/6, baseY, x + (size*5)/6, baseY);
+        g2.drawArc(x + size/10, y + size/4, size/4, size/3, 270, 180);
+        g2.drawArc(x + size/2, y + size/4, size/4, size/3, 270, 180);
+        
+        g2.dispose();
+    }
+    
+    public void paint(Tonnerre tonnerre, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (tonnerre.getPositionAnimationX() * size);
+        int y = (int) (tonnerre.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(30, 30, 60, 70));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(255, 255, 220, 200));
+        g2.fillOval(x + size/4, y + size/4, size/2, size/2);
+        
+        g2.setColor(new Color(255, 255, 100, 180));
+        int startX = x + size/3;
+        int startY = y + size/2;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(startX, startY, startX - 8, startY + 15);
+        g2.drawLine(startX - 8, startY + 15, startX + 5, startY + 25);
+        g2.drawLine(startX + 5, startY + 25, startX - 3, startY + size);
+        
+        g2.dispose();
+    }
+    
+    public void paint(Smog smog, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (smog.getPositionAnimationX() * size);
+        int y = (int) (smog.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(100, 80, 60, 80));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(120, 100, 80, 120));
+        g2.fillOval(x + size/8, y + size/4, size/2, size/2);
+        g2.fillOval(x + size/3, y + size/6, size/2, size/2);
+        g2.fillOval(x + size/2, y + size/3, size/3, size/3);
+        
+        g2.dispose();
+    }
+    
+    public void paint(NuageToxique nuageToxique, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (nuageToxique.getPositionAnimationX() * size);
+        int y = (int) (nuageToxique.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        
+        g2.setColor(new Color(80, 120, 40, 70));
+        g2.fillRect(x, y, size, size);
+        
+        g2.setColor(new Color(100, 150, 50, 150));
+        g2.fillOval(x + size/8, y + size/4, size/2, size/2);
+        g2.fillOval(x + size/3, y + size/6, size/2, size/2);
+        g2.fillOval(x + size/2, y + size/3, size/3, size/3);
+        
+        g2.setColor(new Color(200, 255, 100, 80));
+        g2.drawArc(x + size/4, y + size/2, size/2, size/4, 0, 180);
+        
+        g2.dispose();
+    }
     
     public void paintDangerZone(Evenement e, Graphics graphics) 
     {    

@@ -41,7 +41,7 @@ public class ConfigurationTransformation {
     public static final double CIVILISATION_POLLUTION_MAX = 10.0;
     public static final double CIVILISATION_PURIFICATION_MIN = 30.0;
 
-    public static final double DESERTIFICATION_TEMP_MIN = 80.0;
+    public static final double DESERTIFICATION_TEMP_MIN = 50.0;
     public static final double DESERTIFICATION_HUMIDITE_MIN = 10.0;
     public static final double DESERTIFICATION_HUMIDITE_MIN_2 = 90.0;
     public static final double DESERTIFICATION_POLLUTION_MAX = 10.0;

@@ -16,13 +16,19 @@ import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
-import moteur.donne.evenement.mobile.GroupePluie;
-import moteur.donne.evenement.mobile.GroupePluieAcide;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
 import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
+import moteur.donne.evenement.mobile.Orage;
+import moteur.donne.evenement.mobile.Grele;
+import moteur.donne.evenement.mobile.Tornade;
+import moteur.donne.evenement.mobile.PluieBenite;
+import moteur.donne.evenement.mobile.Zephyr;
+import moteur.donne.evenement.mobile.Tonnerre;
+import moteur.donne.evenement.mobile.Smog;
+import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
 
@@ -145,6 +151,30 @@ public class MainDisplayer extends JPanel
 		}
 		if (evenement instanceof Purification purification) {
 			stratDePeinture.paint(purification, g);
+		}
+		if (evenement instanceof Orage orage) {
+			stratDePeinture.paint(orage, g);
+		}
+		if (evenement instanceof Grele grele) {
+			stratDePeinture.paint(grele, g);
+		}
+		if (evenement instanceof Tornade tornade) {
+			stratDePeinture.paint(tornade, g);
+		}
+		if (evenement instanceof PluieBenite pluieBenite) {
+			stratDePeinture.paint(pluieBenite, g);
+		}
+		if (evenement instanceof Zephyr zephyr) {
+			stratDePeinture.paint(zephyr, g);
+		}
+		if (evenement instanceof Tonnerre tonnerre) {
+			stratDePeinture.paint(tonnerre, g);
+		}
+		if (evenement instanceof Smog smog) {
+			stratDePeinture.paint(smog, g);
+		}
+		if (evenement instanceof NuageToxique nuageToxique) {
+			stratDePeinture.paint(nuageToxique, g);
 		}
 	}
 

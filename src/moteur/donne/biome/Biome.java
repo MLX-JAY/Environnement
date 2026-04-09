@@ -87,7 +87,7 @@ public abstract class Biome
         this.position = position;
     }
     
-    public abstract Evenement accept(BiomeVisitor visitor);
+    public abstract <T> T accept(BiomeVisitor<T> visitor);
 	
 	
 }

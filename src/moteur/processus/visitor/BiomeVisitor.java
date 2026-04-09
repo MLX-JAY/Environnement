@@ -7,22 +7,21 @@ import moteur.donne.biome.Mer;
 import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Ville;
 import moteur.donne.biome.Village;
-import moteur.donne.evenement.Evenement;
 
-public interface BiomeVisitor {
+public interface BiomeVisitor<T> {
     
-    Evenement visit(Foret foret);
+    T visit(Foret foret);
     
-    Evenement visit(Desert desert);
+    T visit(Desert desert);
     
-    Evenement visit(Mer mer);
+    T visit(Mer mer);
     
-    Evenement visit(Montagne montagne);
+    T visit(Montagne montagne);
     
-    Evenement visit(Ville ville);
+    T visit(Ville ville);
     
-    Evenement visit(Village village);
+    T visit(Village village);
     
-    Evenement visit(Banquise banquise);
+    T visit(Banquise banquise);
     
 }
