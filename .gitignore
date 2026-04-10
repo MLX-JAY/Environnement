@@ -1,1 +1,11 @@
 /bin/
+# Ignorer tous les fichiers compilés
+*.class
+
+# Ignorer les dossiers de build courants
+bin/
+target/
+build/
+
+# Ignorer les fichiers de configuration VS Code (optionnel)
+.vscode/
