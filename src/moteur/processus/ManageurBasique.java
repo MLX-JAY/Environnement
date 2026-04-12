@@ -11,7 +11,6 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.regle.RegleTransformation;
-import moteur.processus.regle.RegleTransformationEvenement;
 import moteur.processus.usine.EvenementFactory;
 import moteur.processus.visitor.GenerateurEvenementVisitor;
 import moteur.processus.visitor.GestionDeplacementVisitor;
@@ -23,7 +22,6 @@ public class ManageurBasique implements Manageur
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements = new ArrayList<>();
 	private List<RegleTransformation> reglesTransformation = new ArrayList<>();
-	private List<RegleTransformationEvenement> reglesTransformationEvenement = new ArrayList<>();
 	private EvenementFactory factory;
 	private GenerateurEvenementVisitor generateurEvenementVisitor;
 	
@@ -287,17 +285,6 @@ public class ManageurBasique implements Manageur
 					if (nouveauBiome != null)
 					{
 						biomeMap.put(biome.getPosition(), nouveauBiome);
-						break;
-					}
-				}
-				
-				// Vérifier les règles de transformation d'événement
-				for (RegleTransformationEvenement regle : reglesTransformationEvenement)
-				{
-					Evenement nouvelEvenement = regle.evaluer(evenement, biome);
-					if (nouvelEvenement != null)
-					{
-						evenements.set(i, nouvelEvenement);
 						break;
 					}
 				}

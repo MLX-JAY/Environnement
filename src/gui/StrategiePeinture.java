@@ -291,9 +291,14 @@ public class StrategiePeinture
 		int y = (int) (pollution.getPositionAnimationY() * size);
 		Graphics2D g2 = (Graphics2D) graphics.create();
 
-		g2.setColor(new Color(45, 20, 20, 55));
+		g2.setColor(new Color(50, 30, 20, 90));
 		g2.fillRect(x, y, size, size);
 		dessinerPollution(g2, x, y, size);
+		
+		g2.setColor(new Color(30, 20, 10, 150));
+		g2.setStroke(new BasicStroke(2f));
+		g2.drawRoundRect(x + 2, y + 2, size - 4, size - 4, 5, 5);
+		
 		g2.dispose();
 	}
 
@@ -429,19 +434,26 @@ public class StrategiePeinture
         int y = (int) (pluieBenite.getPositionAnimationY() * size);
         Graphics2D g2 = (Graphics2D) graphics.create();
         
-        g2.setColor(new Color(100, 200, 255, 40));
+        g2.setColor(new Color(100, 200, 255, 60));
         g2.fillRect(x, y, size, size);
         
-        g2.setColor(new Color(200, 255, 255, 180));
+        g2.setColor(new Color(200, 255, 255, 200));
         Random rand = new Random((int)pluieBenite.getPositionAnimationX() + (int)pluieBenite.getPositionAnimationY());
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 10; i++) {
             int gx = x + rand.nextInt(size);
             int gy = y + rand.nextInt(size);
             g2.drawLine(gx, gy, gx - 2, gy + 8);
         }
         
-        g2.setColor(new Color(255, 215, 0, 100));
-        g2.fillOval(x + size/3, y + size/3, size/3, size/3);
+        g2.setColor(new Color(255, 215, 0, 150));
+        g2.fillOval(x + size/4, y + size/4, size/2, size/2);
+        
+        g2.setColor(new Color(255, 255, 200, 80));
+        g2.setStroke(new BasicStroke(2.5f));
+        g2.drawOval(x + size/6, y + size/6, size*2/3, size*2/3);
+        
+        g2.setColor(new Color(255, 255, 150, 40));
+        g2.drawOval(x + size/8, y + size/8, size*3/4, size*3/4);
         
         dessinerNuage(g2, x, y, size);
         g2.dispose();
@@ -453,16 +465,20 @@ public class StrategiePeinture
         int y = (int) (zephyr.getPositionAnimationY() * size);
         Graphics2D g2 = (Graphics2D) graphics.create();
         
-        g2.setColor(new Color(200, 255, 200, 30));
+        g2.setColor(new Color(180, 240, 180, 60));
         g2.fillRect(x, y, size, size);
         
-        g2.setStroke(new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2.setColor(new Color(200, 255, 200, 150));
+        g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2.setColor(new Color(150, 220, 150, 180));
         
         int baseY = y + size/2;
         g2.drawLine(x + size/6, baseY, x + (size*5)/6, baseY);
         g2.drawArc(x + size/10, y + size/4, size/4, size/3, 270, 180);
         g2.drawArc(x + size/2, y + size/4, size/4, size/3, 270, 180);
+        
+        g2.setStroke(new BasicStroke(1.5f));
+        g2.setColor(new Color(200, 255, 200, 120));
+        g2.drawLine(x + size/4, y + size/4, x + size/2, y + size/4 + 3);
         
         g2.dispose();
     }
@@ -473,19 +489,23 @@ public class StrategiePeinture
         int y = (int) (tonnerre.getPositionAnimationY() * size);
         Graphics2D g2 = (Graphics2D) graphics.create();
         
-        g2.setColor(new Color(30, 30, 60, 70));
+        g2.setColor(new Color(40, 40, 80, 100));
         g2.fillRect(x, y, size, size);
         
-        g2.setColor(new Color(255, 255, 220, 200));
+        g2.setColor(new Color(255, 255, 220, 230));
         g2.fillOval(x + size/4, y + size/4, size/2, size/2);
         
-        g2.setColor(new Color(255, 255, 100, 180));
+        g2.setColor(new Color(255, 255, 150, 220));
         int startX = x + size/3;
         int startY = y + size/2;
-        g2.setStroke(new BasicStroke(3));
-        g2.drawLine(startX, startY, startX - 8, startY + 15);
-        g2.drawLine(startX - 8, startY + 15, startX + 5, startY + 25);
-        g2.drawLine(startX + 5, startY + 25, startX - 3, startY + size);
+        g2.setStroke(new BasicStroke(4));
+        g2.drawLine(startX, startY, startX - 10, startY + 15);
+        g2.drawLine(startX - 10, startY + 15, startX + 6, startY + 28);
+        g2.drawLine(startX + 6, startY + 28, startX - 4, startY + size);
+        
+        g2.setColor(new Color(255, 255, 255, 100));
+        g2.setStroke(new BasicStroke(2));
+        g2.drawLine(startX - 8, startY + 10, startX + 4, startY + 20);
         
         g2.dispose();
     }
@@ -496,13 +516,25 @@ public class StrategiePeinture
         int y = (int) (smog.getPositionAnimationY() * size);
         Graphics2D g2 = (Graphics2D) graphics.create();
         
-        g2.setColor(new Color(100, 80, 60, 80));
+        g2.setColor(new Color(90, 70, 50, 120));
         g2.fillRect(x, y, size, size);
         
-        g2.setColor(new Color(120, 100, 80, 120));
+        g2.setColor(new Color(110, 90, 60, 180));
         g2.fillOval(x + size/8, y + size/4, size/2, size/2);
         g2.fillOval(x + size/3, y + size/6, size/2, size/2);
         g2.fillOval(x + size/2, y + size/3, size/3, size/3);
+        
+        g2.setColor(new Color(80, 60, 40, 200));
+        g2.setStroke(new BasicStroke(2f));
+        g2.drawRoundRect(x + 2, y + 2, size - 4, size - 4, 5, 5);
+        
+        Random randSmog = new Random((int)smog.getPositionAnimationX() * 7 + (int)smog.getPositionAnimationY());
+        g2.setColor(new Color(60, 50, 40, 100));
+        for (int i = 0; i < 4; i++) {
+            int px = x + randSmog.nextInt(size - 4);
+            int py = y + randSmog.nextInt(size - 4);
+            g2.fillOval(px, py, 3, 3);
+        }
         
         g2.dispose();
     }
@@ -513,16 +545,28 @@ public class StrategiePeinture
         int y = (int) (nuageToxique.getPositionAnimationY() * size);
         Graphics2D g2 = (Graphics2D) graphics.create();
         
-        g2.setColor(new Color(80, 120, 40, 70));
+        g2.setColor(new Color(100, 140, 30, 100));
         g2.fillRect(x, y, size, size);
         
-        g2.setColor(new Color(100, 150, 50, 150));
+        g2.setColor(new Color(140, 180, 40, 180));
         g2.fillOval(x + size/8, y + size/4, size/2, size/2);
         g2.fillOval(x + size/3, y + size/6, size/2, size/2);
         g2.fillOval(x + size/2, y + size/3, size/3, size/3);
         
-        g2.setColor(new Color(200, 255, 100, 80));
+        g2.setColor(new Color(180, 220, 60, 150));
         g2.drawArc(x + size/4, y + size/2, size/2, size/4, 0, 180);
+        
+        g2.setColor(new Color(200, 255, 0, 100));
+        g2.setStroke(new BasicStroke(2f));
+        g2.drawRoundRect(x + 2, y + 2, size - 4, size - 4, 5, 5);
+        
+        Random randTox = new Random((int)nuageToxique.getPositionAnimationX() * 13 + (int)nuageToxique.getPositionAnimationY());
+        g2.setColor(new Color(150, 200, 20, 120));
+        for (int i = 0; i < 5; i++) {
+            int px = x + randTox.nextInt(size - 4);
+            int py = y + randTox.nextInt(size - 4);
+            g2.fillOval(px, py, 4, 4);
+        }
         
         g2.dispose();
     }
