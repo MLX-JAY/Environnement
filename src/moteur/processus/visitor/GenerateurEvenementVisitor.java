@@ -177,7 +177,8 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
     public List<Evenement> genererTousEvenements(Biome biome) {
         List<Evenement> resultats = new ArrayList<>();
         
-        if (biome instanceof Foret foret) {
+        if (biome instanceof Foret) {
+            Foret foret = (Foret) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET) {
                 List<Evenement> liste = factory.creerPurificationMultiple(foret.getPosition());
                 resultats.addAll(liste);
@@ -187,7 +188,8 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
                 resultats.addAll(liste);
             }
         }
-        else if (biome instanceof Desert desert) {
+        else if (biome instanceof Desert) {
+            Desert desert = (Desert) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT) {
                 resultats.addAll(factory.creerVentChaudMultiple(desert.getPosition()));
             }
@@ -198,7 +200,8 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
                 resultats.addAll(factory.creerTornadeMultiple(desert.getPosition()));
             }
         }
-        else if (biome instanceof Mer mer) {
+        else if (biome instanceof Mer) {
+            Mer mer = (Mer) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER) {
                 resultats.addAll(factory.creerPluieMultiple(mer.getPosition()));
             }
@@ -209,7 +212,8 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
                 resultats.addAll(factory.creerTonnerreMultiple(mer.getPosition()));
             }
         }
-        else if (biome instanceof Ville ville) {
+        else if (biome instanceof Ville) {
+            Ville ville = (Ville) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE) {
                 resultats.addAll(factory.creerPollutionMultiple(ville.getPosition()));
             }
@@ -220,12 +224,14 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
                 resultats.addAll(factory.creerNuageToxiqueMultiple(ville.getPosition()));
             }
         }
-        else if (biome instanceof Village village) {
+        else if (biome instanceof Village) {
+            Village village = (Village) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE) {
                 resultats.addAll(factory.creerPollutionMultiple(village.getPosition()));
             }
         }
-        else if (biome instanceof Banquise banquise) {
+        else if (biome instanceof Banquise) {
+            Banquise banquise = (Banquise) biome;
             if (random.nextDouble() < ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE) {
                 resultats.addAll(factory.creerVentFroidMultiple(banquise.getPosition()));
             }

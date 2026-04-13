@@ -119,67 +119,68 @@ public class MainDisplayer extends JPanel
 	}
 
 	private void dessinerBiome(Graphics g, Biome biome) {
-		if (biome instanceof Foret foret) {
-			stratDePeinture.paint(foret, g);
+		if (biome instanceof Foret) {
+			stratDePeinture.paint((Foret) biome, g);
 		}
-		if (biome instanceof Desert desert) {
-			stratDePeinture.paint(desert, g);
+		if (biome instanceof Desert) {
+			stratDePeinture.paint((Desert) biome, g);
 		}
-		if (biome instanceof Mer mer) {
-			stratDePeinture.paint(mer, g);
+		if (biome instanceof Mer) {
+			stratDePeinture.paint((Mer) biome, g);
 		}
-		if (biome instanceof Village village) {
-			stratDePeinture.paint(village, g);
+		if (biome instanceof Village) {
+			stratDePeinture.paint((Village) biome, g);
 		}
-		if (biome instanceof Ville ville) {
-			stratDePeinture.paint(ville, g);
+		if (biome instanceof Ville) {
+			stratDePeinture.paint((Ville) biome, g);
 		}
 	}
 
 	private void dessinerEvenement(Graphics g, Evenement evenement) {
-		if (evenement instanceof Pluie pluie) {
-			stratDePeinture.paint(pluie, g);
+		if (evenement instanceof Pluie) {
+			stratDePeinture.paint((Pluie) evenement, g);
 		}
-		if (evenement instanceof VentFroid ventFroid) {
-			stratDePeinture.paint(ventFroid, g);
+		if (evenement instanceof VentFroid) {
+			stratDePeinture.paint((VentFroid) evenement, g);
 		}
-		if (evenement instanceof VentChaud ventChaud) {
-			stratDePeinture.paint(ventChaud, g);
+		if (evenement instanceof VentChaud) {
+			stratDePeinture.paint((VentChaud) evenement, g);
 		}
-		if (evenement instanceof Pollution pollution) {
-			stratDePeinture.paint(pollution, g);
+		if (evenement instanceof Pollution) {
+			stratDePeinture.paint((Pollution) evenement, g);
 		}
-		if (evenement instanceof Purification purification) {
-			stratDePeinture.paint(purification, g);
+		if (evenement instanceof Purification) {
+			stratDePeinture.paint((Purification) evenement, g);
 		}
-		if (evenement instanceof Orage orage) {
-			stratDePeinture.paint(orage, g);
+		if (evenement instanceof Orage) {
+			stratDePeinture.paint((Orage) evenement, g);
 		}
-		if (evenement instanceof Grele grele) {
-			stratDePeinture.paint(grele, g);
+		if (evenement instanceof Grele) {
+			stratDePeinture.paint((Grele) evenement, g);
 		}
-		if (evenement instanceof Tornade tornade) {
-			stratDePeinture.paint(tornade, g);
+		if (evenement instanceof Tornade) {
+			stratDePeinture.paint((Tornade) evenement, g);
 		}
-		if (evenement instanceof PluieBenite pluieBenite) {
-			stratDePeinture.paint(pluieBenite, g);
+		if (evenement instanceof PluieBenite) {
+			stratDePeinture.paint((PluieBenite) evenement, g);
 		}
-		if (evenement instanceof Zephyr zephyr) {
-			stratDePeinture.paint(zephyr, g);
+		if (evenement instanceof Zephyr) {
+			stratDePeinture.paint((Zephyr) evenement, g);
 		}
-		if (evenement instanceof Tonnerre tonnerre) {
-			stratDePeinture.paint(tonnerre, g);
+		if (evenement instanceof Tonnerre) {
+			stratDePeinture.paint((Tonnerre) evenement, g);
 		}
-		if (evenement instanceof Smog smog) {
-			stratDePeinture.paint(smog, g);
+		if (evenement instanceof Smog) {
+			stratDePeinture.paint((Smog) evenement, g);
 		}
-		if (evenement instanceof NuageToxique nuageToxique) {
-			stratDePeinture.paint(nuageToxique, g);
+		if (evenement instanceof NuageToxique) {
+			stratDePeinture.paint((NuageToxique) evenement, g);
 		}
 	}
 
 	private void dessinerDanger(Graphics g, Evenement danger) {
-		if (danger instanceof Meteore meteore) {
+		if (danger instanceof Meteore) {
+			Meteore meteore = (Meteore) danger;
 			if (danger.getDuree() > 10) {
 				if (danger.getDuree() % 2 == 0) {
 					stratDePeinture.paintDanger(danger, g);
