@@ -26,8 +26,12 @@ import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.mobile.Zephyr;
 import moteur.donne.evenement.statique.Meteore;
+import org.apache.log4j.Logger;
+import util.LoggerUtility;
 
 public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
+    
+    private static final Logger logger = LoggerUtility.getLogger(GestionDeplacementVisitor.class);
     
     private final Carte carte;
     private final Map<Bloc, Biome> biomeMap;
@@ -147,6 +151,8 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         }
         
         if (doitSeTerminer(evenement)) {
+            logger.debug("[Expire] " + evenement.getClass().getSimpleName() + " en (" + 
+                        evenement.getPosition().getX() + "," + evenement.getPosition().getY() + ")");
             evenementsExpirés.add(evenement);
             return;
         }
@@ -178,6 +184,8 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
             nouvelleY = position.getY() + dy;
             
             if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
+                logger.warn("[HorsCarte] " + evenement.getClass().getSimpleName() + " en (" + 
+                           position.getX() + "," + position.getY() + ")");
                 return;
             }
         }
@@ -203,6 +211,8 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
             biomeDestination = biomeMap.get(candidate);
             
             if (biomeDestination instanceof Montagne) {
+                logger.debug("[BloqueMontagne] " + evenement.getClass().getSimpleName() + " en (" + 
+                           position.getX() + "," + position.getY() + ")");
                 return;
             }
         }
@@ -212,6 +222,10 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         if (nouvellePosition == null) {
             return;
         }
+        
+        logger.debug("[Deplacement] " + evenement.getClass().getSimpleName() + " (" + 
+                    position.getX() + "," + position.getY() + ") -> (" + 
+                    nouvelleX + "," + nouvelleY + ")");
         
         evenement.definirPositionCible(nouvellePosition);
         if (evenement.getDureeRestante() > 0) {

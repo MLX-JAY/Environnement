@@ -3,9 +3,13 @@ package moteur.donne.biome;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
 import moteur.processus.visitor.BiomeVisitor;
+import org.apache.log4j.Logger;
+import util.LoggerUtility;
 
 public abstract class Biome 
 {
+	
+	private static final Logger logger = LoggerUtility.getLogger(Biome.class);
 	
 	private double temperature;
 	private double pollution;
@@ -64,19 +68,27 @@ public abstract class Biome
 
 
 	public void setTemperature(double temperature) {
+        double oldVal = this.temperature;
         this.temperature = Math.max(0, Math.min(100, temperature));
+        logger.debug("[Impact] Temperature en (" + position.getX() + "," + position.getY() + "): " + oldVal + " -> " + this.temperature);
     }
 
     public void setPollution(double pollution) {
+        double oldVal = this.pollution;
         this.pollution = Math.max(0, Math.min(100, pollution));
+        logger.debug("[Impact] Pollution en (" + position.getX() + "," + position.getY() + "): " + oldVal + " -> " + this.pollution);
     }
 
     public void setPurification(double purification) {
+        double oldVal = this.purification;
         this.purification = Math.max(0, Math.min(100, purification));
+        logger.debug("[Impact] Purification en (" + position.getX() + "," + position.getY() + "): " + oldVal + " -> " + this.purification);
     }
 
     public void setHumidite(double humidite) {
+        double oldVal = this.humidite;
         this.humidite = Math.max(0, Math.min(100, humidite));
+        logger.debug("[Impact] Humidite en (" + position.getX() + "," + position.getY() + "): " + oldVal + " -> " + this.humidite);
     }
 
     public void setEvolution(double evolution) {

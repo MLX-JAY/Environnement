@@ -14,9 +14,13 @@ import moteur.processus.regle.RegleTransformation;
 import moteur.processus.usine.EvenementFactory;
 import moteur.processus.visitor.GenerateurEvenementVisitor;
 import moteur.processus.visitor.GestionDeplacementVisitor;
+import org.apache.log4j.Logger;
+import util.LoggerUtility;
 
 public class ManageurBasique implements Manageur 
 {
+	
+	private static final Logger logger = LoggerUtility.getLogger(ManageurBasique.class);
 	
 	private Carte carte;
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
@@ -180,6 +184,9 @@ public class ManageurBasique implements Manageur
 	@Override
 	public void nextRound()
 	{
+		roundActuel++;
+		logger.info("=== Debut du round " + roundActuel + " ===");
+		
 		collecterStats();
 		
 		ajouterEvenement();
@@ -188,7 +195,7 @@ public class ManageurBasique implements Manageur
 		bougerEvementMobile();
 		transformation();
 		
-		roundActuel++;
+		logger.info("=== Fin du round " + roundActuel + ", evenements: " + evenements.size() + " ===");
 	}
 	
 	private void collecterStats() {

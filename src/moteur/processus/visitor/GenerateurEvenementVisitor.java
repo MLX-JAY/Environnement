@@ -17,8 +17,12 @@ import moteur.donne.biome.Village;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
 import moteur.processus.usine.EvenementFactory;
+import org.apache.log4j.Logger;
+import util.LoggerUtility;
 
 public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
+    
+    private static final Logger logger = LoggerUtility.getLogger(GenerateurEvenementVisitor.class);
     
     private final Random random = new Random();
     private final EvenementFactory factory;
