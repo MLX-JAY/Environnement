@@ -37,12 +37,12 @@ public class Carte
 		return blocs;
 	}
 	
-	public int getGrandeurX() 
+	public int getNombreLignes() 
 	{
 		return nombreLignes;
 	}
 	
-	public int getGrandeurY() 
+	public int getNombreColonnes() 
 	{
 		return nombreColonnes;
 	}

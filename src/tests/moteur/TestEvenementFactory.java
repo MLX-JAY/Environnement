@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import moteur.donne.carte.Carte;
 import moteur.donne.carte.Bloc;
 import moteur.processus.usine.EvenementFactory;
-import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Pluie;
 import moteur.donne.evenement.statique.Meteore;
 

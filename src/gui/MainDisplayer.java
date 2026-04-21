@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
@@ -36,16 +38,22 @@ public class MainDisplayer extends JPanel
 {
 	
 	private static final long serialVersionUID = 1L;
-	private final transient Carte carte;
-	private final transient StrategiePeinture stratDePeinture = new StrategiePeinture();
-	private final transient Manageur manageur;
+	private Carte carte;
+	private StrategiePeinture stratDePeinture = new StrategiePeinture();
+	private Manageur manageur;
 	private PanelStatistique panelStats;
-	private transient Biome biomeSelectionne;
+	private Biome biomeSelectionne;
 	
 	public MainDisplayer(Carte carte, Manageur manageur) {  
 		this.carte = carte;
 		this.manageur = manageur;
 		this.setBackground(new Color(163, 177, 138));
+		
+		if (carte != null) {
+			int largeur = carte.getNombreColonnes() * config.GameConfiguration.TAILLE_BLOC;
+			int hauteur = carte.getNombreLignes() * config.GameConfiguration.TAILLE_BLOC;
+			this.setPreferredSize(new java.awt.Dimension(largeur, hauteur));
+		}
 		
 		this.addMouseListener(new MouseAdapter() {
 			@Override
@@ -83,6 +91,22 @@ public class MainDisplayer extends JPanel
 	public void paintComponent (Graphics g)
 	{
 		super.paintComponent(g);
+		
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+		
+		if (carte == null || manageur == null) {
+			g.setColor(Color.GRAY);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.setColor(Color.WHITE);
+			g.drawString("Carte non initialisee", 10, 20);
+			return;
+		}
+		
+		int nbBiomes = manageur.getBiomes().size();
+		g.setColor(Color.WHITE);
+		g.drawString("Biomes: " + nbBiomes, 5, 15);
+		g.drawString("Carte: " + getWidth() + "x" + getHeight(), 5, 35);
 
 		if (biomeSelectionne != null) {
 			biomeSelectionne = trouverBiome(
@@ -94,22 +118,26 @@ public class MainDisplayer extends JPanel
 			}
 		}
 		
-		for (Evenement e : manageur.getEvenements()) {
+		List<Evenement> evenements = new ArrayList<>(manageur.getEvenements());
+		List<Evenement> dangers = new ArrayList<>(manageur.getDangers());
+		List<Biome> biomes = new ArrayList<>(manageur.getBiomes());
+		
+		for (Evenement e : evenements) {
 			e.mettreAJourAnimation();
 		}
-		for (Evenement danger : manageur.getDangers()) {
+		for (Evenement danger : dangers) {
 			danger.mettreAJourAnimation();
 		}
         
-		for (Biome b : manageur.getBiomes()) 
+		for (Biome b : biomes) 
 		{
 			dessinerBiome(g, b);
         }
-		for (Evenement e : manageur.getEvenements() )
+		for (Evenement e : evenements)
 		{
 			dessinerEvenement(g, e);
 		}
-		for (Evenement danger : manageur.getDangers()) {
+		for (Evenement danger : dangers) {
 			dessinerDanger(g, danger);
 		}
 		
@@ -197,14 +225,37 @@ public class MainDisplayer extends JPanel
 		int y = biome.getPosition().getY() * size;
 		
 		long temps = System.currentTimeMillis();
-		int alpha = (int) (128 + 127 * Math.sin(temps * 0.008));
+		int alpha = (int) (128 + 127 * Math.sin(temps / 250.0));
 		
 		g.setColor(new Color(255, 0, 0, alpha));
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setStroke(new BasicStroke(3));
-		g2.drawRect(x + 1, y + 1, size - 2, size - 2);
+		g2.setStroke(new BasicStroke(2));
+		g2.drawRect(x + 2, y + 2, size - 4, size - 4);
 		
-		g.setColor(new Color(255, 0, 0, alpha / 3));
-		g.fillRect(x, y, size, size);
+		g.setColor(new Color(255, 0, 0, alpha / 2));
+		g.fillRect(x + 2, y + 2, size - 4, size - 4);
+	}
+	
+	public void setCarte(Carte carte) {
+		this.carte = carte;
+		if (carte != null) {
+			int largeur = carte.getNombreColonnes() * config.GameConfiguration.TAILLE_BLOC;
+			int hauteur = carte.getNombreLignes() * config.GameConfiguration.TAILLE_BLOC;
+			this.setPreferredSize(new java.awt.Dimension(largeur, hauteur));
+		}
+		repaint();
+	}
+	
+	public void setManageur(Manageur manageur) {
+		this.manageur = manageur;
+		repaint();
+	}
+	
+	public Biome getBiomeSelectionne() {
+		return biomeSelectionne;
+	}
+	
+	public void setManageurPourModification(Manageur manageur) {
+		this.manageur = manageur;
 	}
 }

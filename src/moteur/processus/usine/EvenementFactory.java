@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.ConfigurationEvenement;
-import config.ConfigurationCreationEvenement;
 import config.ConfigurationDirection;
-import config.Formation;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
@@ -679,8 +677,8 @@ public class EvenementFactory {
     // ==================== UTILITAIRE ====================
     
     public Bloc getPositionAleatoire() {
-        int ligne = random.nextInt(carte.getGrandeurX());
-        int colonne = random.nextInt(carte.getGrandeurY());
+        int ligne = random.nextInt(carte.getNombreLignes());
+        int colonne = random.nextInt(carte.getNombreColonnes());
         return carte.getBloc(ligne, colonne);
     }
     

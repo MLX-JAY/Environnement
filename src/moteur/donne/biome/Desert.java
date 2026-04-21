@@ -1,7 +1,6 @@
 package moteur.donne.biome;
 
 import moteur.donne.carte.Bloc;
-import moteur.donne.evenement.Evenement;
 import moteur.processus.visitor.BiomeVisitor;
 
 public class Desert extends Biome 

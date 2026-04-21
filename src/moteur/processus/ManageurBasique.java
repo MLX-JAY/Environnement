@@ -181,6 +181,11 @@ public class ManageurBasique implements Manageur
 		return new ArrayList<>();
 	}
 	
+	public void remplacerBiome(Bloc position, Biome nouveauBiome) {
+		if (position == null || nouveauBiome == null) return;
+		biomeMap.put(position, nouveauBiome);
+	}
+	
 	@Override
 	public void nextRound()
 	{

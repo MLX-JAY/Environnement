@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -45,16 +44,6 @@ public class JFrameStatistiques extends JFrame {
     private static final Color COULEUR_HUMID = new Color(0, 191, 255);
     private static final Color COULEUR_POLL = new Color(220, 20, 60);
     private static final Color COULEUR_PURIF = new Color(50, 205, 50);
-    
-    private static final Color[] COULEURS_BIOMES = {
-        new Color(34, 139, 34),   // Foret - Forest Green
-        new Color(210, 180, 140),  // Desert - Tan
-        new Color(30, 144, 255),   // Mer - Dodger Blue
-        new Color(128, 128, 128),  // Montagne - Gray
-        new Color(240, 248, 255),  // Banquise - Alice Blue
-        new Color(255, 215, 0),    // Ville - Gold
-        new Color(255, 105, 180)   // Village - Hot Pink
-    };
     
     public JFrameStatistiques(Manageur manageur) {
         super("📊 Statistiques - Simulation Environnement");
@@ -395,10 +384,9 @@ public class JFrameStatistiques extends JFrame {
         // Pie chart - dernier etat
         StatRound dernier = historique.get(historique.size() - 1);
         org.jfree.data.general.DefaultPieDataset pieDataset = new org.jfree.data.general.DefaultPieDataset();
-        int idx = 0;
+
         for (Map.Entry<String, Integer> entry : dernier.compteBiomes.entrySet()) {
             pieDataset.setValue(entry.getKey(), entry.getValue());
-            idx++;
         }
         ((PiePlot) chartBiomesPie.getChart().getPlot()).setDataset(pieDataset);
         

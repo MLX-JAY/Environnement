@@ -24,7 +24,7 @@ public class BiomeFactory {
     };
     private static final Random RANDOM = new Random();
 
-    private enum TypeBiome {
+    public enum TypeBiome {
         FORET,
         DESERT,
         MER,
@@ -38,6 +38,10 @@ public class BiomeFactory {
         MILIEU
     }
     
+    public static Biome creerBiomeParType(TypeBiome type, Bloc bloc) {
+        return creerBiome(type, bloc);
+    }
+    
     public static Biome creerBiomeAleatoire(Bloc bloc) {
         TypeBiome[] types = TypeBiome.values();
         return creerBiome(types[RANDOM.nextInt(types.length)], bloc);
@@ -45,8 +49,8 @@ public class BiomeFactory {
 
     public static Map<Bloc, Biome> creerBiomesCoherents(Carte carte) {
         Map<Bloc, Biome> biomes = new HashMap<>();
-        int nombreLignes = carte.getGrandeurX();
-        int nombreColonnes = carte.getGrandeurY();
+        int nombreLignes = carte.getNombreLignes();
+        int nombreColonnes = carte.getNombreColonnes();
 
         if (nombreLignes == 0 || nombreColonnes == 0) {
             return biomes;

@@ -35,10 +35,18 @@ import moteur.donne.evenement.statique.Meteore;
 
 public class StrategiePeinture 
 {
-    private Image flocon = new ImageIcon(getClass().getResource("/image/flocon.png")).getImage();
-    private Image danger = new ImageIcon(getClass().getResource("/image/danger.png")).getImage();
-    private Image meteore = new ImageIcon(getClass().getResource("/image/meteore.png")).getImage(); 
-    private Random rand = new Random(); 
+    private Image danger;
+    private Image meteore;
+    
+    public StrategiePeinture() {
+        try {
+            this.danger = new ImageIcon(getClass().getResource("/image/danger.png")).getImage();
+            this.meteore = new ImageIcon(getClass().getResource("/image/meteore.png")).getImage();
+        } catch (Exception e) {
+            this.danger = null;
+            this.meteore = null;
+        }
+    } 
 
     private void dessinerNuage(Graphics2D g2, int x, int y, int size) {
         g2.setColor(new Color(210, 220, 228, 220));
@@ -484,7 +492,12 @@ public class StrategiePeinture
     	int size = config.GameConfiguration.TAILLE_BLOC;
         int x = (int) (e.getPositionAnimationX() * size);
         int y = (int) (e.getPositionAnimationY() * size);
-        graphics.drawImage(danger, x, y, size*2, size*2, null);
+        if (danger != null) {
+            graphics.drawImage(danger, x, y, size*2, size*2, null);
+        } else {
+            graphics.setColor(Color.RED);
+            graphics.fillRect(x, y, size, size);
+        }
         
     }
     
@@ -492,7 +505,12 @@ public class StrategiePeinture
     	int size = config.GameConfiguration.TAILLE_BLOC;
         int x = (int) (meteore.getPositionAnimationX() * size);
         int y = (int) (meteore.getPositionAnimationY() * size);
-        graphics.drawImage(this.meteore, x, y, size, size, null);
+        if (this.meteore != null) {
+            graphics.drawImage(this.meteore, x, y, size, size, null);
+        } else {
+            graphics.setColor(Color.ORANGE);
+            graphics.fillOval(x, y, size, size);
+        }
     }
     
 public void paint(Orage orage, Graphics graphics) {
