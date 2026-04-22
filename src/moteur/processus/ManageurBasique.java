@@ -64,7 +64,6 @@ public class ManageurBasique implements Manageur
 		this.reglesTransformation.add(new moteur.processus.regle.ReglePollutionExtreme());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleForestation());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleCivilisation());
-		this.reglesTransformation.add(new moteur.processus.regle.RegleErosion());
 		this.reglesTransformation.add(new moteur.processus.regle.RegleDensification());
 	}
 	

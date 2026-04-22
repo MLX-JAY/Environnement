@@ -86,9 +86,11 @@ Ce rapport est organisé en plusieurs sections distinctes :
 
 ## Spécification
 
+Cette section détaille les fonctionnalités attendues du projet ainsi que les contraintes qui définissent son comportement. Elle constitue la base de la conception qui sera développée dans la section suivante.
+
 ### Notions de base et contraintes du projet
 
-#### Fonctionnement général du logiciel
+#### 2.1.1 Fonctionnement général du logiciel
 
 Le fonctionnement du logiciel repose sur un modèle de simulation par tours, appelés rounds. À chaque round, le système exécute un cycle complet divisé en quatre étapes distinctes.
 
@@ -99,20 +101,56 @@ Au début de chaque round, de nouveaux événements météorologiques apparaisse
 Les événements mobiles se déplacent d'une case dans une direction donnée. Ce déplacement peut être bloqué par les montagnes.
 
 **3. Application des impacts**
-Les événements affectent les caractéristiques des biomes qu'ils traversent. Par exemple, la pluie augmente l'humidité et diminue la température, tandis que la pollution augmente le niveau de pollution.
+Les événements affectent les caractéristiques des biomes qu'ils traversent.
 
 **4. Évaluation des transformations**
 Les règles de transformation vérifient les conditions sur les propriétés des biomes. Si les critères sont atteints, le biome se transforme en un autre type.
 
 ![Flux d'un round](images/flux_round.png)
 
-La carte est représentée par une grille bidimensionnelle où chaque cellule contient un biome. Les dimensions de la grille sont configurables (par exemple 20×20 ou 30×30). Chaque biome possède quatre propriétés numériques : température, humidité, pollution et purification. Ces propriétés évoluent au fil des rounds sous l'effet des événements et peuvent déclencher des transformations automatiques selon des règles écologiques prédéfinies.
+La carte est représentée par une grille bidimensionnelle où chaque cellule contient un biome. Les dimensions de la grille sont configurables. Chaque biome possède quatre propriétés numériques.
+
+#### 2.1.2 Notions et terminologies de base
+
+Cette sous-section définit les termes techniques utilisés dans le projet :
+
+**Biome** : Unité de base de la carte représentant un type d'écosystème (Forêt, Désert, Mer, Montagne, Banquise, Ville, Village).
+
+**Round** : Cycle d'exécution de la simulation comprenant génération, déplacement, impact et transformation.
+
+**Événement** : Phénomène météorologique affectant les caractéristiques des biomes (Pluie, Vent, Pollution, etc.).
+
+**Transformation** : Changement automatique d'un biome vers un autre type selon des règles définies.
+
+**Carte** : Grille bidimensionnelle de cellules contenant chacune un biome.
+
+**Propriétés** : Les quatre caractéristiques numériques d'un biome (température, humidité, pollution, purification).
+
+#### 2.1.3 Contraintes et limitations connues
+
+1. Améliorer la formulation de tes points actuels
+Tu peux rendre tes premières limitations un peu plus formelles :
+
+Absence de persistance des données (Sauvegarde) : L'état de l'écosystème est intégralement géré en mémoire vive lors de l'exécution. Le logiciel ne dispose actuellement pas d'un système de sérialisation ou d'exportation (vers un format JSON ou XML, par exemple) permettant de sauvegarder l'état exact des biomes et des entités pour reprendre une simulation ultérieurement.
+
+Limites de l'Interface Homme-Machine (IHM) : L'interface graphique, développée avec les bibliothèques standards, possède une résolution figée à 1920×1080 pixels. Le positionnement absolu des composants empêche un redimensionnement dynamique de la fenêtre (responsivité). De plus, l'ergonomie du mode édition reste basique : la manipulation de l'environnement s'effectue instance par instance, sans implémentation de fonctionnalités de sélection de masse, de duplication de zones (copier-coller) ou de création de "templates" de biomes.
+
+2. Nouvelles limitations techniques à ajouter (Idéales pour ton projet)
+Pour remplir la page, ajoute deux ou trois de ces limitations, qui collent parfaitement à un simulateur d'écosystème en Java :
+
+Goulet d'étranglement des performances (Scalabilité) : La simulation de l'écosystème implique des calculs fréquents pour chaque entité et événement environnemental. Au fur et à mesure que le nombre d'éléments augmente sur la carte, le gestionnaire principal (le ManageurBasique) doit traiter une quantité exponentielle d'interactions. L'application étant contrainte par la gestion des threads (notamment le thread d'interface de Swing), un nombre trop important d'entités simultanées provoque des ralentissements visibles et une chute du taux de rafraîchissement (FPS).
+
+Extensibilité via le code source uniquement : Bien que l'architecture soit robuste (utilisation de la BiomeFactory et du pattern Visiteur pour la gestion des interactions), l'ajout de nouveaux comportements ou de nouveaux types de biomes nécessite impérativement une modification du code source en Java et une recompilation du projet. Le logiciel ne permet pas le chargement dynamique de nouveaux éléments via des fichiers de configuration externes.
+
+Simplification du modèle biologique : Pour des raisons de viabilité algorithmique, les événements dynamiques et les interactions entre les entités et l'environnement reposent sur des modèles mathématiques simplifiés et déterministes. La simulation ne prend pas en compte le chaos inhérent aux véritables écosystèmes biologiques, limitant ainsi le degré de réalisme des comportements émergents.
 
 ### Fonctionnalités attendues du projet
 
 #### Gestion de la carte
 
 La carte de simulation est représentée par une grille bidimensionnelle de cellules, appelées blocs. Chaque bloc contient un biome et est identifié par ses coordonnées (x, y). Les dimensions de la grille sont configurables (par exemple 20×20 ou 30×30).
+
+La grille fonctionne selon un système de coordonnées où chaque position (x, y) correspond à une cellule précise. Les méthodes permettent de récupérer un bloc à partir de ses coordonnées et de vérifier la validité d'une position avant d'accéder au biome.
 
 La génération de la carte peut se faire de manière aléatoire avec une distribution pseudo-aléatoire des biomes. Les probabilités de chaque type de biome sont définies dans le fichier de configuration, permettant d'ajuster la répartition souhaitée.
 
@@ -146,7 +184,7 @@ Le tableau suivant présente les valeurs initiales de ces propriétés pour chaq
 Ces propriétés évoluent sous l'effet des événements climatiques et peuvent déclencher des transformations automatiques selon les règles définies. La montagne fait exception : elle est immuable et ne peut être transformée par aucune règle.
 
 **Transformations entre biomes**
-Les biomes peuvent se transformer selon des chaînes logiques. Par exemple, une Forêt touchée par la désertification devient un Désert, puis peutredevenir une Forêt sous l'effet de la forestation. Ces transformations reflètent des phénomènes écologiques réels.
+Les biomes peuvent se transformer selon des chaînes logiques. Par exemple, une Forêt touchée par la désertification devient un Désert, puis le meme desert peut devenir une Forêt sous l'effet de la forestation. Ces transformations reflètent des phénomènes écologiques réels.
 
 #### Gestion des événements
 
@@ -247,7 +285,7 @@ Un panneau permet de modifier manuellement les biomes de la carte en cliquant su
 
 #### Système de journalisation
 
-Le système de journalisation permet de suivre l'exécution de la simulation et de déboguer le code en cas d'erreur.
+Le système de journalisation permet de suivre l'exécution de la simulation et de déboguer le code en cas d'erreur. Il enregistre les événements clés du fonctionnement de l'application.
 
 **Niveaux de logs**
 Deux niveaux sont utilisés :
@@ -266,198 +304,184 @@ Les principales actions journalisées incluent : début/fin des rounds, déplace
 
 ---
 
-## Conception et mise en œuvre (plusieurs mots - OBLIGATOIRE)
+## Conception et mise en œuvre
 
-### Architecture globale du logiciel
+Après avoir détaillé les fonctionnalités attendues dans la section précédente, cette section décrit la conception logicielle et son implémentation. Elle explique comment les choix architecturaux répondent aux exigences du projet et comment le code a été structuré pour garantir l'extensibilité et la maintenabilité. Les différentes composantes du système sont détaillées : architecture modulaire, classes de données, interface graphique et traitements algorithmiques.
 
-#### Organisation des modules
-- Module moteur (cœur de la simulation)
-- Module gui (interface graphique)
-- Module config (configuration)
+### 3.1 Architecture globale du logiciel
 
-#### Diagramme d'architecture
-[image: architecture.jpg]
+L'application est structurée en quatre modules distincts selon une architecture modulaire. Cette organisation sépare les responsabilités et facilite la maintenance du code.
 
-### Classes de données
+![Architecture du projet](images/architecture.png)
 
-#### Hiérarchie des biomes
-- Classe abstraite Biome
-- Sous-classes: Foret, Desert, Mer, Montagne, Banquise, Ville, Village
-[image: classes_biome.jpg]
+**Module moteur**
+Le module moteur constitue le cœur de la simulation. Il contient la logique métier de l'application : gestion de la carte, des biomes, des événements et des règles de transformation. Ce module est indépendant de l'interface graphique et peut fonctionner sans interaction utilisateur.
 
-#### Hiérarchie des événements
-- Classe abstraite Evenement
-- Événements statiques (Meteore)
-- Événements mobiles
-- Groupes d'événements
-[image: classes_evenement.jpg]
+**Module gui**
+Le module gui gère l'interface utilisateur. Il contient les classes d'affichage (MainGUI, MainDisplayer, PanelStatistique, PanelTemps, PanelEdition) et les stratégies de rendu (StrategiePeinture). Ce module dépend du module moteur pour récupérer les données à afficher.
 
-#### Gestion de la carte
-- Classe Carte
-- Classe Bloc
+**Module config**
+Le module config centralise tous les paramètres de configuration : caractéristiques des biomes, effets des événements, seuils de transformation, probabilités de génération. Ce module est utilisé par le moteur et l'interface graphique.
 
-### Patron Visitor (CONCEPT IMPORTANT)
+**Module util**
+Le module util contient les utilitaires transversaux : système de journalisation (LoggerUtility), configuration de Log4j. Ce module est utilisé par les autres modules pour le logging.
 
-#### Principe du patron
-- Séparation algorithmes et objets
-- Double implémentation: EvenementVisitor et BiomeVisitor
+### 3.2 Classes de données
 
-#### Implémentation dans le projet
-- EvenementVisitor: méthodes visit() pour chaque type d'événement
-- BiomeVisitor: méthodes visit() pour chaque type de biome
-- Avantages: extensibilité, maintenance
+Cette sous-section décrit la conception des classes représentant les données de l'écosystème : biomes, événements et carte.
 
-[image: visitor_pattern.jpg]
+#### 3.2.1 Hiérarchie des biomes
 
-#### Flux d'exécution d'un round
-- Génération d'événements
-- Déplacement des événements
-- Application des impacts
-- Évaluation des règles
+La classe abstraite Biome constitue la base de la hiérarchie. Elle définit les attributs communs à tous les biomes : température, humidité, pollution, purification, position et bloc associé. Les méthodes getter et setter permettent d'accéder et de modifier ces propriétés.
 
-[image: flux_round.jpg]
+Sept sous-classes héritent de Biome : Foret, Desert, Mer, Montagne, Banquise, Ville et Village. Chaque sous-classe définit les valeurs initiales des quatre propriétés dans son constructeur en utilisant les constantes de ConfigurationBiome.
 
-### IHM Graphique
+![Diagramme de classes des biomes](images/classes_biome.png)
 
-#### Structure de l'interface
-- MainGUI: fenêtre principale
-- MainDisplayer: zone d'affichage
-- PanelStatistique: statistiques
-- PanelTemps: contrôle du temps
-[image: ihm_structure.jpg]
+#### 3.2.2 Hiérarchie des événements
 
-#### Stratégie de rendu
-- StrategiePeinture: rendu graphique
-- Méthodes paint() spécialisées
+La classe abstraite Evenement représente la base des événements météorologiques. Elle contient les attributs de position, direction, durée et impacts. Deux catégories d'événements sont distinguées :
 
-#### Exemple de carte
-[image: carte_exemple.jpg]
+- Les événements statiques (classe Meteore) restent à une position fixe pendant leur durée de vie.
+- Les événements mobiles (classes Pluie, VentFroid, VentChaud, Pollution, Purification, Orage, Grele, Tornade, PluieBenite, Zephyr, Tonnerre, Smog, NuageToxique) se déplacent sur la carte à chaque round.
 
-### Conception des traitements
+![Diagramme de classes des événements](images/classes_evenement.png)
 
-#### Le manageur
-- ManageurBasique: orchestre la simulation
-- Méthode nextRound()
+#### 3.2.3 Gestion de la carte
 
-#### Gestion du déplacement
-- GestionDeplacementVisitor: déplacement des événements
-- Bloquage par les montagnes
-- Mort collective pour les groupes
+La classe Carte gère la grille de simulation. Elle contient un tableau bidimensionnel de blocs (classe Bloc). Chaque Bloc contient un biome et ses coordonnées (x, y). La classe Carte fournit des méthodes pour accéder aux blocs et vérifier la validité des coordonnées.
 
-#### Règles de transformation
-- Huit règles implémentées
-- Interface RegleTransformation
-- Interface RegleTransformationEvenement
+### 3.3 IHM Graphique
 
-#### Génération événementielle
-- EvenementFactory
-- GenerateurEvenementVisitor
+Cette sous-section décrit la conception de l'interface graphique réalisée avec Swing. Le flux d'ouverture des fenêtres est le suivant : l'utilisateur commence par le mode édition pour configurer la carte, puis lance la simulation qui ouvre la fenêtre principale.
 
-#### Groupes d'événements
-- GroupePluie (3 unités)
-- GroupePluieAcide
-- Logique de mort collective
+#### 3.3.1 Fenêtre d'édition (première)
 
-#### Système de logging
-- LoggerUtility: singleton
-- log4j.properties
-- Niveaux DEBUG/INFO
+La première fenêtre affichée est le mode édition (PanelEdition). Cette fenêtre permet à l'utilisateur de placer les biomes sur la carte en les sélectionnant et en cliquant sur les cellules.
 
----
+![Fenêtre d'édition](images/fenetre_edition.png)
 
-## Manuel utilisateur (plusieurs mots - OBLIGATOIRE)
+#### 3.3.2 Fenêtre de simulation (après lancement)
 
-### Installation et configuration
-- Prérequis (JDK 8+)
-- Compilation
-- Lancement
+Quand l'utilisateur clique sur le bouton Lancer, la fenêtre d'édition se ferme et la fenêtre de simulation s'ouvre. Elle est composée de trois zones :
 
-### Utilisation de l'interface
-- Fenêtre principale
-- Génération de carte
-- Contrôle de la simulation
-- Mode édition
-- Statistiques
-- Consultation des logs
-- Modification du niveau de logs
+- La zone centrale (MainDisplayer) affiche la carte de simulation.
+- Le panneau latéral droit (PanelStatistique) affiche les statistiques.
+- Le panneau inférieur (PanelTemps) contient les contrôles.
 
----
+![Fenêtre de simulation](images/fenetre_simulation.png)
 
-## Déroulement du projet (plusieurs mots - OBLIGATOIRE)
+#### 3.3.3 Stratégie de rendu
 
-### Réalisation du projet par étapes
-- Phase 1: Analyse et conception
-- Phase 2: Implémentation des classes de données
-- Phase 3: Implémentation du moteur de simulation
-- Phase 4: Interface graphique
-- Phase 5: Fonctionnalités avancées
-- Phase 6: Tests et corrections
+La classe StrategiePeinture implémente le rendu graphique de chaque type d'élément. Chaque méthode paintComponent est spécialisée pour dessiner un type spécifique de biome ou d'événement.
 
-### Répartition des tâches et intégration
-- Organisation de l'équipe
-- Gestion de version (Git)
-- Intégration continue
+### 3.4 Conception des traitements
 
----
+Cette sous-section détaille la logique algorithmique et mathématique au cœur du module moteur. Les formules utilisées pour les transformations, la génération de la carte et la boucle principale de simulation sont expliquées.
 
-## Conclusion et perspectives (plusieurs mots - OBLIGATOIRE)
+#### 3.4.1 Formules mathématiques
 
-### Résumé du travail réalisé
-- Synthèse du projet
-- Objectifs atteints
-- Compétences développées
+**Probabilité de génération d'un événement**
 
-### Améliorations possibles du projet
-- Extensions fonctionnelles
-- Optimisations techniques
-- Améliorations de l'interface
+La probabilité qu'un événement apparaisse à chaque round est définie dans ConfigurationCreationEvenement. Pour chaque type d'événement, une probabilité est assignée. Un événement est généré si un nombre aléatoire est inférieur à cette probabilité :
 
----
+```
+P(genération) = probabilité_configurée
+```
 
-## Difficultés et solutions (plusieurs mots - OBLIGATOIRE) (FIN DU RAPPORT)
+Cette formule permet de contrôler la fréquence d'apparition de chaque type d'événement.
 
-### Difficultés et solutions
-- Difficulté 1: Gestion des contraintes de valeurs
-- Difficulté 2: Montagne comme mur
-- Difficulté 3: Transformation des groupes d'événements
-- Difficulté 4: Protection du biome montagne
-- Difficulté 5: Système de logging
-- Difficulté 6: Affichage des nouveaux éléments
+**Calcul des impacts sur les propriétés des biomes**
 
----
+Lorsqu'un événement affecte un biome, ses quatre propriétés sont modifiées par ajout de l'impact défini :
 
-## Références bibliographiques (OBLIGATOIRE - ~10 références)
+```
+propriété_nouvelle = propriété_actuelle + impact
+```
 
-À compléter:
-1. Java SE Documentation (Oracle)
-2. Apache Log4j Documentation
-3. Java Swing Tutorial
-4. Design Patterns (Gang of Four)
-5. Git Documentation
-6. (à compléter par vous)
+Exemple pour l'événement Pluie (ConfigurationEvenement.PLUIE_*) :
 
----
+```
+humidité = humidité + 5
+température = température + 0
+pollution = pollution + 0
+purification = purification + 0
+```
 
-## Règles à respecter (IMPORTANT)
+**Bornage des valeurs**
 
-### Titres
-- Introduction = 1 SEUL mot (OBLIGATOIRE)
-- Tous les autres titres = plusieurs mots (OBLIGATOIRE)
-- Difficultés = à la FIN du rapport (OBLIGATOIRE)
+Toutes les propriétés sont bornées entre 0 et 100 pour garantir la cohérence des données :
 
-### Style
-- Utiliser \paragraph{} pour tous les blocs de texte (OBLIGATOIRE)
-- INTERDIT: couleur rouge
-- INTERDIT: "Dans le cadre de..." (pénalité -2 pts)
-- INTERDIT: ton personnel ("j'ai aimé", "j'ai progressé")
-- Rester technique et factuel
+```
+propriété = max(0, min(100, propriété))
+```
 
-### Contenu
-- Expliquer les patterns (Strategy, Visitor) CONCRÈTEMENT dans le code
-- Ne pas lister les outils sans contexte
-- ~30 pages de contenu intéressant
+Cette formule utilise Math.max et Math.min pour limiter les valeurs.
 
-### Images
-- Schémas à créer: architecture.jpg, classes_biome.jpg, classes_evenement.jpg, flux_round.jpg, visitor_pattern.jpg, ihm_structure.jpg, carte_exemple.jpg
-- Format: JPG
-- Emplacement: doc/images/
+#### 3.4.2 Algorithme de la boucle de simulation
+
+L'algorithme principal de la simulation est implémenté dans ManageurBasique.nextRound(). Il exécute un cycle complet à chaque round :
+
+```
+ALGORITHME nextRound()
+  GENERER nouveaux événements aléatoires
+  POUR CHAQUE événement mobile
+    CHOISIR direction aléatoire
+    DEPLACER événement d'une case
+    SI déplacement bloqué ALORS
+      CHOISIR nouvelle direction
+    FIN SI
+    APPLICHER impacts sur biome cible
+  FIN POUR CHAQUE
+  POUR CHAQUE biome sur la carte
+    EVALUER règles de transformation
+    SI conditions remplies ALORS
+      TRANSFORMER biome
+    FIN SI
+  FIN POUR CHAQUE
+FIN ALGORITHME
+```
+
+Cet algorithme garantit que chaque round exécute les quatre étapes de la simulation dans l'ordre.
+
+#### 3.4.3 Algorithme de génération de la carte
+
+La génération cohérente des biomes est implémentée dans BiomeFactory.creerBiomesCoherents(). L'algorithme crée une distribution naturelle avec des masses d'eau, des zones désertiques et des zones urbaines :
+
+```
+ALGORITHME creerBiomesCoherents()
+  GENERER masse d'eau (forme aléatoire : coin, haut ou milieu)
+  POUR chaque case
+    CALCULER distance à l'eau
+  FIN POUR
+  POUR case proche de l'eau ET loin de désert ALORS
+    genererVillage
+  FIN POUR
+  POUR case loin de l'eau ET en zone désertique ALORS
+    genererDesert
+  FIN POUR
+  POUR case en zone urbaine ALORS
+    genererVille
+  FIN POUR
+  RETOURNER carte avec biomes
+FIN ALGORITHME
+```
+
+Les distances à l'eau sont calculées par propagation BFS (Breadth-First Search) pour déterminer les zones propices à chaque type de biome.
+
+#### 3.4.4 Règles de transformation
+
+Huit règles implémentent l'interface RegleTransformation. Chaque règle évalue les conditions sur les propriétés des biomes (température, humidité, pollution, purification) et retourne un nouveau biome si les conditions sont remplies. Les règles sont : Inondation, Glaciation, Désertification, Forestation, PollutionExtreme, Civilisation, Densification et Erosion.
+
+La règle PluieAcide implémente l'interface RegleTransformationEvenement pour transformer les événements Pluie en PluieAcide sous certaines conditions de pollution.
+
+#### 3.4.5 Génération d'événements
+
+La classe EvenementFactory crée des événements selon des probabilités configurées. Le GenerateurEvenementVisitor génère des événements supplémentaires depuis les biomes (par exemple, une Mer génère de la Pluie).
+
+Les probabilités de génération et les formations (unique, ligne, carré, etc.) sont définies dans ConfigurationCreationEvenement.
+
+#### 3.4.6 Système de logging
+
+Le système utilise Log4j avec la classe utilitaire LoggerUtility. Cette classe implémente le pattern Singleton pour garantir une seule instance. Les logs sont générés aux niveaux DEBUG et INFO dans la console et dans un fichier (src/logs/simulation.log).
+
