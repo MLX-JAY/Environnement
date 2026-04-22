@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 import moteur.donne.carte.Carte;
 import moteur.processus.ManageurBasique;
 import moteur.donne.biome.Biome;
-import moteur.donne.evenement.Evenement;
 import java.util.ArrayList;
 
 /**

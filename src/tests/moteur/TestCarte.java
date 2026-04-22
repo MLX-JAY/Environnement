@@ -17,8 +17,8 @@ public class TestCarte {
     
     @Test
     public void testConstructeurDimensions() {
-        assertEquals(10, carte.getGrandeurX());
-        assertEquals(15, carte.getGrandeurY());
+        assertEquals(10, carte.getNombreLignes());
+        assertEquals(15, carte.getNombreColonnes());
     }
     
     @Test

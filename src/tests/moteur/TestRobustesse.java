@@ -8,7 +8,6 @@ import moteur.donne.carte.Carte;
 import moteur.donne.carte.Bloc;
 import moteur.donne.biome.Foret;
 import moteur.processus.ManageurBasique;
-import moteur.donne.evenement.Evenement;
 
 /**
  * Tests de robustesse pour vérifier que le moteur gère correctement
@@ -33,8 +32,8 @@ public class TestRobustesse {
     public void testCarteVide() {
         // Créer une carte 0x0 et vérifier qu'elle fonctionne
         Carte carteVide = new Carte(0, 0);
-        assertEquals(0, carteVide.getGrandeurX());
-        assertEquals(0, carteVide.getGrandeurY());
+        assertEquals(0, carteVide.getNombreLignes());
+        assertEquals(0, carteVide.getNombreColonnes());
     }
     
     @Test

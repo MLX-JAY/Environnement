@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.List;
 
 import config.ConfigurationCreationEvenement;
-import config.ConfigurationEvenement;
 import moteur.donne.biome.Banquise;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;

@@ -1,20 +1,16 @@
 package gui;
 
 import config.GameConfiguration;
-import java.awt.Font;
 
 import java.awt.Color;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.Image;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
@@ -23,15 +19,19 @@ import moteur.processus.ManageurBasique;
 
 public class MainGUI extends JFrame implements Runnable 
 {
-	
-	private MainDisplayer displayer;
+ 	
+	private MainDisplayer displayerEdition;
+	private MainDisplayer displayerSimulation;
 	private final static Dimension tailleFenetre = new Dimension(GameConfiguration.FENETRE_LONGEUR, GameConfiguration.FENETRE_LARGEUR);
 	private Carte carte;
 	private PanelStatistique panelStats;
 	private PanelTemps panelTemps;
 	private Manageur manageur;
+	private PanelEdition panelEdition;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private JPanel vueEdition;
+    private JPanel vueSimulation;
     private boolean simulationEnCours = false;
 
 	public MainGUI(String title) {
@@ -40,47 +40,30 @@ public class MainGUI extends JFrame implements Runnable
     }
 
     public void init() {
-
-        // 1. Initialisation des données
-        carte = Builder.construireCarte();
-        manageur = Builder.initCarte(carte);
         
-        displayer = new MainDisplayer(carte, manageur);
         panelTemps = new PanelTemps(this);
         panelStats = new PanelStatistique();
-        displayer.setPanelStats(panelStats);
 
         // 2. Configuration du CardLayout pour les changements de vue
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
         // CARTE 1 : L'ÉDITION
-
-        JPanel vueEdition = new JPanel(new BorderLayout());
-        vueEdition.add(displayer, BorderLayout.CENTER);
+        vueEdition = new JPanel(new BorderLayout());
         vueEdition.setBackground(new Color(163, 177, 138));
         
-        PanelEdition menuEdition = new PanelEdition(() -> demarrerSimulation()); // si bouton FIN cliqué, on démarre la simulation
+        panelEdition = new PanelEdition(() -> demarrerSimulation(), () -> genererCarte());
+        panelEdition.setVueEdition(vueEdition);
         
-        vueEdition.add(menuEdition, BorderLayout.NORTH);
-        vueEdition.add(displayer, BorderLayout.CENTER);
-
-        JPanel panelDev = new JPanel(new GridBagLayout()); // GridBag pour centrer le texte
-        panelDev.setPreferredSize(new Dimension(250, 0)); // Même largeur que PanelStats
-        panelDev.setBackground(new Color(52, 78, 65)); // Un peu plus clair que le fond
+        vueEdition.add(panelEdition, BorderLayout.NORTH);
         
-        JLabel txtDev = new JLabel("<html><center><h2>MODE ÉDITION</h2>En cours de développement</center></html>");
-        txtDev.setForeground(new Color(240, 240, 230)); // Blanc cassé
-        txtDev.setFont(new Font("Segoe UI", Font.ITALIC, 14));
-        
-        panelDev.add(txtDev);
-        vueEdition.add(panelDev, BorderLayout.WEST);
+        if (panelEdition.getPanelConfig() != null) {
+            vueEdition.add(panelEdition.getPanelConfig(), BorderLayout.WEST);
+        }
 
-        //  CARTE 2 : LA SIMULATION
-
-        JPanel vueSimulation = new JPanel(new BorderLayout());
+        // CARTE 2 : LA SIMULATION
+        vueSimulation = new JPanel(new BorderLayout());
         vueSimulation.add(panelTemps, BorderLayout.NORTH);
-        vueSimulation.add(displayer, BorderLayout.CENTER);
         vueSimulation.add(panelStats, BorderLayout.WEST);
 
         mainPanel.add(vueEdition, "EDITION");
@@ -94,11 +77,58 @@ public class MainGUI extends JFrame implements Runnable
         this.setLocationRelativeTo(null);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
+        
+        genererCarte();
     }
 
     private void demarrerSimulation() {
-        cardLayout.show(mainPanel, "SIMU"); // Affiche la vue de simulation
+        if (displayerSimulation != null) {
+            displayerSimulation.setManageur(manageur);
+        }
+        cardLayout.show(mainPanel, "SIMU");
         this.simulationEnCours = true;
+    }
+
+    private void genererCarte() {
+        carte = Builder.construireCarte();
+        manageur = Builder.initCarte(carte);
+        
+        int carteLargeur = GameConfiguration.NOMBRE_COLONNES * GameConfiguration.TAILLE_BLOC;
+        int carteHauteur = GameConfiguration.NOMBRE_LIGNES * GameConfiguration.TAILLE_BLOC;
+        
+        if (vueEdition != null && displayerEdition != null) {
+            vueEdition.remove(displayerEdition);
+        }
+        if (vueSimulation != null && displayerSimulation != null) {
+            vueSimulation.remove(displayerSimulation);
+        }
+        
+        displayerEdition = new MainDisplayer(carte, manageur);
+        displayerEdition.setPreferredSize(new Dimension(carteLargeur, carteHauteur));
+        displayerEdition.setMinimumSize(new Dimension(carteLargeur, carteHauteur));
+        displayerEdition.setMaximumSize(new Dimension(carteLargeur * 2, carteHauteur * 2));
+        
+        displayerSimulation = new MainDisplayer(carte, manageur);
+        displayerSimulation.setPreferredSize(new Dimension(carteLargeur, carteHauteur));
+        displayerSimulation.setPanelStats(panelStats);
+        
+        if (vueEdition != null) {
+            vueEdition.add(displayerEdition, BorderLayout.CENTER);
+        }
+        if (vueSimulation != null) {
+            vueSimulation.add(displayerSimulation, BorderLayout.CENTER);
+        }
+        
+        panelEdition.setDisplayer(displayerEdition);
+        panelEdition.setManageur(manageur);
+        
+        SwingUtilities.invokeLater(() -> {
+            mainPanel.revalidate();
+            mainPanel.repaint();
+            panelStats.repaint();
+            revalidate();
+            repaint();
+        });
     }
 
     public void arreterSimulation() {
@@ -127,18 +157,19 @@ public class MainGUI extends JFrame implements Runnable
         while (true) {
             long currentTime = System.currentTimeMillis();
             
-            // On ne fait avancer le jeu que si on a cliqué sur FIN
             if (simulationEnCours && (currentTime - lastRoundTime >= config.GameConfiguration.VITESSE_JEU)) {
                 manageur.nextRound();
                 lastRoundTime = currentTime;
             }
             
-            // On redessine TOUJOURS (même en édition pour voir ce qu'on fait)
-            displayer.repaint();
-            panelStats.repaint();
-            if (panelStats != null) {
-                panelStats.repaint(); 
+            if (displayerSimulation != null) {
+                displayerSimulation.repaint();
             }
+            if (displayerEdition != null) {
+                displayerEdition.repaint();
+                panelEdition.mettreAJourBoutonModifier();
+            }
+            panelStats.repaint();
             
             try {
                 Thread.sleep(16);

@@ -102,7 +102,7 @@ public class TestManageur {
     public void testCarteHasardGenereUneSeuleMasseDEau() {
         manageur.CarteHasard();
 
-        boolean[][] eau = new boolean[carte.getGrandeurX()][carte.getGrandeurY()];
+        boolean[][] eau = new boolean[carte.getNombreLignes()][carte.getNombreColonnes()];
         int nbCasesEau = 0;
         Bloc depart = null;
 
@@ -186,8 +186,8 @@ public class TestManageur {
         }
 
         assertTrue(nbVilles > 0);
-        assertTrue(nbDeserts >= (carte.getGrandeurX() * carte.getGrandeurY() * 0.15));
-        assertTrue(nbForets < (carte.getGrandeurX() * carte.getGrandeurY() * 0.55));
+        assertTrue(nbDeserts >= (carte.getNombreLignes() * carte.getNombreColonnes() * 0.15));
+        assertTrue(nbForets < (carte.getNombreLignes() * carte.getNombreColonnes() * 0.55));
         assertTrue(compterZonesDesertiques() >= 2);
     }
 
@@ -254,16 +254,16 @@ public class TestManageur {
 
     private boolean estDeLeauDansUnCoin() {
         return manageur.getBiomeByPosition(carte.getBloc(0, 0)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(0, carte.getGrandeurY() - 1)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(carte.getGrandeurX() - 1, 0)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(carte.getGrandeurX() - 1, carte.getGrandeurY() - 1)) instanceof Mer;
+            || manageur.getBiomeByPosition(carte.getBloc(0, carte.getNombreColonnes() - 1)) instanceof Mer
+            || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, 0)) instanceof Mer
+            || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, carte.getNombreColonnes() - 1)) instanceof Mer;
     }
 
     private boolean estDeLeauAuMilieu() {
-        int minX = carte.getGrandeurX() / 3;
-        int maxX = (carte.getGrandeurX() * 2) / 3;
-        int minY = carte.getGrandeurY() / 3;
-        int maxY = (carte.getGrandeurY() * 2) / 3;
+        int minX = carte.getNombreLignes() / 3;
+        int maxX = (carte.getNombreLignes() * 2) / 3;
+        int minY = carte.getNombreColonnes() / 3;
+        int maxY = (carte.getNombreColonnes() * 2) / 3;
 
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
@@ -277,10 +277,10 @@ public class TestManageur {
     }
 
     private boolean estDuDesertAuMilieu() {
-        int minX = carte.getGrandeurX() / 3;
-        int maxX = (carte.getGrandeurX() * 2) / 3;
-        int minY = carte.getGrandeurY() / 3;
-        int maxY = (carte.getGrandeurY() * 2) / 3;
+        int minX = carte.getNombreLignes() / 3;
+        int maxX = (carte.getNombreLignes() * 2) / 3;
+        int minY = carte.getNombreColonnes() / 3;
+        int maxY = (carte.getNombreColonnes() * 2) / 3;
 
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
@@ -294,15 +294,15 @@ public class TestManageur {
     }
 
     private boolean estDeLeauEnHautAGaucheOuADroite() {
-        int limiteGauche = Math.max(0, carte.getGrandeurY() / 3);
-        int limiteDroite = Math.max(0, (carte.getGrandeurY() * 2) / 3);
+        int limiteGauche = Math.max(0, carte.getNombreColonnes() / 3);
+        int limiteDroite = Math.max(0, (carte.getNombreColonnes() * 2) / 3);
 
         for (int j = 0; j <= limiteGauche; j++) {
             if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer) {
                 return true;
             }
         }
-        for (int j = limiteDroite; j < carte.getGrandeurY(); j++) {
+        for (int j = limiteDroite; j < carte.getNombreColonnes(); j++) {
             if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer) {
                 return true;
             }
@@ -316,15 +316,15 @@ public class TestManageur {
     }
 
     private boolean estDeLeauSurLaBordure() {
-        for (int i = 0; i < carte.getGrandeurX(); i++) {
+        for (int i = 0; i < carte.getNombreLignes(); i++) {
             if (manageur.getBiomeByPosition(carte.getBloc(i, 0)) instanceof Mer
-                || manageur.getBiomeByPosition(carte.getBloc(i, carte.getGrandeurY() - 1)) instanceof Mer) {
+                || manageur.getBiomeByPosition(carte.getBloc(i, carte.getNombreColonnes() - 1)) instanceof Mer) {
                 return true;
             }
         }
-        for (int j = 0; j < carte.getGrandeurY(); j++) {
+        for (int j = 0; j < carte.getNombreColonnes(); j++) {
             if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer
-                || manageur.getBiomeByPosition(carte.getBloc(carte.getGrandeurX() - 1, j)) instanceof Mer) {
+                || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, j)) instanceof Mer) {
                 return true;
             }
         }
@@ -337,7 +337,7 @@ public class TestManageur {
     }
 
     private int compterZonesDesertiques() {
-        boolean[][] desert = new boolean[carte.getGrandeurX()][carte.getGrandeurY()];
+        boolean[][] desert = new boolean[carte.getNombreLignes()][carte.getNombreColonnes()];
 
         for (Biome biome : manageur.getBiomes()) {
             if (biome instanceof Desert) {
@@ -346,11 +346,11 @@ public class TestManageur {
             }
         }
 
-        boolean[][] visite = new boolean[carte.getGrandeurX()][carte.getGrandeurY()];
+        boolean[][] visite = new boolean[carte.getNombreLignes()][carte.getNombreColonnes()];
         int zones = 0;
 
-        for (int i = 0; i < carte.getGrandeurX(); i++) {
-            for (int j = 0; j < carte.getGrandeurY(); j++) {
+        for (int i = 0; i < carte.getNombreLignes(); i++) {
+            for (int j = 0; j < carte.getNombreColonnes(); j++) {
                 if (desert[i][j] && !visite[i][j]) {
                     zones++;
                     marquerZoneDesertique(desert, visite, i, j);

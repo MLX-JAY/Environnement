@@ -42,8 +42,8 @@ public class TestBiomeFactory {
         Map<Bloc, Biome> biomes = BiomeFactory.creerBiomesCoherents(carte);
 
         assertEquals(100, biomes.size());
-        for (int i = 0; i < carte.getGrandeurX(); i++) {
-            for (int j = 0; j < carte.getGrandeurY(); j++) {
+        for (int i = 0; i < carte.getNombreLignes(); i++) {
+            for (int j = 0; j < carte.getNombreColonnes(); j++) {
                 Bloc bloc = carte.getBloc(i, j);
                 assertNotNull(biomes.get(bloc));
                 assertEquals(bloc, biomes.get(bloc).getPosition());
