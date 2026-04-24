@@ -74,7 +74,18 @@ public class deseign {
     }
     
     public static JSlider creerBeauSlider(int valeurInitiale, int min, int max) {
+        return creerBeauSlider(valeurInitiale, min, max, null);
+    }
+    
+    public static JSlider creerBeauSlider(int valeurInitiale, int min, int max, Color couleurBg) {
         JSlider slider = new JSlider(min, max, valeurInitiale) {
+            private Color couleurPersonnalisee = couleurBg;
+            
+            public void setCouleurBg(Color c) {
+                this.couleurPersonnalisee = c;
+                repaint();
+            }
+            
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -83,9 +94,14 @@ public class deseign {
                 int w = getWidth();
                 int h = getHeight();
                 
-                // Fond transparent
-                g2.setColor(new Color(0, 0, 0, 0));
-                g2.fillRect(0, 0, w, h);
+                // Fond du slider (personnalisé ou par défaut)
+                if (couleurPersonnalisee != null) {
+                    g2.setColor(couleurPersonnalisee);
+                    g2.fillRoundRect(0, 0, w, h, 6, 6);
+                } else {
+                    g2.setColor(new Color(0, 0, 0, 0));
+                    g2.fillRect(0, 0, w, h);
+                }
                 
                 // Fond du slider (track)
                 g2.setColor(COULEUR_SLIDER_TRACK);

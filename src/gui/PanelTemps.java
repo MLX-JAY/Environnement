@@ -35,6 +35,7 @@ public class PanelTemps extends JPanel {
             btnPause.setEnabled(false);
             btnPlay.setEnabled(true);
             mainGUI.arreterSimulation();
+            GameConfiguration.VITESSE_JEU = 1000; // Réinitialiser la vitesse à la valeur par défaut
         });
 
         btnPlay.addActionListener(e -> {
@@ -45,6 +46,7 @@ public class PanelTemps extends JPanel {
         
         btnStop.addActionListener(e -> {
             System.out.println("Ouverture du bilan de fin .");
+            GameConfiguration.VITESSE_JEU = 1000; // Réinitialiser la vitesse à la valeur par défaut
         });
 
         btnX2.addActionListener(e -> {

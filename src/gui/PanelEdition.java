@@ -19,7 +19,6 @@ import java.awt.BorderLayout;
 import config.ConfigurationCreationEvenement;
 import moteur.donne.biome.Biome;
 import moteur.donne.carte.Bloc;
-import moteur.donne.carte.Carte;
 import moteur.processus.Manageur;
 import moteur.processus.ManageurBasique;
 import moteur.processus.usine.BiomeFactory;
@@ -29,6 +28,14 @@ public class PanelEdition extends JPanel implements ChangeListener {
     
     private static final Color COULEUR_ACTION = new Color(60, 140, 60); 
     private static final Color COULEUR_MODIFIER = new Color(180, 120, 60); 
+
+    private static final Color COULEUR_FORET = new Color(34, 120, 34);
+    private static final Color COULEUR_DESERT = new Color(180, 140, 80);
+    private static final Color COULEUR_MER = new Color(30, 100, 180);
+    private static final Color COULEUR_VILLE = new Color(90, 90, 100);
+    private static final Color COULEUR_VILLAGE = new Color(139, 100, 60);
+    private static final Color COULEUR_BANQUISE = new Color(150, 200, 220);
+    private static final Color COULEUR_TITRE = new Color(255, 220, 140); 
 
     private JButton btnFin;
     private JButton btnReinitialiser;
@@ -55,7 +62,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     
     private JPanel panelConfig;
 
-	private Manageur manageur;
+    private Manageur manageur;
     
     public PanelEdition(Runnable actionFin, Runnable actionGenererCarte) {
         this.actionGenererCarte = actionGenererCarte;
@@ -161,16 +168,13 @@ public class PanelEdition extends JPanel implements ChangeListener {
         panel.setBackground(new Color(52, 78, 65));
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 4, 8);
+        gbc.insets = new Insets(2, 8, 2, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         
         int row = 0;
         
-        // Titre
-        JLabel titre = new JLabel("CONFIGURATION DES EVENEMENTS");
-        titre.setForeground(new Color(255, 200, 100));
-        titre.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        JLabel titre = creerSousTitre("CONFIGURATION DES ÉVÉNEMENTS", COULEUR_TITRE);
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.gridwidth = 3;
@@ -178,110 +182,160 @@ public class PanelEdition extends JPanel implements ChangeListener {
         row++;
         
         gbc.gridwidth = 1;
-        
-        // === MER ===
-        
-        sliderPluie = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER);
-        lblPluie = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER);
-        addRow(panel, "  Pluie:", sliderPluie, lblPluie, gbc, row);
-        row++;
-        
-        sliderOrage = creerSlider(ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER);
-        lblOrage = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER);
-        row++;
-        addRow(panel, "  Orage:", sliderOrage, lblOrage, gbc, row);
-        row++;
-        
-        sliderTonnerre = creerSlider(ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER);
-        lblTonnerre = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER);
-        row++;
-        addRow(panel, "  Tonnerre:", sliderTonnerre, lblTonnerre, gbc, row);
-        row++;
-        
-        // === DESERT ===
-        
-        sliderVentChaud = creerSlider(ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT);
-        lblVentChaud = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT);
-        row++;
-        addRow(panel, "  Vent Chaud:", sliderVentChaud, lblVentChaud, gbc, row);
-        row++;
-        
-        sliderTornade = creerSlider(ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT);
-        lblTornade = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT);
-        row++;
-        addRow(panel, "  Tornade:", sliderTornade, lblTornade, gbc, row);
-        row++;
-        
-        sliderZephyr = creerSlider(ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT);
-        lblZephyr = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT);
-        row++;
 
-        addRow(panel, "  Zephyr:", sliderZephyr, lblZephyr, gbc, row);
-        row++;
-        
-        // === BANQUISE ===
-        
-        sliderVentFroid = creerSlider(ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE);
-        lblVentFroid = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE);
-        row++;
-        addRow(panel, "  Vent Froid:", sliderVentFroid, lblVentFroid, gbc, row);
-        row++;
-        
-        sliderGrele = creerSlider(ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE);
-        lblGrele = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE);
-        row++;
-        addRow(panel, "  Grele:", sliderGrele, lblGrele, gbc, row);
-        row++;
-        
-        // === VILLE ===
-        
-        sliderPollutionVille = creerSlider(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE);
-        lblPollutionVille = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE);
-        row++;
-        addRow(panel, "  Pollution:", sliderPollutionVille, lblPollutionVille, gbc, row);
-        row++;
-        
-        sliderSmog = creerSlider(ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE);
-        lblSmog = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE);
-        row++;
-        addRow(panel, "  Smog:", sliderSmog, lblSmog, gbc, row);
-        row++;
-        
-        sliderNuageToxique = creerSlider(ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE);
-        lblNuageToxique = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE);
-        row++;
-        addRow(panel, "  Nuage Toxique:", sliderNuageToxique, lblNuageToxique, gbc, row);
-        row++;
-        
-        // === VILLAGE ===
-        
-        sliderPollutionVillage = creerSlider(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE);
-        lblPollutionVillage = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE);
-        row++;
-        addRow(panel, "  Pollution:", sliderPollutionVillage, lblPollutionVillage, gbc, row);
-        row++;
-        
         // === FORET ===
+        row = ajouterSection(panel, row, "Événements des Forêts", COULEUR_FORET);
         
-        sliderPurification = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET);
+        sliderPurification = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET, COULEUR_FORET);
         lblPurification = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET);
         row++;
         addRow(panel, "  Purification:", sliderPurification, lblPurification, gbc, row);
         row++;
         
-        sliderPluieBenite = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PLUIEBENITE_PAR_FORET);
+        sliderPluieBenite = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PLUIEBENITE_PAR_FORET, COULEUR_FORET);
         lblPluieBenite = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_PLUIEBENITE_PAR_FORET);
         row++;
+        addRow(panel, "  Pluie Bénite:", sliderPluieBenite, lblPluieBenite, gbc, row);
+        row++;
+        
+        // === DESERT ===
+        row++;
+        row = ajouterSection(panel, row, "Événements du Désert", COULEUR_DESERT);
+        
+        sliderVentChaud = creerSlider(ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT, COULEUR_DESERT);
+        lblVentChaud = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_VENT_CHAUD_PAR_DESERT);
+        row++;
+        addRow(panel, "  Vent Chaud:", sliderVentChaud, lblVentChaud, gbc, row);
+        row++;
+        
+        sliderTornade = creerSlider(ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT, COULEUR_DESERT);
+        lblTornade = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_TORNADE_PAR_DESERT);
+        row++;
+        addRow(panel, "  Tornade:", sliderTornade, lblTornade, gbc, row);
+        row++;
+        
+        sliderZephyr = creerSlider(ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT, COULEUR_DESERT);
+        lblZephyr = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_ZEPHYR_PAR_DESERT);
+        row++;
+        addRow(panel, "  Zéphyr:", sliderZephyr, lblZephyr, gbc, row);
+        row++;
 
-        addRow(panel, "  Pluie Benite:", sliderPluieBenite, lblPluieBenite, gbc, row);
+        // === MER ===
+        row++;
+        row = ajouterSection(panel, row, "Événements de la Mer", COULEUR_MER);
+        
+        sliderPluie = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER, COULEUR_MER);
+        lblPluie = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER);
+        row++;
+        addRow(panel, "  Pluie:", sliderPluie, lblPluie, gbc, row);
+        row++;
+        
+        sliderOrage = creerSlider(ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER, COULEUR_MER);
+        lblOrage = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER);
+        row++;
+        addRow(panel, "  Orage:", sliderOrage, lblOrage, gbc, row);
+        row++;
+        
+        sliderTonnerre = creerSlider(ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER, COULEUR_MER);
+        lblTonnerre = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER);
+        row++;
+        addRow(panel, "  Tonnerre:", sliderTonnerre, lblTonnerre, gbc, row);
+        row++;
+
+        // === VILLE ===
+        row++;
+        row = ajouterSection(panel, row, "Événements des Villes", COULEUR_VILLE);
+        
+        sliderPollutionVille = creerSlider(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE, COULEUR_VILLE);
+        lblPollutionVille = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLE);
+        row++;
+        addRow(panel, "  Pollution:", sliderPollutionVille, lblPollutionVille, gbc, row);
+        row++;
+        
+        sliderSmog = creerSlider(ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE, COULEUR_VILLE);
+        lblSmog = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_SMOG_PAR_VILLE);
+        row++;
+        addRow(panel, "  Smog:", sliderSmog, lblSmog, gbc, row);
+        row++;
+        
+        sliderNuageToxique = creerSlider(ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE, COULEUR_VILLE);
+        lblNuageToxique = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_NUAGETOXIQUE_PAR_VILLE);
+        row++;
+        addRow(panel, "  Nuage Toxique:", sliderNuageToxique, lblNuageToxique, gbc, row);
+        row++;
+
+        // === VILLAGE ===
+        row++;
+        row = ajouterSection(panel, row, "Événements des Villages", COULEUR_VILLAGE);
+        
+        sliderPollutionVillage = creerSlider(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE, COULEUR_VILLAGE);
+        lblPollutionVillage = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_POLLUTION_PAR_VILLAGE);
+        row++;
+        addRow(panel, "  Pollution:", sliderPollutionVillage, lblPollutionVillage, gbc, row);
+        row++;
+
+        // === BANQUISE ===
+        row++;
+        row = ajouterSection(panel, row, "Événements de la Banquise", COULEUR_BANQUISE);
+        
+        sliderVentFroid = creerSlider(ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE, COULEUR_BANQUISE);
+        lblVentFroid = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE);
+        row++;
+        addRow(panel, "  Vent Froid:", sliderVentFroid, lblVentFroid, gbc, row);
+        row++;
+        
+        sliderGrele = creerSlider(ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE, COULEUR_BANQUISE);
+        lblGrele = creerLabelValeur(ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE);
+        row++;
+        addRow(panel, "  Grêle:", sliderGrele, lblGrele, gbc, row);
+        row++;
         
         return panel;
     }
     
-    private JSlider creerSlider(double valeur) {
-        JSlider slider = deseign.creerBeauSlider((int)(valeur * 1000), 0, 50);
+    private JSlider creerSlider(double valeur, Color couleur) {
+        JSlider slider = deseign.creerBeauSlider((int)(valeur * 1000), 0, 50, couleur);
         slider.addChangeListener(this);
         return slider;
+    }
+    
+    private JLabel creerSousTitre(String texte, Color couleur) {
+        JLabel label = new JLabel(texte);
+        label.setForeground(couleur);
+        label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        label.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        return label;
+    }
+    
+    private int ajouterSection(JPanel panel, int row, String titre, Color couleur) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 4, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        
+        JPanel sectionPanel = new JPanel(new BorderLayout());
+        sectionPanel.setOpaque(true);
+        sectionPanel.setBackground(new Color(couleur.getRed(), couleur.getGreen(), couleur.getBlue(), 70));
+        
+        JLabel sectionTitre = new JLabel(titre);
+        sectionTitre.setForeground(Color.WHITE);
+        sectionTitre.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        sectionTitre.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 8));
+        
+        sectionPanel.add(sectionTitre, BorderLayout.CENTER);
+        
+        JPanel barreCouleurs = new JPanel();
+        barreCouleurs.setPreferredSize(new Dimension(8, 0));
+        barreCouleurs.setOpaque(true);
+        barreCouleurs.setBackground(couleur);
+        sectionPanel.add(barreCouleurs, BorderLayout.WEST);
+        
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 3;
+        panel.add(sectionPanel, gbc);
+        
+        return row + 1;
     }
     
     private JLabel creerLabelValeur(double valeur) {
