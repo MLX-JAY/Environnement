@@ -43,7 +43,7 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         this.biomeMap = biomeMap;
     }
     
-    public List<Evenement> getEvenementsExpirés() {
+    public ArrayList<Evenement> getEvenementsExpirés() {
         return new ArrayList<>(evenementsExpirés);
     }
     

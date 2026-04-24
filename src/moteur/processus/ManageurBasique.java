@@ -25,24 +25,25 @@ public class ManageurBasique implements Manageur
 	private Carte carte;
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements = new ArrayList<>();
-	private List<RegleTransformation> reglesTransformation = new ArrayList<>();
+	private ArrayList<RegleTransformation> reglesTransformation = new ArrayList<>();
+	private int nbTransformationsDansRound = 0;
 	private EvenementFactory factory;
 	private GenerateurEvenementVisitor generateurEvenementVisitor;
 	
-	private List<StatRound> historique = new ArrayList<>();
+	private ArrayList<StatRound> historique = new ArrayList<>();
 	private int roundActuel = 0;
 	
 	public static class StatRound {
 		public int round;
-		public Map<String, Integer> compteBiomes;
-		public Map<String, Integer> compteEvenements;
+		public HashMap<String, Integer> compteBiomes;
+		public HashMap<String, Integer> compteEvenements;
 		public double[] moyennes;
 		public int nbTransformations;
-		public Map<String, Integer> transformationParType;
+		public HashMap<String, Integer> transformationParType;
 		
-		public StatRound(int round, Map<String, Integer> compteBiomes, 
-				Map<String, Integer> compteEvenements, double[] moyennes,
-				int nbTransformations, Map<String, Integer> transformationParType) {
+		public StatRound(int round, HashMap<String, Integer> compteBiomes, 
+				HashMap<String, Integer> compteEvenements, double[] moyennes,
+				int nbTransformations, HashMap<String, Integer> transformationParType) {
 			this.round = round;
 			this.compteBiomes = compteBiomes;
 			this.compteEvenements = compteEvenements;
@@ -87,7 +88,7 @@ public class ManageurBasique implements Manageur
 			evenement.accept(visitor);
 		}
 		
-		List<Evenement> expirants = visitor.getEvenementsExpirés();
+		ArrayList<Evenement> expirants = visitor.getEvenementsExpirés();
 		
 		for (Evenement e : expirants) {
 			if (e instanceof Meteore) {
@@ -151,7 +152,7 @@ public class ManageurBasique implements Manageur
 				break;
 			}
 			
-			List<Evenement> nouveauxEvenements = generateurEvenementVisitor.genererTousEvenements(biome);
+			ArrayList<Evenement> nouveauxEvenements = generateurEvenementVisitor.genererTousEvenements(biome);
 			
 			if (nouveauxEvenements != null) {
 				for (Evenement e : nouveauxEvenements) {
@@ -175,6 +176,10 @@ public class ManageurBasique implements Manageur
 		return evenements;
 	}
 	
+	public void clearEvenements() {
+		evenements.clear();
+	}
+	
 	@Override
 	public ArrayList<Evenement> getDangers() {
 		return new ArrayList<>();
@@ -189,9 +194,8 @@ public class ManageurBasique implements Manageur
 	public void nextRound()
 	{
 		roundActuel++;
+		nbTransformationsDansRound = 0;
 		logger.info("=== Debut du round " + roundActuel + " ===");
-		
-		collecterStats();
 		
 		ajouterEvenement();
 		genererEvenementsDepuisBiomes();
@@ -199,20 +203,26 @@ public class ManageurBasique implements Manageur
 		bougerEvementMobile();
 		transformation();
 		
-		logger.info("=== Fin du round " + roundActuel + ", evenements: " + evenements.size() + " ===");
+		collecterStats();
+		
+		logger.info("=== Fin du round " + roundActuel + ", transformations: " + nbTransformationsDansRound + ", evenements: " + evenements.size() + " ===");
 	}
 	
 	private void collecterStats() {
-		Map<String, Integer> compteBiomes = new HashMap<>();
+		HashMap<String, Integer> compteBiomes = new HashMap<>();
 		for (Biome biome : biomeMap.values()) {
 			String type = biome.getClass().getSimpleName();
-			compteBiomes.put(type, compteBiomes.getOrDefault(type, 0) + 1);
+			Integer count = compteBiomes.get(type);
+			if (count == null) count = 0;
+			compteBiomes.put(type, count + 1);
 		}
 		
-		Map<String, Integer> compteEvenements = new HashMap<>();
+		HashMap<String, Integer> compteEvenements = new HashMap<>();
 		for (Evenement evt : evenements) {
 			String type = evt.getClass().getSimpleName();
-			compteEvenements.put(type, compteEvenements.getOrDefault(type, 0) + 1);
+			Integer count = compteEvenements.get(type);
+			if (count == null) count = 0;
+			compteEvenements.put(type, count + 1);
 		}
 		
 		double sumTemp = 0, sumHumid = 0, sumPoll = 0, sumPurif = 0;
@@ -230,11 +240,11 @@ public class ManageurBasique implements Manageur
 			sumPurif / nbBiomes
 		} : new double[] {0, 0, 0, 0};
 		
-		StatRound stat = new StatRound(roundActuel, compteBiomes, compteEvenements, moyennes, 0, new HashMap<>());
+		StatRound stat = new StatRound(roundActuel, compteBiomes, compteEvenements, moyennes, nbTransformationsDansRound, new HashMap<>());
 		historique.add(stat);
 	}
 	
-	public List<StatRound> getHistorique() {
+	public ArrayList<StatRound> getHistorique() {
 		return historique;
 	}
 	
@@ -242,8 +252,8 @@ public class ManageurBasique implements Manageur
 		return roundActuel;
 	}
 	
-	public Map<String, Integer> getCompteBiomesActuel() {
-		Map<String, Integer> compteBiomes = new HashMap<>();
+	public HashMap<String, Integer> getCompteBiomesActuel() {
+		HashMap<String, Integer> compteBiomes = new HashMap<>();
 		for (Biome biome : biomeMap.values()) {
 			String type = biome.getClass().getSimpleName();
 			compteBiomes.put(type, compteBiomes.getOrDefault(type, 0) + 1);
@@ -251,8 +261,8 @@ public class ManageurBasique implements Manageur
 		return compteBiomes;
 	}
 	
-	public Map<String, Integer> getCompteEvenementsActuel() {
-		Map<String, Integer> compteEvenements = new HashMap<>();
+	public HashMap<String, Integer> getCompteEvenementsActuel() {
+		HashMap<String, Integer> compteEvenements = new HashMap<>();
 		for (Evenement evt : evenements) {
 			String type = evt.getClass().getSimpleName();
 			compteEvenements.put(type, compteEvenements.getOrDefault(type, 0) + 1);
@@ -283,18 +293,17 @@ public class ManageurBasique implements Manageur
 			Biome biome = getBiomeByPosition(evenement.getPosition());
 			if (biome != null)
 			{
-				// Appliquer les impacts de l'événement sur le biome
 				biome.setHumidite(biome.getHumidite() + evenement.getImpactHumidite());
 				biome.setPurification(biome.getPurification() + evenement.getImpactPurification());
 				biome.setPollution(biome.getPollution() + evenement.getImpactPollution());
 				biome.setTemperature(biome.getTemperature() + evenement.getImpactTemperature());
 
-				// Vérifier les règles de transformation de biome
 				for (RegleTransformation regle : reglesTransformation)
 				{
 					Biome nouveauBiome = regle.evaluer(biome);
 					if (nouveauBiome != null)
 					{
+						nbTransformationsDansRound++;
 						biomeMap.put(biome.getPosition(), nouveauBiome);
 						break;
 					}

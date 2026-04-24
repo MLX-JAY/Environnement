@@ -177,8 +177,8 @@ public class GenerateurEvenementVisitor implements BiomeVisitor<Evenement> {
         return null;
     }
     
-    public List<Evenement> genererTousEvenements(Biome biome) {
-        List<Evenement> resultats = new ArrayList<>();
+    public ArrayList<Evenement> genererTousEvenements(Biome biome) {
+        ArrayList<Evenement> resultats = new ArrayList<>();
         
         if (biome instanceof Foret) {
             Foret foret = (Foret) biome;

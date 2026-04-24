@@ -19,7 +19,7 @@ import moteur.processus.ManageurBasique;
 
 public class MainGUI extends JFrame implements Runnable 
 {
- 	
+  	
 	private MainDisplayer displayerEdition;
 	private MainDisplayer displayerSimulation;
 	private final static Dimension tailleFenetre = new Dimension(GameConfiguration.FENETRE_LONGEUR, GameConfiguration.FENETRE_LARGEUR);
@@ -28,10 +28,12 @@ public class MainGUI extends JFrame implements Runnable
 	private PanelTemps panelTemps;
 	private Manageur manageur;
 	private PanelEdition panelEdition;
+	private PanelBilanDeFin panelBilan;
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private JPanel vueEdition;
     private JPanel vueSimulation;
+    private JPanel vueBilan;
     private boolean simulationEnCours = false;
 
 	public MainGUI(String title) {
@@ -133,6 +135,44 @@ public class MainGUI extends JFrame implements Runnable
 
     public void arreterSimulation() {
         this.simulationEnCours = false;
+    }
+    
+    public void afficherBilan() {
+        this.simulationEnCours = false;
+        
+        if (manageur instanceof ManageurBasique) {
+            ((ManageurBasique) manageur).clearEvenements();
+        }
+        
+        if (vueBilan != null) {
+            mainPanel.remove(vueBilan);
+        }
+        
+        vueBilan = new JPanel(new BorderLayout());
+        vueBilan.setBackground(new Color(40, 54, 24));
+        
+        panelBilan = new PanelBilanDeFin(manageur, displayerSimulation);
+        vueBilan.add(panelBilan, BorderLayout.CENTER);
+        
+        mainPanel.add(vueBilan, "BILAN");
+        
+        cardLayout.show(mainPanel, "BILAN");
+        
+        SwingUtilities.invokeLater(() -> {
+            mainPanel.revalidate();
+            mainPanel.repaint();
+        });
+    }
+    
+    public void afficherEdition() {
+        this.simulationEnCours = false;
+        cardLayout.show(mainPanel, "EDITION");
+    }
+    
+    public void nouvelleSession() {
+        this.simulationEnCours = false;
+        genererCarte();
+        cardLayout.show(mainPanel, "EDITION");
     }
 
     public void reprendresimulation() {

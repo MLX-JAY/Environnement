@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -344,7 +344,7 @@ public class JFrameStatistiques extends JFrame {
         if (!(manageur instanceof ManageurBasique)) return;
         
         ManageurBasique mb = (ManageurBasique) manageur;
-        List<StatRound> historique = mb.getHistorique();
+        ArrayList<StatRound> historique = mb.getHistorique();
         
         if (historique.isEmpty()) return;
         
@@ -354,7 +354,7 @@ public class JFrameStatistiques extends JFrame {
         mettreAJourChartEvolution(historique);
     }
     
-    private void mettreAJourChartApercu(List<StatRound> historique) {
+    private void mettreAJourChartApercu(ArrayList<StatRound> historique) {
         XYSeries serieTemp = new XYSeries("Température");
         XYSeries serieHumid = new XYSeries("Humidité");
         XYSeries seriePoll = new XYSeries("Pollution");
@@ -380,23 +380,23 @@ public class JFrameStatistiques extends JFrame {
         ((XYPlot) chartPurif.getChart().getXYPlot()).setDataset(datasetPurif);
     }
     
-    private void mettreAJourChartBiomes(List<StatRound> historique) {
-        // Pie chart - dernier etat
+    private void mettreAJourChartBiomes(ArrayList<StatRound> historique) {
         StatRound dernier = historique.get(historique.size() - 1);
         org.jfree.data.general.DefaultPieDataset pieDataset = new org.jfree.data.general.DefaultPieDataset();
 
-        for (Map.Entry<String, Integer> entry : dernier.compteBiomes.entrySet()) {
-            pieDataset.setValue(entry.getKey(), entry.getValue());
+        for (String key : dernier.compteBiomes.keySet()) {
+            pieDataset.setValue(key, dernier.compteBiomes.get(key));
         }
         ((PiePlot) chartBiomesPie.getChart().getPlot()).setDataset(pieDataset);
         
-        // Line chart - historique
         XYSeriesCollection dataset = new XYSeriesCollection();
         String[] typesBiomes = {"Foret", "Desert", "Mer", "Montagne", "Banquise", "Ville", "Village"};
         
-        for (String type : typesBiomes) {
+        for (int t = 0; t < typesBiomes.length; t++) {
+            String type = typesBiomes[t];
             XYSeries serie = new XYSeries(type);
-            for (StatRound stat : historique) {
+            for (int i = 0; i < historique.size(); i++) {
+                StatRound stat = historique.get(i);
                 Integer count = stat.compteBiomes.get(type);
                 serie.add(stat.round, count != null ? count : 0);
             }
@@ -405,26 +405,30 @@ public class JFrameStatistiques extends JFrame {
         ((XYPlot) chartBiomesLine.getChart().getXYPlot()).setDataset(dataset);
     }
     
-    private void mettreAJourChartEvenements(List<StatRound> historique) {
-        // Bar chart - actuel
+    private void mettreAJourChartEvenements(ArrayList<StatRound> historique) {
         StatRound dernier = historique.get(historique.size() - 1);
         DefaultCategoryDataset barDataset = new DefaultCategoryDataset();
-        for (Map.Entry<String, Integer> entry : dernier.compteEvenements.entrySet()) {
-            barDataset.setValue(entry.getValue(), "Événements", entry.getKey());
+        
+        for (String key : dernier.compteEvenements.keySet()) {
+            barDataset.setValue(dernier.compteEvenements.get(key), "Evenements", key);
         }
         chartEvenementsBar.getChart().getCategoryPlot().setDataset(barDataset);
         
-        // Line chart - historique total
-        XYSeries serieTotal = new XYSeries("Total Événements");
-        for (StatRound stat : historique) {
-            int total = stat.compteEvenements.values().stream().mapToInt(Integer::intValue).sum();
+        XYSeries serieTotal = new XYSeries("Total Evenements");
+        for (int i = 0; i < historique.size(); i++) {
+            StatRound stat = historique.get(i);
+            int total = 0;
+            for (String key : stat.compteEvenements.keySet()) {
+                Integer val = stat.compteEvenements.get(key);
+                if (val != null) total += val;
+            }
             serieTotal.add(stat.round, total);
         }
         XYSeriesCollection dataset = new XYSeriesCollection(serieTotal);
         ((XYPlot) chartEvenementsLine.getChart().getXYPlot()).setDataset(dataset);
     }
     
-    private void mettreAJourChartEvolution(List<StatRound> historique) {
+    private void mettreAJourChartEvolution(ArrayList<StatRound> historique) {
         XYSeries serieTemp = new XYSeries("Température");
         XYSeries serieHumid = new XYSeries("Humidité");
         XYSeries seriePoll = new XYSeries("Pollution");
