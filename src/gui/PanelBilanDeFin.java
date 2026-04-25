@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -10,6 +11,7 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,10 +23,15 @@ import moteur.processus.ManageurBasique.StatRound;
 public class PanelBilanDeFin extends JPanel {
 
     private static final Color COULEUR_FOND = new Color(40, 54, 24);
+    private static final Color COULEUR_FOND_SECTION = new Color(52, 78, 65);
     private static final Color COULEUR_TITRE = new Color(255, 220, 140);
     private static final Color COULEUR_POSITIF = new Color(100, 200, 100);
     private static final Color COULEUR_NEGATIF = new Color(200, 100, 100);
     private static final Color COULEUR_NEUTRE = new Color(150, 150, 150);
+    private static final Color COULEUR_TEMP = new Color(255, 140, 0);
+    private static final Color COULEUR_HUMID = new Color(0, 191, 255);
+    private static final Color COULEUR_POLL = new Color(220, 20, 60);
+    private static final Color COULEUR_PURIF = new Color(50, 205, 50);
 
     private Manageur manageur;
     private MainDisplayer displayer;
@@ -52,14 +59,49 @@ public class PanelBilanDeFin extends JPanel {
 
         JPanel centre = new JPanel(new BorderLayout(20, 20));
         centre.setBackground(COULEUR_FOND);
-        centre.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        centre.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         if (displayer != null) {
             centre.add(displayer, BorderLayout.CENTER);
         }
+        
+        JPanel contenu = new JPanel(new GridBagLayout());
+        contenu.setBackground(COULEUR_FOND);
+        contenu.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 8, 5, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0;
 
-        JPanel resumePanel = creerResumePanel();
-        centre.add(resumePanel, BorderLayout.EAST);
+        int row = 0;
+
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        contenu.add(creerBlocDuree(), gbc);
+        row++;
+
+        gbc.gridwidth = 1;
+        gbc.gridy = row;
+        contenu.add(creerBlocBiomes(), gbc);
+        gbc.gridx = 1;
+        contenu.add(creerBlocEvenements(), gbc);
+        
+        row++;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        contenu.add(creerBlocMetriques(), gbc);
+        gbc.gridx = 1;
+        contenu.add(creerBlocSante(), gbc);
+        
+        row++;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        contenu.add(creerBlocMoteur(), gbc);
+
+        centre.add(contenu, BorderLayout.EAST);
 
         this.add(centre, BorderLayout.CENTER);
 
@@ -93,261 +135,382 @@ public class PanelBilanDeFin extends JPanel {
         return (val != null) ? val : 0;
     }
 
-    private boolean contientCle(HashMap<String, Integer> map, String cle) {
-        return map.get(cle) != null;
-    }
-
-    private JPanel creerResumePanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(52, 78, 65));
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 12, 8, 12);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-
-        int row = 0;
+    private JPanel creerBlocDuree() {
+        JPanel bloc = new JPanel(new BorderLayout());
+        bloc.setBackground(COULEUR_FOND_SECTION);
+        bloc.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(COULEUR_TITRE, 2),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
 
         if (!(manageur instanceof ManageurBasique)) {
             JLabel lbl = new JLabel("Pas de donnees disponibles");
             lbl.setForeground(Color.WHITE);
-            panel.add(lbl, gbc);
-            return panel;
+            lbl.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
         }
 
         ManageurBasique mb = (ManageurBasique) manageur;
         ArrayList<StatRound> historique = mb.getHistorique();
+        int duree = historique != null && !historique.isEmpty() ? historique.get(historique.size() - 1).round : 0;
 
-        if (historique == null || historique.isEmpty()) {
-            JLabel lbl = new JLabel("Aucune donnee disponible");
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JLabel lblDuree = new JLabel("DUREE DE LA PARTIE");
+        lblDuree.setForeground(COULEUR_TITRE);
+        lblDuree.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        content.add(lblDuree, gbc);
+
+        JLabel lblValeur = new JLabel(duree + " rounds");
+        lblValeur.setForeground(Color.WHITE);
+        lblValeur.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        gbc.gridy = 1;
+        gbc.insets = new Insets(5, 0, 0, 0);
+        content.add(lblValeur, gbc);
+
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
+
+    private JPanel creerBlocBiomes() {
+        JPanel bloc = creerBlocSection("BIOMES", new Color(34, 120, 34));
+        
+        if (!(manageur instanceof ManageurBasique)) {
+            JLabel lbl = new JLabel("Pas de donnees");
             lbl.setForeground(Color.WHITE);
-            panel.add(lbl, gbc);
-            return panel;
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
         }
 
-        int taille = historique.size();
-        StatRound premier = historique.get(0);
-        StatRound dernier = historique.get(taille - 1);
-        int duree = dernier.round;
+        ManageurBasique mb = (ManageurBasique) manageur;
+        ArrayList<StatRound> historique = mb.getHistorique();
+        if (historique == null || historique.isEmpty()) {
+            JLabel lbl = new JLabel("Aucune donnee");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
 
-        JLabel lblDuree = creerTitre("Duree de la Partie: " + duree + " rounds");
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.gridwidth = 2;
-        panel.add(lblDuree, gbc);
-        row++;
-
-        gbc.gridwidth = 1;
-        JLabel lblBiomes = creerTitre("Biomes");
-        gbc.gridy = row;
-        panel.add(lblBiomes, gbc);
-        row++;
-
+        StatRound dernier = historique.get(historique.size() - 1);
         HashMap<String, Integer> biomes = dernier.compteBiomes;
-        String biomePlus = "";
-        String biomeMoins = "";
+        
+        String meilleur = "";
+        String moinsBon = "";
         int maxVal = Integer.MIN_VALUE;
         int minVal = Integer.MAX_VALUE;
 
         for (String key : biomes.keySet()) {
             int val = obtenirValeur(biomes, key);
-            if (val > maxVal) {
-                maxVal = val;
-                biomePlus = key;
-            }
-            if (val < minVal) {
-                minVal = val;
-                biomeMoins = key;
-            }
+            if (val > maxVal) { maxVal = val; meilleur = key; }
+            if (val < minVal) { minVal = val; moinsBon = key; }
         }
 
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Plus present:", biomePlus, COULEUR_POSITIF), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Moins present:", biomeMoins, COULEUR_NEGATIF), gbc);
-        row++;
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 10, 2, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Effectif:", String.valueOf(maxVal), COULEUR_NEUTRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Effectif:", String.valueOf(minVal), COULEUR_NEUTRE), gbc);
-        row++;
+        gbc.gridy = 0;
+        content.add(creerLigne("Le meilleur bloc est :", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 1;
+        content.add(creerLigne(meilleur + " (" + maxVal + ")", COULEUR_POSITIF), gbc);
+        gbc.gridy = 2;
+        content.add(creerLigne("Le moins bon bloc est :", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 3;
+        content.add(creerLigne(moinsBon + " (" + minVal + ")", COULEUR_NEGATIF), gbc);
 
-        gbc.gridx = 0;
-        JLabel lblEvents = creerTitre("Evenements");
-        gbc.gridy = row;
-        gbc.gridwidth = 2;
-        panel.add(lblEvents, gbc);
-        row++;
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
 
-        HashMap<String, Integer> events = dernier.compteEvenements;
-        String eventPlus = "";
-        String eventMoins = "";
-        int maxEvent = Integer.MIN_VALUE;
-        int minEvent = Integer.MAX_VALUE;
-
-        for (String key : events.keySet()) {
-            int val = obtenirValeur(events, key);
-            if (val > maxEvent) {
-                maxEvent = val;
-                eventPlus = key;
-            }
-            if (val < minEvent) {
-                minEvent = val;
-                eventMoins = key;
-            }
-        }
-
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Plus frequent:", eventPlus, COULEUR_POSITIF), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Moins frequent:", eventMoins, COULEUR_NEGATIF), gbc);
-        row++;
-
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Total:", String.valueOf(maxEvent), COULEUR_NEUTRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Total:", String.valueOf(minEvent), COULEUR_NEUTRE), gbc);
-        row++;
-
-        gbc.gridwidth = 2;
-        JLabel lblMetriques = creerTitre("Metriques Globales");
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(lblMetriques, gbc);
-        row++;
-
-        double tempMoy = dernier.moyennes[0];
-        double humidMoy = dernier.moyennes[1];
-        double pollMoy = dernier.moyennes[2];
-        double purifMoy = dernier.moyennes[3];
-
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Temperature:", String.format("%.1f%%", tempMoy), COULEUR_TITRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Humidite:", String.format("%.1f%%", humidMoy), COULEUR_TITRE), gbc);
-        row++;
-
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Pollution:", String.format("%.1f%%", pollMoy), COULEUR_TITRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Purification:", String.format("%.1f%%", purifMoy), COULEUR_TITRE), gbc);
-        row++;
-
-        gbc.gridwidth = 2;
-        JLabel lblSante = creerTitre("Sante de l'Ecosysteme");
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(lblSante, gbc);
-        row++;
-
-        int foret = obtenirValeur(biomes, "Foret");
-        int mer = obtenirValeur(biomes, "Mer");
+    private JPanel creerBlocEvenements() {
+        JPanel bloc = creerBlocSection("EVENEMENTS", new Color(150, 100, 180));
         
-        int totalBiomes = 0;
-        for (String key : biomes.keySet()) {
-            totalBiomes += obtenirValeur(biomes, key);
+        if (!(manageur instanceof ManageurBasique)) {
+            JLabel lbl = new JLabel("Pas de donnees");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        ManageurBasique mb = (ManageurBasique) manageur;
+        ArrayList<StatRound> historique = mb.getHistorique();
+        if (historique == null || historique.isEmpty()) {
+            JLabel lbl = new JLabel("Aucune donnee");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        HashMap<String, Integer> totalEvents = new HashMap<>();
+        for (StatRound sr : historique) {
+            for (String key : sr.compteEvenements.keySet()) {
+                int val = obtenirValeur(totalEvents, key) + obtenirValeur(sr.compteEvenements, key);
+                totalEvents.put(key, val);
+            }
+        }
+
+        String meilleur = "";
+        String moinsBon = "";
+        int maxVal = Integer.MIN_VALUE;
+        int minVal = Integer.MAX_VALUE;
+
+        for (String key : totalEvents.keySet()) {
+            int val = obtenirValeur(totalEvents, key);
+            if (val > maxVal) { maxVal = val; meilleur = key; }
+            if (val < minVal) { minVal = val; moinsBon = key; }
+        }
+
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 10, 2, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        content.add(creerLigne("L'evenement le plus frequent :", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 1;
+        content.add(creerLigne(meilleur + " (" + maxVal + ")", COULEUR_POSITIF), gbc);
+        gbc.gridy = 2;
+        content.add(creerLigne("L'evenement le moins frequent :", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 3;
+        content.add(creerLigne(moinsBon + " (" + minVal + ")", COULEUR_NEGATIF), gbc);
+
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
+
+    private JPanel creerBlocMetriques() {
+        JPanel bloc = creerBlocSection("METRIQUES GLOBALES", COULEUR_TITRE);
+        
+        if (!(manageur instanceof ManageurBasique)) {
+            JLabel lbl = new JLabel("Pas de donnees");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        ManageurBasique mb = (ManageurBasique) manageur;
+        ArrayList<StatRound> historique = mb.getHistorique();
+        if (historique == null || historique.isEmpty()) {
+            JLabel lbl = new JLabel("Aucune donnee");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        StatRound dernier = historique.get(historique.size() - 1);
+        double temp = dernier.moyennes[0];
+        double humid = dernier.moyennes[1];
+        double poll = dernier.moyennes[2];
+        double purif = dernier.moyennes[3];
+
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 10, 2, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        int r = 0;
+        gbc.gridx = 0;
+        gbc.gridy = r;
+        content.add(creerLigne("Temperature", COULEUR_NEUTRE), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne(String.format("%.1f%%", temp), COULEUR_TEMP), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne("Humidite", COULEUR_NEUTRE), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne(String.format("%.1f%%", humid), COULEUR_HUMID), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne("Pollution", COULEUR_NEUTRE), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne(String.format("%.1f%%", poll), COULEUR_POLL), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne("Purification", COULEUR_NEUTRE), gbc);
+        gbc.gridy = ++r;
+        content.add(creerLigne(String.format("%.1f%%", purif), COULEUR_PURIF), gbc);
+
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
+
+    private JPanel creerBlocSante() {
+        JPanel bloc = creerBlocSection("SANTE ECOSYSTEME", COULEUR_POSITIF);
+        
+        if (!(manageur instanceof ManageurBasique)) {
+            JLabel lbl = new JLabel("Pas de donnees");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        ManageurBasique mb = (ManageurBasique) manageur;
+        ArrayList<StatRound> historique = mb.getHistorique();
+        if (historique == null || historique.isEmpty()) {
+            JLabel lbl = new JLabel("Aucune donnee");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        StatRound premier = historique.get(0);
+        StatRound dernier = historique.get(historique.size() - 1);
+        
+        int foret = obtenirValeur(dernier.compteBiomes, "Foret");
+        int mer = obtenirValeur(dernier.compteBiomes, "Mer");
+        
+        int total = 0;
+        for (String key : dernier.compteBiomes.keySet()) {
+            total += obtenirValeur(dernier.compteBiomes, key);
         }
         
-        double tauxSurvie = totalBiomes > 0 ? ((double)(foret + mer) / totalBiomes * 100) : 0;
-
+        double tauxSurvie = total > 0 ? ((foret + mer) * 100.0 / total) : 0;
+        
         double pollDebut = premier.moyennes[2];
         double pollFin = dernier.moyennes[2];
-        double evolutionPoll = pollFin - pollDebut;
-
-        int typesBiomesRestants = 0;
-        for (String key : biomes.keySet()) {
-            if (obtenirValeur(biomes, key) > 0) {
-                typesBiomesRestants++;
+        double evolPoll = pollFin - pollDebut;
+        
+        int typesRestants = 0;
+        for (String key : dernier.compteBiomes.keySet()) {
+            if (obtenirValeur(dernier.compteBiomes, key) > 0) {
+                typesRestants++;
             }
         }
 
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Taux survie:", String.format("%.1f%%", tauxSurvie), COULEUR_NEUTRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Biodiversite:", typesBiomesRestants + " types", COULEUR_NEUTRE), gbc);
-        row++;
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 10, 2, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        gbc.gridwidth = 2;
         gbc.gridx = 0;
-        gbc.gridy = row;
-        Color couleurEvol = evolutionPoll > 0 ? COULEUR_NEGATIF : COULEUR_POSITIF;
-        String signe = evolutionPoll > 0 ? "+" : "";
-        panel.add(creerLabel("Evolution pollution:", signe + String.format("%.1f%%", evolutionPoll), couleurEvol), gbc);
-        row++;
+        gbc.gridy = 0;
+        Color couleurSurvie = tauxSurvie > 30 ? COULEUR_POSITIF : (tauxSurvie > 15 ? COULEUR_TITRE : COULEUR_NEGATIF);
+        content.add(creerLigne("Taux de survie", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 1;
+        content.add(creerLigne(String.format("%.0f%%", tauxSurvie), couleurSurvie), gbc);
+        gbc.gridy = 2;
+        content.add(creerLigne("Biodiversite", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 3;
+        content.add(creerLigne(typesRestants + " types", Color.WHITE), gbc);
+        gbc.gridy = 4;
+        Color couleurPoll = evolPoll > 0 ? COULEUR_NEGATIF : COULEUR_POSITIF;
+        String signe = evolPoll > 0 ? "+" : "";
+        content.add(creerLigne("Evolution pollution", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 5;
+        content.add(creerLigne(signe + String.format("%.0f%%", evolPoll), couleurPoll), gbc);
 
-        gbc.gridwidth = 2;
-        JLabel lblPerf = creerTitre("Performance du Moteur");
-        gbc.gridy = row;
-        panel.add(lblPerf, gbc);
-        row++;
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
+
+    private JPanel creerBlocMoteur() {
+        JPanel bloc = creerBlocSection("MOTEUR", new Color(100, 150, 200));
+        
+        if (!(manageur instanceof ManageurBasique)) {
+            JLabel lbl = new JLabel("Pas de donnees");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
+
+        ManageurBasique mb = (ManageurBasique) manageur;
+        ArrayList<StatRound> historique = mb.getHistorique();
+        if (historique == null || historique.isEmpty()) {
+            JLabel lbl = new JLabel("Aucune donnee");
+            lbl.setForeground(Color.WHITE);
+            bloc.add(lbl, BorderLayout.CENTER);
+            return bloc;
+        }
 
         int totalTransfos = 0;
-        int totalEvents = 0;
+        int purification = 0;
+        int pollution = 0;
         
-        for (int i = 0; i < taille; i++) {
-            StatRound sr = historique.get(i);
+        for (StatRound sr : historique) {
             totalTransfos += sr.nbTransformations;
-            
-            HashMap<String, Integer> evtMap = sr.compteEvenements;
-            for (String key : evtMap.keySet()) {
-                totalEvents += obtenirValeur(evtMap, key);
+            for (String key : sr.compteEvenements.keySet()) {
+                if (key.equals("Purification")) {
+                    purification += obtenirValeur(sr.compteEvenements, key);
+                }
+                if (key.equals("Pollution")) {
+                    pollution += obtenirValeur(sr.compteEvenements, key);
+                }
             }
         }
-
-        int purificationNaturelle = 0;
-        int pollutionUrbaine = 0;
         
-        for (int i = 0; i < taille; i++) {
-            StatRound sr = historique.get(i);
-            if (contientCle(sr.compteEvenements, "Purification")) {
-                purificationNaturelle += obtenirValeur(sr.compteEvenements, "Purification");
-            }
-            if (contientCle(sr.compteEvenements, "Pollution")) {
-                pollutionUrbaine += obtenirValeur(sr.compteEvenements, "Pollution");
-            }
-        }
-        int diferencial = purificationNaturelle - pollutionUrbaine;
+        int diferentiel = purification - pollution;
 
-        gbc.gridwidth = 1;
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(COULEUR_FOND_SECTION);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 8, 2, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
         gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(creerLabel("Transformations:", String.valueOf(totalTransfos), COULEUR_NEUTRE), gbc);
-        gbc.gridx = 1;
-        panel.add(creerLabel("Evenements:", String.valueOf(totalEvents), COULEUR_NEUTRE), gbc);
-        row++;
+        gbc.gridy = 0;
+        content.add(creerLigne("Nombre de transformations", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 1;
+        content.add(creerLigne("" + totalTransfos, Color.WHITE), gbc);
+        gbc.gridy = 2;
+        Color couleurDiff = diferentiel >= 0 ? COULEUR_POSITIF : COULEUR_NEGATIF;
+        content.add(creerLigne("Purification - Pollution", COULEUR_NEUTRE), gbc);
+        gbc.gridy = 3;
+        String signe = diferentiel >= 0 ? "+" : "";
+        String explanation = diferentiel >= 0 ? "La nature domine" : "L'urbanisation domine";
+        content.add(creerLigne(signe + diferentiel + " (" + explanation + ")", couleurDiff), gbc);
 
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        Color couleurDiff = diferencial >= 0 ? COULEUR_POSITIF : COULEUR_NEGATIF;
-        panel.add(creerLabel("Differentiel:", (diferencial >= 0 ? "+" : "") + diferencial, couleurDiff), gbc);
-        row++;
+        bloc.add(content, BorderLayout.CENTER);
+        return bloc;
+    }
 
+    private JPanel creerBlocSection(String titre, Color couleurBande) {
+        JPanel bloc = new JPanel(new BorderLayout());
+        bloc.setBackground(COULEUR_FOND_SECTION);
+        
+        JPanel bande = new JPanel();
+        bande.setPreferredSize(new Dimension(6, 0));
+        bande.setBackground(couleurBande);
+        bloc.add(bande, BorderLayout.WEST);
+        
+        JPanel haut = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
+        haut.setBackground(COULEUR_FOND_SECTION);
+        JLabel lbl = new JLabel(titre);
+        lbl.setForeground(couleurBande);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        haut.add(lbl);
+        
+        bloc.add(haut, BorderLayout.NORTH);
+        bloc.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(couleurBande, 1),
+            BorderFactory.createEmptyBorder(30, 10, 8, 10)
+        ));
+        
+        return bloc;
+    }
+
+    private JPanel creerLigne(String texte, Color couleur) {
+        JPanel panel = new JPanel();
+        panel.setBackground(COULEUR_FOND_SECTION);
+        
+        JLabel lbl = new JLabel(texte);
+        lbl.setForeground(couleur);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        panel.add(lbl);
+        
         return panel;
-    }
-
-    private JLabel creerTitre(String texte) {
-        JLabel label = new JLabel(texte);
-        label.setForeground(COULEUR_TITRE);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        return label;
-    }
-
-    private JLabel creerLabel(String nom, String valeur, Color couleur) {
-        JLabel label = new JLabel(nom + " " + valeur);
-        label.setForeground(couleur);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        return label;
     }
 }
