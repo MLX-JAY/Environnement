@@ -1,5 +1,5 @@
 package gui;
-
+import java.awt.GradientPaint;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -309,19 +309,73 @@ public class StrategiePeinture
         g.fillRect(x + taille/2 - 2, y + taille/2, 4, taille/2);
     }
     
-    public void paint(Banquise banquise, Graphics graphics) 
-    {    
-        Bloc position = banquise.getPosition();
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = position.getX() * size;
-        int y = position.getY() * size;
-        
-        graphics.setColor(new Color(0xD8F6FF));
-        graphics.fillRect(x, y, size, size);
-        
-        graphics.setColor(new Color(0xA8E6FF));
-        graphics.drawLine(x, y, x+size, y+size);
+    public void paint(Banquise banquise, Graphics graphics) {
+    Bloc position = banquise.getPosition();
+    int size = config.GameConfiguration.TAILLE_BLOC;
+    int x = position.getX() * size;
+    int y = position.getY() * size;
+    Graphics2D g2 = (Graphics2D) graphics.create();
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+    // --- Fond dégradé glacial (blanc-bleu → bleu clair) ---
+    GradientPaint iceGrad = new GradientPaint(
+        x, y, new Color(0xE8F6FF),
+        x, y + size, new Color(0xA8CCE8));
+    g2.setPaint(iceGrad);
+    g2.fillRect(x, y, size, size);
+
+    Random rand = new Random(position.getX() * 31 + position.getY());
+
+    // --- Blocs de glace translucides ---
+    g2.setColor(new Color(180, 220, 248, 100));
+    g2.fillRoundRect(x + size/16, y + size*18/100, size*38/100, size*28/100, 4, 4);
+    g2.setColor(new Color(160, 208, 240, 90));
+    g2.fillRoundRect(x + size/2, y + size*42/100, size*38/100, size*22/100, 4, 4);
+    g2.setColor(new Color(200, 235, 255, 80));
+    g2.fillRoundRect(x + size*15/100, y + size*62/100, size*55/100, size*20/100, 4, 4);
+
+    // --- Réseau de fissures (déterministe via seed) ---
+    g2.setStroke(new BasicStroke(0.9f));
+    g2.setColor(new Color(100, 165, 210, 140));
+    // Fissure principale avec deux branches
+    int fx = x + rand.nextInt(size/4) + size/10;
+    int fy = y + rand.nextInt(size/5) + size/10;
+    int fmx = fx + size/3 + rand.nextInt(size/5);
+    int fmy = fy + size/3 + rand.nextInt(size/5);
+    g2.drawLine(fx, fy, fmx, fmy);
+    g2.drawLine(fmx, fmy, fmx - size/4, fmy + size/5);
+    g2.drawLine(fmx, fmy, fmx + size/5, fmy + size/4);
+    // Fissure secondaire
+    int fx2 = x + size/2 + rand.nextInt(size/4);
+    int fy2 = y + rand.nextInt(size/5) + size/8;
+    g2.drawLine(fx2, fy2, fx2 + size/4, fy2 + size*2/5);
+    g2.drawLine(fx2 + size/4, fy2 + size*2/5, fx2 + size*3/10, fy2 + size*3/5);
+
+    // --- Reflets sur la glace (éclats lumineux) ---
+    g2.setColor(new Color(255, 255, 255, 160));
+    g2.fillOval(x + size/6, y + size/5, size/5, size/12);
+    g2.fillOval(x + size/2 + size/10, y + size/2, size/6, size/14);
+
+    // --- Petits amas de neige ---
+    g2.setColor(new Color(240, 250, 255, 200));
+    for (int i = 0; i < 5; i++) {
+        int sx = x + rand.nextInt(size - 8) + 4;
+        int sy = y + rand.nextInt(size - 8) + 4;
+        g2.fillOval(sx, sy, 5 + rand.nextInt(5), 3 + rand.nextInt(3));
     }
+
+    // --- Deux flocons bien placés ---
+    dessinerFlocon(g2, x + size * 28 / 100, y + size * 35 / 100, size / 7);
+    dessinerFlocon(g2, x + size * 70 / 100, y + size * 65 / 100, size / 9);
+
+    // --- Bord glacé ---
+    g2.setPaint(null);
+    g2.setColor(new Color(80, 150, 200, 60));
+    g2.setStroke(new BasicStroke(1.5f));
+    g2.drawRect(x + 1, y + 1, size - 2, size - 2);
+
+    g2.dispose();
+}
     
     public void paint(Ville ville, Graphics graphics) 
     {    
@@ -350,53 +404,104 @@ public class StrategiePeinture
         }
     }
     
-    public void paint(Montagne montagne, Graphics graphics) 
-    {    
-        Bloc position = montagne.getPosition();
-        int size = config.GameConfiguration.TAILLE_BLOC;
-        int x = position.getX() * size;
-        int y = position.getY() * size;
+    public void paint(Montagne montagne, Graphics graphics) {
+    Bloc position = montagne.getPosition();
+    int size = config.GameConfiguration.TAILLE_BLOC;
+    int x = position.getX() * size;
+    int y = position.getY() * size;
+    Graphics2D g2 = (Graphics2D) graphics.create();
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        graphics.setColor(new Color(0x888888));
-        graphics.fillRect(x, y, size, size);
+    // --- Ciel dégradé (bleu clair en haut → gris au milieu) ---
+    GradientPaint cielGrad = new GradientPaint(
+        x, y, new Color(0xB8D0E8),
+        x, y + size * 2 / 3, new Color(0x8899AA));
+    g2.setPaint(cielGrad);
+    g2.fillRect(x, y, size, size);
 
-        int baseY = y + size;
+    // --- Sol rocheux en bas ---
+    GradientPaint solGrad = new GradientPaint(
+        x, y + size * 2 / 3, new Color(0x5A5A5A),
+        x, y + size, new Color(0x3A3A3A));
+    g2.setPaint(solGrad);
+    g2.fillRect(x, y + size * 2 / 3, size, size / 3);
 
-        int[] leftPeakX = {x + 1, x + size / 4, x + size / 2};
-        int[] leftPeakY = {baseY, y + (size * 5) / 9, baseY};
+    Random rand = new Random(position.getX() * 31 + position.getY());
 
-        int[] centerPeakX = {x + size / 4 - 1, x + size / 2, x + (size * 3) / 4 + 1};
-        int[] centerPeakY = {baseY, y + (size * 3) / 8, baseY};
+    // --- Pic arrière (effet de profondeur, plus clair) ---
+    int[] backX = {x + size / 5, x + size / 2, x + size * 4 / 5};
+    int[] backY = {y + size, y + size / 4, y + size};
+    g2.setColor(new Color(0x8A9BAD));
+    g2.fillPolygon(backX, backY, 3);
+    // Face d'ombre gauche
+    g2.setColor(new Color(0x7A8B9D));
+    g2.fillPolygon(new int[]{backX[0], backX[1], backX[1]},
+                   new int[]{backY[0], backY[1], backY[0]}, 3);
+    // Neige du pic arrière
+    int bsr = size / 9;
+    g2.setColor(new Color(0xD8EAF8));
+    g2.fillPolygon(new int[]{backX[1]-bsr, backX[1], backX[1]+bsr},
+                   new int[]{backY[1]+size/7, backY[1], backY[1]+size/7}, 3);
 
-        int[] rightPeakX = {x + size / 2, x + (size * 3) / 4, x + size - 1};
-        int[] rightPeakY = {baseY, y + (size * 5) / 9, baseY};
+    // --- Pic avant gauche ---
+    int[] leftX = {x, x + size / 3, x + size * 3 / 5};
+    int[] leftY = {y + size, y + size * 26 / 100, y + size};
+    g2.setColor(new Color(0x5A5A6A));
+    g2.fillPolygon(leftX, leftY, 3);
+    g2.setColor(new Color(0x454550));
+    g2.fillPolygon(new int[]{leftX[0], leftX[1], leftX[1]},
+                   new int[]{leftY[0], leftY[1], leftY[0]}, 3);
+    // Neige avec ombre bleue
+    int lsr = size / 8;
+    g2.setColor(new Color(0xF0F6FF));
+    g2.fillPolygon(new int[]{leftX[1]-lsr, leftX[1], leftX[1]+lsr},
+                   new int[]{leftY[1]+size/6, leftY[1], leftY[1]+size/6}, 3);
+    g2.setColor(new Color(0xC0D4EE));
+    g2.fillPolygon(new int[]{leftX[1]-lsr, leftX[1], leftX[1]},
+                   new int[]{leftY[1]+size/6, leftY[1], leftY[1]+size/6}, 3);
 
-        graphics.setColor(new Color(0x5A5A5A));
-        graphics.fillPolygon(leftPeakX, leftPeakY, 3);
-        graphics.setColor(new Color(0x484848));
-        graphics.fillPolygon(centerPeakX, centerPeakY, 3);
-        graphics.setColor(new Color(0x5A5A5A));
-        graphics.fillPolygon(rightPeakX, rightPeakY, 3);
+    // --- Pic avant droit ---
+    int[] rightX = {x + size * 2 / 5, x + size * 68 / 100, x + size};
+    int[] rightY = {y + size, y + size * 26 / 100, y + size};
+    g2.setColor(new Color(0x4A4A5A));
+    g2.fillPolygon(rightX, rightY, 3);
+    g2.setColor(new Color(0x3A3A48));
+    g2.fillPolygon(new int[]{rightX[0], rightX[1], rightX[1]},
+                   new int[]{rightY[0], rightY[1], rightY[0]}, 3);
+    int rsr = size / 8;
+    g2.setColor(new Color(0xF0F6FF));
+    g2.fillPolygon(new int[]{rightX[1]-rsr, rightX[1], rightX[1]+rsr},
+                   new int[]{rightY[1]+size/6, rightY[1], rightY[1]+size/6}, 3);
+    g2.setColor(new Color(0xC0D4EE));
+    g2.fillPolygon(new int[]{rightX[1]-rsr, rightX[1], rightX[1]},
+                   new int[]{rightY[1]+size/6, rightY[1], rightY[1]+size/6}, 3);
 
-        graphics.setColor(new Color(0x3C3C3C));
-        graphics.drawPolyline(leftPeakX, leftPeakY, 3);
-        graphics.drawPolyline(centerPeakX, centerPeakY, 3);
-        graphics.drawPolyline(rightPeakX, rightPeakY, 3);
-
-        int[] leftSnowX = {leftPeakX[1] - size / 12, leftPeakX[1], leftPeakX[1] + size / 12};
-        int[] leftSnowY = {leftPeakY[1] + size / 8, leftPeakY[1], leftPeakY[1] + size / 8};
-
-        int[] centerSnowX = {centerPeakX[1] - size / 10, centerPeakX[1], centerPeakX[1] + size / 10};
-        int[] centerSnowY = {centerPeakY[1] + size / 7, centerPeakY[1], centerPeakY[1] + size / 7};
-
-        int[] rightSnowX = {rightPeakX[1] - size / 12, rightPeakX[1], rightPeakX[1] + size / 12};
-        int[] rightSnowY = {rightPeakY[1] + size / 8, rightPeakY[1], rightPeakY[1] + size / 8};
-
-        graphics.setColor(new Color(0xF3F7FB));
-        graphics.fillPolygon(leftSnowX, leftSnowY, 3);
-        graphics.fillPolygon(centerSnowX, centerSnowY, 3);
-        graphics.fillPolygon(rightSnowX, rightSnowY, 3);
+    // --- Sapins détaillés (tronc + deux triangles) ---
+    int[] treeOffsets = {size/14, size*22/100, size*42/100, size*62/100, size*78/100};
+    g2.setColor(new Color(0x1C4A10));
+    for (int i = 0; i < treeOffsets.length; i++) {
+        int tx = x + treeOffsets[i];
+        int th = size / 5 + (i % 2) * size / 14;
+        int base = y + size - 1;
+        // Triangle principal
+        g2.fillPolygon(new int[]{tx - size/16, tx, tx + size/16},
+                       new int[]{base, base - th, base}, 3);
+        // Triangle sommet (plus aigu)
+        g2.fillPolygon(new int[]{tx - size/20, tx, tx + size/20},
+                       new int[]{base - th*2/5, base - th - size/14, base - th*2/5}, 3);
     }
+
+    // --- Rochers au sol ---
+    g2.setColor(new Color(0x484848));
+    for (int i = 0; i < 3; i++) {
+        int rx = x + rand.nextInt(size - 8);
+        int ry = y + size - size/7 + rand.nextInt(size/9);
+        g2.fillOval(rx, ry, 5 + rand.nextInt(5), 3 + rand.nextInt(3));
+    }
+
+    g2.dispose();
+}
+
     
 //===========================================  LES EVENEMENTS  ============================================================
     

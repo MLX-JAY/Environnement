@@ -1,0 +1,173 @@
+% ============================================================
+%  FICHIER MAÎTRE — Projet Environnement
+%  CY Cergy Paris Université — L2 Informatique
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+% --- Encodage et langue ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% --- Correction headheight (warning fancyhdr) ---
+\setlength{\headheight}{15.5pt}
+
+% --- Mise en page ---
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{emptypage}
+\usepackage{setspace}
+
+% --- Typographie ---
+\usepackage{microtype}
+\usepackage{lmodern}
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{1.5em}
+\onehalfspacing
+% Correction des débordements de texte (Overfull \hbox)
+\emergencystretch=2em
+
+% --- Graphiques et couleurs ---
+\usepackage{graphicx}
+\usepackage[dvipsnames, table]{xcolor}
+\graphicspath{{images/}}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% --- Mathématiques ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% --- Tableaux ---
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+
+% --- Listes ---
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=0.3em}
+\setlist[enumerate]{noitemsep, topsep=0.3em}
+
+% --- Code source ---
+\usepackage{listings}
+\definecolor{codebg}{RGB}{248, 248, 248}
+\definecolor{codeframe}{RGB}{180, 180, 180}
+\definecolor{codekw}{RGB}{0, 0, 180}
+\definecolor{codecomment}{RGB}{80, 120, 80}
+% Couleur chaînes : brun-orangé (pas rouge)
+\definecolor{codestring}{RGB}{150, 80, 0}
+
+\lstdefinestyle{java}{
+  language=Java,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries\color{codekw},
+  commentstyle=\itshape\color{codecomment},
+  stringstyle=\color{codestring},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  stepnumber=1,
+  breaklines=true,
+  breakatwhitespace=true,
+  captionpos=b,
+  tabsize=4,
+  showstringspaces=false,
+  extendedchars=true,
+  literate=
+    {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {à}{{\`a}}1
+    {ù}{{\`u}}1 {ô}{{\^o}}1 {î}{{\^i}}1 {û}{{\^u}}1
+    {â}{{\^a}}1 {ç}{{\c{c}}}1 {É}{{\'E}}1 {È}{{\`E}}1
+    {Ê}{{\^E}}1 {À}{{\`A}}1
+}
+
+\lstdefinestyle{algo}{
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  stepnumber=1,
+  breaklines=true,
+  captionpos=b,
+  tabsize=2,
+  extendedchars=true,
+  literate=
+    {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {à}{{\`a}}1
+    {ù}{{\`u}}1 {ô}{{\^o}}1 {î}{{\^i}}1 {û}{{\^u}}1
+    {â}{{\^a}}1 {ç}{{\c{c}}}1 {É}{{\'E}}1
+}
+
+% --- Hyperliens ---
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+
+% --- Formatage des titres ---
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{}{0em}{\thesection\quad}[\vspace{0.3em}\hrule\vspace{0.5em}]
+\titleformat{\subsection}{\large\bfseries}{\thesubsection\quad}{0em}{}
+\titlespacing*{\section}{0pt}{2em}{1em}
+\titlespacing*{\subsection}{0pt}{1.5em}{0.5em}
+
+% Numérotation des sections
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+% --- En-têtes et pieds de page ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.2pt}
+\fancyhead[L]{\slshape\leftmark}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\small Projet Environnement~---~CY Cergy Paris Université~---~Année 2025--2026}
+
+% Page de style plain (table des matières, etc.)
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% --- Page de garde ---
+\input{titre}
+
+% --- Table des matières ---
+\clearpage
+\tableofcontents
+\clearpage
+
+% --- Liste des figures ---
+\listoffigures
+\addcontentsline{toc}{section}{Liste des figures}
+\clearpage
+
+% --- Liste des tableaux ---
+\listoftables
+\addcontentsline{toc}{section}{Liste des tableaux}
+\clearpage
+
+% --- Corps du rapport ---
+\input{introduction}
+\input{specification}
+\input{realisation}
+\input{manuel}
+\input{deroulement}
+\input{conclusion}
+\input{bibliographies}
+
+% ============================================================
+\end{document}
+% ============================================================

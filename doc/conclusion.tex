@@ -1,0 +1,75 @@
+% ============================================================
+%  CONCLUSION — conclusion.tex
+% ============================================================
+\section{Conclusion et perspectives}
+\label{sec:conclusion}
+
+Ce rapport a présenté la conception et l'implémentation du projet Environnement,
+un simulateur d'écosystème dynamique développé en Java~8 dans le cadre du cours
+de Génie Logiciel et Conception. L'application constitue un système complet et
+fonctionnel, capable de simuler l'évolution de biomes soumis à des événements
+météorologiques variés et gouvernés par des règles de transformation écologique.
+
+\subsection{Bilan du travail réalisé}
+\label{subsec:bilan}
+
+L'ensemble des fonctionnalités définies dans la section~\ref{sec:specification}
+a été implémenté. Les sept types de biomes sont modélisés avec leurs propriétés
+initiales et leur comportement propre. Les treize événements météorologiques,
+statiques et mobiles, sont générés selon des formations spatiales distinctes,
+déplacés et appliqués conformément aux spécifications. Les six règles de
+transformation écologique évaluent correctement les propriétés des biomes à chaque
+round et déclenchent les transformations attendues, telles que définies dans le
+tableau~\ref{tab:transformations}. Enfin, l'interface graphique permet de
+visualiser la simulation en temps réel et d'en contrôler le déroulement de manière
+interactive.
+
+Sur le plan de la conception logicielle, l'architecture modulaire à quatre modules
+(\texttt{moteur}, \texttt{gui}, \texttt{config}, \texttt{util}) a démontré son
+efficacité~: elle a permis un développement en parallèle, facilité les tests
+d'intégration et rendu les corrections d'anomalies plus rapides à localiser. Les
+patrons de conception mis en œuvre (Fabrique, Visiteur, programmation par
+interfaces) ont contribué à la maintenabilité et à l'extensibilité du code, deux
+critères fondamentaux identifiés dans la section~\ref{subsec:enjeux}. L'intégration
+de JFreeChart a apporté une valeur analytique concrète à l'application, en
+remplaçant des représentations visuelles imprécises par des graphiques rigoureux.
+
+Le travail en équipe de trois développeurs, organisé autour du dépôt Git et de
+réunions de synchronisation hebdomadaires, s'est déroulé de manière productive.
+La répartition initiale des responsabilités par module, décrite dans la
+section~\ref{subsec:organisation_travail}, a limité les conflits de fusion tout
+en favorisant la cohésion globale du projet.
+
+\subsection{Perspectives d'amélioration}
+\label{subsec:perspectives}
+
+Plusieurs axes d'amélioration ont été identifiés à l'issue du développement.
+
+Le premier axe concerne la \textbf{persistance des données}. L'implémentation d'un
+mécanisme de sérialisation au format JSON ou XML permettrait de sauvegarder et de
+recharger l'état complet d'une simulation. Cette fonctionnalité rendrait
+l'application utilisable dans un contexte pédagogique où les séances sont
+fragmentées.
+
+Le deuxième axe porte sur l'\textbf{extensibilité dynamique}. Permettre le
+chargement de nouveaux types de biomes ou de nouvelles règles de transformation à
+partir de fichiers de configuration externes, sans recompilation, constituerait
+une amélioration architecturale significative. Un mécanisme de plugin fondé sur
+l'API \textit{Service Loader} de Java serait une solution
+adaptée à cette évolution.
+
+Le troisième axe vise l'\textbf{amélioration de l'interface graphique}. Une
+refonte vers une mise en page fluide et redimensionnable, recourant par exemple à
+la bibliothèque JavaFX, permettrait de lever la contrainte de résolution fixe
+identifiée dans la section~\ref{subsec:notions_base}. Cette refonte améliorerait
+également l'expérience utilisateur sur les écrans de petite taille.
+
+Enfin, un quatrième axe envisage l'\textbf{enrichissement du modèle de simulation}.
+L'introduction de chaînes alimentaires entre espèces animales virtuelles peuplant
+les biomes, ou la modélisation de phénomènes climatiques globaux (cycles
+hydrologiques, effet de serre simplifié), accroîtrait considérablement le réalisme
+et la valeur pédagogique du simulateur.
+
+Ces perspectives confirment que le projet Environnement, dans son état actuel,
+constitue une base solide et extensible sur laquelle des développements futurs
+peuvent s'appuyer.
