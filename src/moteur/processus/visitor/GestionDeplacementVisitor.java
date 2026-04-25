@@ -146,6 +146,14 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
     }
     
     private void deplacerEvenementMobile(Evenement evenement) {
+        Biome biomeActuel = biomeMap.get(evenement.getPosition());
+        if (biomeActuel instanceof Montagne) {
+            logger.debug("[StopMontagne] " + evenement.getClass().getSimpleName() + " arrete en ("
+                + evenement.getPosition().getX() + "," + evenement.getPosition().getY() + ")");
+            evenementsExpirés.add(evenement);
+            return;
+        }
+
         if (!evenement.estAnimationTerminee()) {
             return;
         }
@@ -194,27 +202,10 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         Biome biomeDestination = biomeMap.get(candidate);
         
         if (biomeDestination instanceof Montagne) {
-            // Si montagne, changer de direction
-            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
-            dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
-            dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
-            evenement.setDirection(dx, dy);
-            
-            nouvelleX = position.getX() + dx;
-            nouvelleY = position.getY() + dy;
-            
-            if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-                return;
-            }
-            
-            candidate = carte.getBloc(nouvelleX, nouvelleY);
-            biomeDestination = biomeMap.get(candidate);
-            
-            if (biomeDestination instanceof Montagne) {
-                logger.debug("[BloqueMontagne] " + evenement.getClass().getSimpleName() + " en (" + 
-                           position.getX() + "," + position.getY() + ")");
-                return;
-            }
+            logger.debug("[StopMontagne] " + evenement.getClass().getSimpleName() + " stoppe par la montagne en ("
+                + nouvelleX + "," + nouvelleY + ")");
+            evenementsExpirés.add(evenement);
+            return;
         }
         
         nouvellePosition = candidate;
@@ -234,6 +225,14 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
     }
     
     private void traiterEvenementStatique(Evenement evenement) {
+        Biome biomeActuel = biomeMap.get(evenement.getPosition());
+        if (biomeActuel instanceof Montagne) {
+            logger.debug("[StopMontagne] " + evenement.getClass().getSimpleName() + " statique arrete en ("
+                + evenement.getPosition().getX() + "," + evenement.getPosition().getY() + ")");
+            evenementsExpirés.add(evenement);
+            return;
+        }
+
         if (evenement.getDureeRestante() > 0) {
             evenement.setDureeRestante(evenement.getDureeRestante() - 1);
         } else if (doitSeTerminer(evenement)) {

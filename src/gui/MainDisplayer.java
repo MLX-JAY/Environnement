@@ -10,27 +10,29 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import moteur.donne.biome.Banquise;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
+import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
+import moteur.donne.evenement.mobile.Grele;
+import moteur.donne.evenement.mobile.NuageToxique;
+import moteur.donne.evenement.mobile.Orage;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.PluieBenite;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
+import moteur.donne.evenement.mobile.Smog;
+import moteur.donne.evenement.mobile.Tonnerre;
+import moteur.donne.evenement.mobile.Tornade;
 import moteur.donne.evenement.mobile.VentChaud;
 import moteur.donne.evenement.mobile.VentFroid;
-import moteur.donne.evenement.mobile.Orage;
-import moteur.donne.evenement.mobile.Grele;
-import moteur.donne.evenement.mobile.Tornade;
-import moteur.donne.evenement.mobile.PluieBenite;
 import moteur.donne.evenement.mobile.Zephyr;
-import moteur.donne.evenement.mobile.Tonnerre;
-import moteur.donne.evenement.mobile.Smog;
-import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
 
@@ -155,6 +157,12 @@ public class MainDisplayer extends JPanel
 		}
 		if (biome instanceof Mer) {
 			stratDePeinture.paint((Mer) biome, g);
+		}
+		if (biome instanceof Banquise) {
+			stratDePeinture.paint((Banquise) biome, g);
+		}
+		if (biome instanceof Montagne) {
+			stratDePeinture.paint((Montagne) biome, g);
 		}
 		if (biome instanceof Village) {
 			stratDePeinture.paint((Village) biome, g);

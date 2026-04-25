@@ -5,10 +5,12 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import moteur.donne.biome.Banquise;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
+import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
@@ -28,6 +30,8 @@ public class BiomeFactory {
         FORET,
         DESERT,
         MER,
+        BANQUISE,
+        MONTAGNE,
         VILLAGE,
         VILLE
     }
@@ -61,14 +65,20 @@ public class BiomeFactory {
         boolean[][] desert = genererZonesDesertiques(eau, distanceAEau, RANDOM);
         boolean[][] village = genererZoneVillageoise(eau, desert, distanceAEau, RANDOM);
         boolean[][] ville = genererZoneUrbaine(eau, desert, village, distanceAEau, RANDOM);
+        boolean[][] banquise = genererZonesBanquise(eau, RANDOM);
+        boolean[][] montagne = genererZonesMontagne(eau, desert, village, ville, distanceAEau, RANDOM);
 
         for (int i = 0; i < nombreLignes; i++) {
             for (int j = 0; j < nombreColonnes; j++) {
                 Bloc bloc = carte.getBloc(i, j);
                 TypeBiome type = TypeBiome.FORET;
 
-                if (eau[i][j]) {
+                if (banquise[i][j]) {
+                    type = TypeBiome.BANQUISE;
+                } else if (eau[i][j]) {
                     type = TypeBiome.MER;
+                } else if (montagne[i][j]) {
+                    type = TypeBiome.MONTAGNE;
                 } else if (desert[i][j]) {
                     type = TypeBiome.DESERT;
                 } else if (ville[i][j]) {
@@ -626,6 +636,280 @@ public class BiomeFactory {
         return ville;
     }
 
+    private static boolean[][] genererZonesBanquise(boolean[][] eau, Random random) {
+        int nombreLignes = eau.length;
+        int nombreColonnes = nombreLignes == 0 ? 0 : eau[0].length;
+        boolean[][] banquise = new boolean[nombreLignes][nombreColonnes];
+
+        if (nombreLignes == 0 || nombreColonnes == 0) {
+            return banquise;
+        }
+
+        int nombreCasesEau = compterCasesActives(eau);
+        if (nombreCasesEau == 0) {
+            return banquise;
+        }
+
+        int[] centrePrincipal = trouverCentreBanquise(eau, random, new int[0]);
+        if (centrePrincipal.length == 0) {
+            return banquise;
+        }
+
+        int[][] centres = new int[][] { centrePrincipal };
+        if (random.nextDouble() < 0.45) {
+            int[] centreSecondaire = trouverCentreBanquise(eau, random, centrePrincipal);
+            if (centreSecondaire.length > 0) {
+                centres = new int[][] { centrePrincipal, centreSecondaire };
+            }
+        }
+
+        double rayonX = Math.max(1.7, nombreLignes / 8.0);
+        double rayonY = Math.max(1.7, nombreColonnes / 8.0);
+
+        for (int i = 0; i < nombreLignes; i++) {
+            for (int j = 0; j < nombreColonnes; j++) {
+                if (!eau[i][j]) {
+                    continue;
+                }
+
+                if (appartientZoneBanquise(i, j, centres, rayonX, rayonY, random)) {
+                    banquise[i][j] = true;
+                }
+            }
+        }
+
+        int tailleMinimale = Math.max(3, nombreCasesEau / 12);
+        int rayon = 1;
+        while (compterCasesActives(banquise) < tailleMinimale && rayon <= 3) {
+            for (int[] centre : centres) {
+                etendreBanquiseAutour(banquise, eau, centre, rayon);
+            }
+            rayon++;
+        }
+
+        return banquise;
+    }
+
+    private static boolean appartientZoneBanquise(int x, int y, int[][] centres, double rayonX, double rayonY,
+            Random random) {
+        for (int[] centre : centres) {
+            double distanceNormalisee = Math.pow((x - centre[0]) / rayonX, 2)
+                + Math.pow((y - centre[1]) / rayonY, 2);
+            double irregularite = (random.nextDouble() - 0.5) * 0.24;
+            if (distanceNormalisee + irregularite <= 1.0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int[] trouverCentreBanquise(boolean[][] eau, Random random, int[] centreExistant) {
+        int[] centreChoisi = new int[0];
+        double poidsCumules = 0.0;
+        int distanceMaxBordure = Math.max(1, Math.min(eau.length, eau[0].length) / 5);
+        int separationMinimale = Math.max(2, Math.min(eau.length, eau[0].length) / 5);
+
+        for (int i = 0; i < eau.length; i++) {
+            for (int j = 0; j < eau[i].length; j++) {
+                if (!eau[i][j]) {
+                    continue;
+                }
+
+                int distanceBordure = Math.min(Math.min(i, eau.length - 1 - i),
+                    Math.min(j, eau[i].length - 1 - j));
+                if (distanceBordure > distanceMaxBordure) {
+                    continue;
+                }
+
+                if (centreExistant.length > 0
+                    && Math.abs(centreExistant[0] - i) + Math.abs(centreExistant[1] - j) < separationMinimale) {
+                    continue;
+                }
+
+                double poids = distanceMaxBordure - distanceBordure + 1.0;
+                poidsCumules += poids;
+                if (random.nextDouble() * poidsCumules < poids) {
+                    centreChoisi = new int[] { i, j };
+                }
+            }
+        }
+
+        if (centreChoisi.length > 0) {
+            return centreChoisi;
+        }
+
+        return trouverCentreBanquiseSansContrainte(eau, random, centreExistant, separationMinimale);
+    }
+
+    private static int[] trouverCentreBanquiseSansContrainte(boolean[][] eau, Random random, int[] centreExistant,
+            int separationMinimale) {
+        int[] centreChoisi = new int[0];
+        int candidats = 0;
+
+        for (int i = 0; i < eau.length; i++) {
+            for (int j = 0; j < eau[i].length; j++) {
+                if (!eau[i][j]) {
+                    continue;
+                }
+
+                if (centreExistant.length > 0
+                    && Math.abs(centreExistant[0] - i) + Math.abs(centreExistant[1] - j) < separationMinimale) {
+                    continue;
+                }
+
+                candidats++;
+                if (random.nextInt(candidats) == 0) {
+                    centreChoisi = new int[] { i, j };
+                }
+            }
+        }
+
+        return centreChoisi;
+    }
+
+    private static void etendreBanquiseAutour(boolean[][] banquise, boolean[][] eau, int[] centre, int rayon) {
+        for (int i = centre[0] - rayon; i <= centre[0] + rayon; i++) {
+            for (int j = centre[1] - rayon; j <= centre[1] + rayon; j++) {
+                if (i >= 0 && i < eau.length && j >= 0 && j < eau[i].length
+                    && eau[i][j]
+                    && Math.abs(i - centre[0]) + Math.abs(j - centre[1]) <= rayon * 2) {
+                    banquise[i][j] = true;
+                }
+            }
+        }
+    }
+
+    private static boolean[][] genererZonesMontagne(boolean[][] eau, boolean[][] desert, boolean[][] village,
+            boolean[][] ville, int[][] distanceAEau, Random random) {
+        int nombreLignes = eau.length;
+        int nombreColonnes = nombreLignes == 0 ? 0 : eau[0].length;
+        boolean[][] montagne = new boolean[nombreLignes][nombreColonnes];
+
+        if (nombreLignes == 0 || nombreColonnes == 0) {
+            return montagne;
+        }
+
+        int[] centrePrincipal = trouverCentreMontagne(eau, desert, village, ville, distanceAEau, random,
+            new int[0]);
+        if (centrePrincipal.length == 0) {
+            return montagne;
+        }
+
+        int[][] centres = new int[][] { centrePrincipal };
+        if (random.nextDouble() < 0.60) {
+            int[] centreSecondaire = trouverCentreMontagne(eau, desert, village, ville, distanceAEau, random,
+                centrePrincipal);
+            if (centreSecondaire.length > 0) {
+                centres = new int[][] { centrePrincipal, centreSecondaire };
+            }
+        }
+
+        double rayonX = Math.max(1.8, nombreLignes / 9.0);
+        double rayonY = Math.max(1.8, nombreColonnes / 9.0);
+
+        for (int[] centre : centres) {
+            creerMassifMontagne(montagne, eau, desert, village, ville, centre, rayonX, rayonY, random);
+        }
+
+        if (centres.length > 1) {
+            tracerCreteMontagne(montagne, eau, desert, village, ville, centres[0], centres[1]);
+        }
+
+        int tailleMinimale = Math.max(4, (nombreLignes * nombreColonnes) / 30);
+        int rayon = 1;
+        while (compterCasesActives(montagne) < tailleMinimale && rayon <= 2) {
+            for (int[] centre : centres) {
+                marquerMontagneAutour(montagne, eau, desert, village, ville, centre[0], centre[1], rayon);
+            }
+            rayon++;
+        }
+
+        return montagne;
+    }
+
+    private static int[] trouverCentreMontagne(boolean[][] eau, boolean[][] desert, boolean[][] village,
+            boolean[][] ville, int[][] distanceAEau, Random random, int[] centreExistant) {
+        int[] meilleurCentre = new int[0];
+        double poidsCumules = 0.0;
+        int separationMinimale = Math.max(3, Math.min(eau.length, eau[0].length) / 4);
+
+        for (int i = 0; i < eau.length; i++) {
+            for (int j = 0; j < eau[i].length; j++) {
+                if (!estCelluleValideMontagne(eau, desert, village, ville, i, j)) {
+                    continue;
+                }
+
+                if (centreExistant.length > 0
+                    && Math.abs(centreExistant[0] - i) + Math.abs(centreExistant[1] - j) < separationMinimale) {
+                    continue;
+                }
+
+                double poids = Math.max(0.25, distanceAEau[i][j] * 1.45 + random.nextDouble() * 1.20);
+                poidsCumules += poids;
+                if (random.nextDouble() * poidsCumules < poids) {
+                    meilleurCentre = new int[] { i, j };
+                }
+            }
+        }
+
+        return meilleurCentre;
+    }
+
+    private static boolean estCelluleValideMontagne(boolean[][] eau, boolean[][] desert, boolean[][] village,
+            boolean[][] ville, int x, int y) {
+        return !eau[x][y] && !desert[x][y] && !village[x][y] && !ville[x][y];
+    }
+
+    private static void creerMassifMontagne(boolean[][] montagne, boolean[][] eau, boolean[][] desert,
+            boolean[][] village, boolean[][] ville, int[] centre, double rayonX, double rayonY, Random random) {
+        for (int i = 0; i < montagne.length; i++) {
+            for (int j = 0; j < montagne[i].length; j++) {
+                if (!estCelluleValideMontagne(eau, desert, village, ville, i, j)) {
+                    continue;
+                }
+
+                double distanceNormalisee = Math.pow((i - centre[0]) / rayonX, 2)
+                    + Math.pow((j - centre[1]) / rayonY, 2);
+                double irregularite = (random.nextDouble() - 0.5) * 0.22;
+                if (distanceNormalisee + irregularite <= 1.0) {
+                    montagne[i][j] = true;
+                }
+            }
+        }
+    }
+
+    private static void tracerCreteMontagne(boolean[][] montagne, boolean[][] eau, boolean[][] desert,
+            boolean[][] village, boolean[][] ville, int[] source, int[] cible) {
+        int x = source[0];
+        int y = source[1];
+
+        marquerMontagneAutour(montagne, eau, desert, village, ville, x, y, 1);
+
+        while (x != cible[0] || y != cible[1]) {
+            if (x != cible[0]) {
+                x += Integer.compare(cible[0], x);
+            }
+            if (y != cible[1]) {
+                y += Integer.compare(cible[1], y);
+            }
+
+            marquerMontagneAutour(montagne, eau, desert, village, ville, x, y, 1);
+        }
+    }
+
+    private static void marquerMontagneAutour(boolean[][] montagne, boolean[][] eau, boolean[][] desert,
+            boolean[][] village, boolean[][] ville, int centreX, int centreY, int rayon) {
+        for (int i = centreX - rayon; i <= centreX + rayon; i++) {
+            for (int j = centreY - rayon; j <= centreY + rayon; j++) {
+                if (i >= 0 && i < montagne.length && j >= 0 && j < montagne[i].length
+                    && estCelluleValideMontagne(eau, desert, village, ville, i, j)) {
+                    montagne[i][j] = true;
+                }
+            }
+        }
+    }
+
     private static int[] trouverCentreVillage(boolean[][] eau, boolean[][] desert, int[][] distanceAEau,
             Random random) {
         int nombreLignes = eau.length;
@@ -714,6 +998,12 @@ public class BiomeFactory {
             case MER:
                 return new Mer(ConfigurationBiome.MER_TEMP, ConfigurationBiome.MER_POLLUTION,
                     ConfigurationBiome.MER_PURIFICATION, ConfigurationBiome.MER_HUMIDITE, 0, bloc);
+            case BANQUISE:
+                return new Banquise(ConfigurationBiome.BANQUISE_TEMP, ConfigurationBiome.BANQUISE_POLLUTION,
+                    ConfigurationBiome.BANQUISE_PURIFICATION, ConfigurationBiome.BANQUISE_HUMIDITE, 0, bloc);
+            case MONTAGNE:
+                return new Montagne(ConfigurationBiome.MONTAGNE_TEMP, ConfigurationBiome.MONTAGNE_POLLUTION,
+                    ConfigurationBiome.MONTAGNE_PURIFICATION, ConfigurationBiome.MONTAGNE_HUMIDITE, 0, bloc);
             case VILLAGE:
                 return new Village(ConfigurationBiome.VILLAGE_TEMP, ConfigurationBiome.VILLAGE_POLLUTION,
                     ConfigurationBiome.VILLAGE_PURIFICATION, ConfigurationBiome.VILLAGE_HUMIDITE, 0, bloc);

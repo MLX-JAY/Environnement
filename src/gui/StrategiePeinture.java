@@ -353,20 +353,46 @@ public class StrategiePeinture
         int size = config.GameConfiguration.TAILLE_BLOC;
         int x = position.getX() * size;
         int y = position.getY() * size;
-        
-        graphics.setColor(new Color(0x7D7D7D)); 
+
+        graphics.setColor(new Color(0x888888));
         graphics.fillRect(x, y, size, size);
-        
-        int[] px = {x, x + size/2, x + size};
-        int[] py = {y + size, y, y + size};
-        
-        graphics.setColor(new Color(0x404040)); 
-        graphics.fillPolygon(px, py, 3);
-        
-        int[] sx = {x + size/3 + 2, x + size/2, x + (size*2)/3 - 2};
-        int[] sy = {y + size/3 + 5, y, y + size/3 + 5};
-        graphics.setColor(Color.WHITE);
-        graphics.fillPolygon(sx, sy, 3);
+
+        int baseY = y + size;
+
+        int[] leftPeakX = {x + 1, x + size / 4, x + size / 2};
+        int[] leftPeakY = {baseY, y + (size * 5) / 9, baseY};
+
+        int[] centerPeakX = {x + size / 4 - 1, x + size / 2, x + (size * 3) / 4 + 1};
+        int[] centerPeakY = {baseY, y + (size * 3) / 8, baseY};
+
+        int[] rightPeakX = {x + size / 2, x + (size * 3) / 4, x + size - 1};
+        int[] rightPeakY = {baseY, y + (size * 5) / 9, baseY};
+
+        graphics.setColor(new Color(0x5A5A5A));
+        graphics.fillPolygon(leftPeakX, leftPeakY, 3);
+        graphics.setColor(new Color(0x484848));
+        graphics.fillPolygon(centerPeakX, centerPeakY, 3);
+        graphics.setColor(new Color(0x5A5A5A));
+        graphics.fillPolygon(rightPeakX, rightPeakY, 3);
+
+        graphics.setColor(new Color(0x3C3C3C));
+        graphics.drawPolyline(leftPeakX, leftPeakY, 3);
+        graphics.drawPolyline(centerPeakX, centerPeakY, 3);
+        graphics.drawPolyline(rightPeakX, rightPeakY, 3);
+
+        int[] leftSnowX = {leftPeakX[1] - size / 12, leftPeakX[1], leftPeakX[1] + size / 12};
+        int[] leftSnowY = {leftPeakY[1] + size / 8, leftPeakY[1], leftPeakY[1] + size / 8};
+
+        int[] centerSnowX = {centerPeakX[1] - size / 10, centerPeakX[1], centerPeakX[1] + size / 10};
+        int[] centerSnowY = {centerPeakY[1] + size / 7, centerPeakY[1], centerPeakY[1] + size / 7};
+
+        int[] rightSnowX = {rightPeakX[1] - size / 12, rightPeakX[1], rightPeakX[1] + size / 12};
+        int[] rightSnowY = {rightPeakY[1] + size / 8, rightPeakY[1], rightPeakY[1] + size / 8};
+
+        graphics.setColor(new Color(0xF3F7FB));
+        graphics.fillPolygon(leftSnowX, leftSnowY, 3);
+        graphics.fillPolygon(centerSnowX, centerSnowY, 3);
+        graphics.fillPolygon(rightSnowX, rightSnowY, 3);
     }
     
 //===========================================  LES EVENEMENTS  ============================================================

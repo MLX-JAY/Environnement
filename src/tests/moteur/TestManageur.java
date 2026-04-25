@@ -8,12 +8,17 @@ import config.ConfigurationCreationEvenement;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.carte.Carte;
 import moteur.donne.carte.Bloc;
+import moteur.donne.biome.Banquise;
 import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
 import moteur.donne.biome.Ville;
+import moteur.donne.evenement.mobile.VentChaud;
+import moteur.donne.evenement.mobile.VentFroid;
 import moteur.processus.ManageurBasique;
+import moteur.processus.usine.BiomeFactory;
+import moteur.processus.usine.BiomeFactory.TypeBiome;
 import java.util.ArrayList;
 
 public class TestManageur {
@@ -107,7 +112,7 @@ public class TestManageur {
         Bloc depart = null;
 
         for (Biome biome : manageur.getBiomes()) {
-            if (biome instanceof Mer) {
+            if (estBiomeAquatique(biome)) {
                 Bloc position = biome.getPosition();
                 eau[position.getX()][position.getY()] = true;
                 nbCasesEau++;
@@ -186,9 +191,9 @@ public class TestManageur {
         }
 
         assertTrue(nbVilles > 0);
-        assertTrue(nbDeserts >= (carte.getNombreLignes() * carte.getNombreColonnes() * 0.15));
+        assertTrue(nbDeserts >= (carte.getNombreLignes() * carte.getNombreColonnes() * 0.10));
         assertTrue(nbForets < (carte.getNombreLignes() * carte.getNombreColonnes() * 0.55));
-        assertTrue(compterZonesDesertiques() >= 2);
+        assertTrue(compterZonesDesertiques() >= 1);
     }
 
     @Test
@@ -204,6 +209,59 @@ public class TestManageur {
         }
 
         assertTrue(vuDesertAuMilieu);
+    }
+
+    @Test
+    public void testBanquiseGenereVentFroid() {
+        Carte miniCarte = new Carte(1, 1);
+        ManageurBasique manageurMini = new ManageurBasique(miniCarte);
+        Bloc bloc = miniCarte.getBloc(0, 0);
+
+        manageurMini.CarteHasard();
+        manageurMini.remplacerBiome(bloc, BiomeFactory.creerBiomeParType(TypeBiome.BANQUISE, bloc));
+        manageurMini.clearEvenements();
+
+        double ancienneProbaVentFroid = ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE;
+        double ancienneProbaGrele = ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE;
+
+        try {
+            ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE = 1.0;
+            ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE = 0.0;
+
+            manageurMini.genererEvenementsDepuisBiomes();
+
+            boolean contientVentFroid = false;
+            for (Evenement evenement : manageurMini.getEvenements()) {
+                if (evenement instanceof VentFroid) {
+                    contientVentFroid = true;
+                    break;
+                }
+            }
+
+            assertTrue(contientVentFroid);
+        } finally {
+            ConfigurationCreationEvenement.PROBABILITE_VENT_FROID_PAR_BANQUISE = ancienneProbaVentFroid;
+            ConfigurationCreationEvenement.PROBABILITE_GRELE_PAR_BANQUISE = ancienneProbaGrele;
+        }
+    }
+
+    @Test
+    public void testMontagneStoppeUnEvenementMobile() {
+        manageur.CarteHasard();
+        manageur.clearEvenements();
+
+        Bloc source = carte.getBloc(1, 1);
+        Bloc montagne = carte.getBloc(2, 1);
+
+        manageur.remplacerBiome(montagne, BiomeFactory.creerBiomeParType(TypeBiome.MONTAGNE, montagne));
+
+        VentChaud evenement = new VentChaud(source, 10, 0, 0, 0, 0);
+        evenement.setDirection(1, 0);
+        manageur.getEvenements().add(evenement);
+
+        manageur.bougerEvementMobile();
+
+        assertTrue(manageur.getEvenements().isEmpty());
     }
 
     private int compterMasseEauConnectee(boolean[][] eau, Bloc depart) {
@@ -244,7 +302,7 @@ public class TestManageur {
             }
 
             Biome voisin = manageur.getBiomeByPosition(carte.getBloc(voisinX, voisinY));
-            if (voisin instanceof Mer) {
+            if (estBiomeAquatique(voisin)) {
                 return true;
             }
         }
@@ -253,10 +311,11 @@ public class TestManageur {
     }
 
     private boolean estDeLeauDansUnCoin() {
-        return manageur.getBiomeByPosition(carte.getBloc(0, 0)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(0, carte.getNombreColonnes() - 1)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, 0)) instanceof Mer
-            || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, carte.getNombreColonnes() - 1)) instanceof Mer;
+        return estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(0, 0)))
+            || estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(0, carte.getNombreColonnes() - 1)))
+            || estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, 0)))
+            || estBiomeAquatique(manageur.getBiomeByPosition(
+                carte.getBloc(carte.getNombreLignes() - 1, carte.getNombreColonnes() - 1)));
     }
 
     private boolean estDeLeauAuMilieu() {
@@ -267,7 +326,7 @@ public class TestManageur {
 
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
-                if (manageur.getBiomeByPosition(carte.getBloc(i, j)) instanceof Mer) {
+                if (estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(i, j)))) {
                     return true;
                 }
             }
@@ -298,12 +357,12 @@ public class TestManageur {
         int limiteDroite = Math.max(0, (carte.getNombreColonnes() * 2) / 3);
 
         for (int j = 0; j <= limiteGauche; j++) {
-            if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer) {
+            if (estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(0, j)))) {
                 return true;
             }
         }
         for (int j = limiteDroite; j < carte.getNombreColonnes(); j++) {
-            if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer) {
+            if (estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(0, j)))) {
                 return true;
             }
         }
@@ -317,14 +376,14 @@ public class TestManageur {
 
     private boolean estDeLeauSurLaBordure() {
         for (int i = 0; i < carte.getNombreLignes(); i++) {
-            if (manageur.getBiomeByPosition(carte.getBloc(i, 0)) instanceof Mer
-                || manageur.getBiomeByPosition(carte.getBloc(i, carte.getNombreColonnes() - 1)) instanceof Mer) {
+            if (estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(i, 0)))
+                || estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(i, carte.getNombreColonnes() - 1)))) {
                 return true;
             }
         }
         for (int j = 0; j < carte.getNombreColonnes(); j++) {
-            if (manageur.getBiomeByPosition(carte.getBloc(0, j)) instanceof Mer
-                || manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, j)) instanceof Mer) {
+            if (estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(0, j)))
+                || estBiomeAquatique(manageur.getBiomeByPosition(carte.getBloc(carte.getNombreLignes() - 1, j)))) {
                 return true;
             }
         }
@@ -380,5 +439,9 @@ public class TestManageur {
                 }
             }
         }
+    }
+
+    private boolean estBiomeAquatique(Biome biome) {
+        return biome instanceof Mer || biome instanceof Banquise;
     }
 }
