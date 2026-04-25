@@ -18,6 +18,7 @@ import moteur.donne.biome.Mer;
 import moteur.donne.biome.Montagne;
 import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
+import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.mobile.Grele;
@@ -35,6 +36,9 @@ import moteur.donne.evenement.mobile.VentFroid;
 import moteur.donne.evenement.mobile.Zephyr;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.Manageur;
+import moteur.processus.ManageurBasique;
+import moteur.processus.usine.BiomeFactory;
+import moteur.processus.usine.BiomeFactory.TypeBiome;
 
 public class MainDisplayer extends JPanel 
 {
@@ -45,6 +49,9 @@ public class MainDisplayer extends JPanel
 	private Manageur manageur;
 	private PanelStatistique panelStats;
 	private Biome biomeSelectionne;
+	private boolean modePeinture = false;
+	private TypeBiome biomeAPlacer = null;
+	private Bloc blocSelectionne = null;
 	
 	public MainDisplayer(Carte carte, Manageur manageur) {  
 		this.carte = carte;
@@ -64,11 +71,25 @@ public class MainDisplayer extends JPanel
 				int blocY = e.getY() / GameConfiguration.TAILLE_BLOC;
 				
 				if (MainDisplayer.this.carte.estCoordonneeValide(blocX, blocY)) {
-					Biome biomeClique = trouverBiome(blocX, blocY);
-					if (biomeClique != null) {
-						biomeSelectionne = biomeClique;
+					blocSelectionne = new Bloc(blocX, blocY);
+					if (modePeinture && biomeAPlacer != null) {
+						Biome nouveauBiome = BiomeFactory.creerBiomeParType(biomeAPlacer, blocSelectionne);
+						if (manageur instanceof ManageurBasique) {
+							((ManageurBasique) manageur).remplacerBiome(blocSelectionne, nouveauBiome);
+						}
+						biomeSelectionne = nouveauBiome;
+						blocSelectionne = null;
 						if (panelStats != null) {
-							panelStats.setBiomeSelectionne(biomeClique);
+							panelStats.setBiomeSelectionne(nouveauBiome);
+						}
+						repaint();
+					} else {
+						Biome biomeClique = trouverBiome(blocX, blocY);
+						if (biomeClique != null) {
+							biomeSelectionne = biomeClique;
+							if (panelStats != null) {
+								panelStats.setBiomeSelectionne(biomeClique);
+							}
 						}
 					}
 				}
@@ -78,6 +99,15 @@ public class MainDisplayer extends JPanel
 	
 	public void setPanelStats(PanelStatistique panelStats) {
 		this.panelStats = panelStats;
+	}
+	
+	public void setModePeinture(boolean actif, TypeBiome type) {
+		this.modePeinture = actif;
+		this.biomeAPlacer = type;
+		if (!actif) {
+			biomeSelectionne = null;
+		}
+		repaint();
 	}
 	
 	private Biome trouverBiome(int blocX, int blocY) {
@@ -144,6 +174,10 @@ public class MainDisplayer extends JPanel
 		}
 		
 		if (biomeSelectionne != null) {
+			dessinerSurbrillance(g, biomeSelectionne);
+		}
+		
+		if (blocSelectionne != null && biomeSelectionne == null) {
 			dessinerSurbrillance(g, biomeSelectionne);
 		}
 	}

@@ -10,6 +10,7 @@ import java.awt.geom.Path2D;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import moteur.donne.biome.Banquise;
+import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
@@ -18,6 +19,8 @@ import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
+import moteur.processus.usine.BiomeFactory;
+import moteur.processus.usine.BiomeFactory.TypeBiome;
 import moteur.donne.evenement.mobile.Grele;
 import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.mobile.Orage;
@@ -46,7 +49,7 @@ public class StrategiePeinture
             this.danger = null;
             this.meteore = null;
         }
-    } 
+    }
 
     private void dessinerNuage(Graphics2D g2, int x, int y, int size) {
         g2.setColor(new Color(210, 220, 228, 220));
@@ -814,5 +817,164 @@ public void paint(Orage orage, Graphics graphics) {
         graphics.fillRect(x, y, size, size);
     }
     
+    public java.awt.Image creerIconeBiome(moteur.processus.usine.BiomeFactory.TypeBiome type, int taille) {
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(taille, taille, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        java.awt.Graphics2D g2 = img.createGraphics();
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        switch (type) {
+            case FORET:
+                dessinerIconeForet(g2, taille);
+                break;
+            case DESERT:
+                dessinerIconeDesert(g2, taille);
+                break;
+            case MER:
+                dessinerIconeMer(g2, taille);
+                break;
+            case VILLE:
+                dessinerIconeVille(g2, taille);
+                break;
+            case VILLAGE:
+                dessinerIconeVillage(g2, taille);
+                break;
+            case BANQUISE:
+                dessinerIconeBanquise(g2, taille);
+                break;
+            case MONTAGNE:
+                dessinerIconeMontagne(g2, taille);
+                break;
+        }
+        g2.dispose();
+        return img;
+    }
+    
+    private void dessinerIconeForet(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0x228B22));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0x1B5E20));
+        g2.fillRect(taille/6, taille/2 + taille/6, taille/8, taille/3);
+        
+        g2.setColor(new Color(0x2E7D32));
+        g2.fillOval(taille/6, taille/4, taille/3, taille/2);
+        g2.fillOval(taille/2, taille/3, taille/3, taille/2);
+        
+        g2.setColor(new Color(0x4CAF50));
+        g2.fillOval(taille/3, taille/4, taille/4, taille/3);
+        
+        g2.setColor(new Color(0x8D6E63));
+        g2.fillRect(taille/5, taille*3/4, taille/10, taille/5);
+        g2.fillRect(taille*3/5, taille*3/4 + 2, taille/10, taille/5 - 2);
+    }
+    
+    private void dessinerIconeDesert(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0xF4D03F));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0xE9C46A));
+        g2.fillPolygon(new int[]{taille/4, taille/2, taille*3/4}, new int[]{taille/2, taille/4, taille/2}, 3);
+        
+        g2.setColor(new Color(0xF4D03F));
+        g2.fillPolygon(new int[]{taille/2, taille*3/4, taille}, new int[]{taille/3, taille/2, taille/3}, 3);
+        
+        g2.setColor(new Color(0xDAA520));
+        g2.fillOval(taille - taille/3, taille/6, taille/4, taille/4);
+        
+        g2.setColor(new Color(0x8B4513));
+        g2.fillRect(taille/2 - 2, taille/3, 4, taille/2);
+        g2.fillRect(taille/2 - 4, taille/3, 2, taille/4);
+        g2.fillRect(taille/2, taille/3, 2, taille/4);
+    }
+    
+    private void dessinerIconeMer(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0x1976D2));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0x64B5F6));
+        g2.fillRect(0, taille/6, taille, taille/8);
+        g2.fillRect(0, taille/2, taille, taille/8);
+        
+        g2.setColor(new Color(0xBBDEFB));
+        g2.fillOval(taille/6, taille/3, taille/5, taille/5);
+        g2.fillOval(taille*3/5, taille*2/3, taille/5, taille/5);
+        
+        g2.setColor(new Color(0x90CAF9));
+        g2.fillOval(taille/4, taille/2 - 2, taille/6, taille/6);
+    }
+    
+    private void dessinerIconeVille(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0x546E7A));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0x37474F));
+        g2.fillRect(taille/6, taille/6, taille/3, taille*2/3);
+        g2.fillRect(taille/2, taille/4, taille/3, taille*2/3);
+        g2.fillRect(taille*4/6, taille/3, taille/4, taille*2/3);
+        
+        g2.setColor(new Color(0xFFD54F));
+        g2.fillRect(taille/6 + taille/12, taille/3, taille/12, taille/12);
+        g2.fillRect(taille/2 + taille/12, taille/2, taille/12, taille/12);
+        
+        g2.setColor(new Color(0x263238));
+        g2.fillRect(taille/6 + taille/12, taille/6 + taille/12, taille/12, taille/12);
+        g2.fillRect(taille*4/6 + taille/16, taille/3 + taille/12, taille/12, taille/12);
+    }
+    
+    private void dessinerIconeVillage(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0xD7CCC8));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0x8D6E63));
+        g2.fillRect(taille/5, taille/3, taille*3/5, taille*2/3);
+        
+        g2.setColor(new Color(0x6D4C41));
+        int[] xr = {taille/5, taille/2, taille*4/5};
+        int[] yr = {taille/3, taille/8, taille/3};
+        g2.fillPolygon(xr, yr, 3);
+        
+        g2.setColor(new Color(0x5D4037));
+        g2.fillRect(taille/2 - 2, taille*3/5, 4, taille/3);
+        
+        g2.setColor(new Color(0x795548));
+        g2.fillRect(taille/3, taille*4/5, taille/6, taille/8);
+        
+        g2.setColor(new Color(0xBCAAA4));
+        g2.fillOval(taille*4/5, taille/6, taille/5, taille/5);
+    }
+    
+    private void dessinerIconeBanquise(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0xE1F5FE));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0xB3E5FC));
+        g2.fillRect(taille/8, taille/4, taille, taille/8);
+        g2.fillRect(taille/4, taille*3/5, taille, taille/10);
+        
+        g2.setColor(new Color(0x81D4FA));
+        g2.setStroke(new java.awt.BasicStroke(1));
+        g2.drawLine(taille/4, 0, taille/2, taille/3);
+        g2.drawLine(taille*3/4, 0, taille/2, taille/3);
+        g2.drawLine(0, taille/2, taille, taille/2);
+        
+        g2.setColor(new Color(0xFFFFFF));
+        g2.fillOval(taille/6, taille/6, taille/6, taille/6);
+    }
+    
+    private void dessinerIconeMontagne(java.awt.Graphics2D g2, int taille) {
+        g2.setColor(new Color(0x616161));
+        g2.fillRect(0, 0, taille, taille);
+        
+        g2.setColor(new Color(0x424242));
+        g2.fillPolygon(new int[]{taille/6, taille/3, taille/2}, new int[]{taille, taille/3, taille/4}, 3);
+        g2.fillPolygon(new int[]{taille/3, taille/2, taille*3/4}, new int[]{taille/3, taille/4, 0}, 3);
+        
+        g2.setColor(new Color(0xFFFAFA));
+        g2.fillPolygon(new int[]{taille/2, taille/2 + 2, taille/2 + 4, taille/3}, new int[]{taille/4 + 2, taille/4 - 2, taille/4 + 2, taille/3}, 4);
+        g2.fillPolygon(new int[]{taille/2, taille/2 + 4, taille*3/4}, new int[]{taille/3, 0, taille/3}, 3);
+        
+        g2.setColor(new Color(0x757575));
+        g2.fillRect(0, taille - taille/8, taille, taille/8);
+    }
 
 }

@@ -2,9 +2,7 @@ package gui;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -18,16 +16,13 @@ import java.awt.BorderLayout;
 
 import config.ConfigurationCreationEvenement;
 import moteur.donne.biome.Biome;
-import moteur.donne.carte.Bloc;
 import moteur.processus.Manageur;
-import moteur.processus.ManageurBasique;
-import moteur.processus.usine.BiomeFactory;
 import moteur.processus.usine.BiomeFactory.TypeBiome;
 
 public class PanelEdition extends JPanel implements ChangeListener {
     
     private static final Color COULEUR_ACTION = new Color(60, 140, 60); 
-    private static final Color COULEUR_MODIFIER = new Color(180, 120, 60); 
+    private static final Color COULEUR_SELECT = Color.RED;
 
     private static final Color COULEUR_FORET = new Color(34, 120, 34);
     private static final Color COULEUR_DESERT = new Color(180, 140, 80);
@@ -35,13 +30,16 @@ public class PanelEdition extends JPanel implements ChangeListener {
     private static final Color COULEUR_VILLE = new Color(90, 90, 100);
     private static final Color COULEUR_VILLAGE = new Color(139, 100, 60);
     private static final Color COULEUR_BANQUISE = new Color(150, 200, 220);
+    private static final Color COULEUR_MONTAGNE = new Color(120, 120, 120);
     private static final Color COULEUR_TITRE = new Color(255, 220, 140); 
 
     private JButton btnFin;
     private JButton btnReinitialiser;
     private JButton btnZero;
     private JButton btnGenererCarte;
-    private JButton btnModifier;
+    private JPanel panelSelecteurBiomes;
+    private TypeBiome biomeTypeSelectionne = null;
+    private StrategiePeinture strategiePeinture = new StrategiePeinture();
     private Runnable actionGenererCarte;
     private MainDisplayer displayer;
     private JPanel vueEdition;
@@ -95,41 +93,82 @@ public class PanelEdition extends JPanel implements ChangeListener {
         btnZero.addActionListener(e -> mettreAZero());
         this.add(btnZero);
 
-        btnModifier = deseign.creerBeauBouton("Modifier", COULEUR_MODIFIER);
-        btnModifier.addActionListener(e -> afficherPopupModifier());
-        btnModifier.setEnabled(false);
-        this.add(btnModifier);
+        panelSelecteurBiomes = creerPanelSelecteurBiomes();
+        this.add(panelSelecteurBiomes);
 
         panelConfig = creerPanneauConfig();
     }
     
-    public void setBiomeSelectionne(Biome biome) {
-        btnModifier.setEnabled(biome != null);
-    }
-    
-    private void afficherPopupModifier() {
-        if (displayer == null || displayer.getBiomeSelectionne() == null) return;
-        if (manageur == null || !(manageur instanceof ManageurBasique)) return;
+    private JPanel creerPanelSelecteurBiomes() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        panel.setBackground(new Color(40, 54, 24));
+        panel.setPreferredSize(new Dimension(400, 50));
         
-        Biome ancienBiome = displayer.getBiomeSelectionne();
-        Bloc position = ancienBiome.getPosition();
+        TypeBiome[] types = {TypeBiome.FORET, TypeBiome.DESERT, TypeBiome.MER, 
+                           TypeBiome.VILLE, TypeBiome.VILLAGE, TypeBiome.MONTAGNE};
+        Color[] couleurs = {COULEUR_FORET, COULEUR_DESERT, COULEUR_MER, 
+                          COULEUR_VILLE, COULEUR_VILLAGE, COULEUR_MONTAGNE};
         
-        JPopupMenu popup = new JPopupMenu("Changer le biome");
-        
-        for (TypeBiome type : TypeBiome.values()) {
-            JMenuItem item = new JMenuItem(type.name());
-            item.addActionListener(e -> {
-                Biome nouveauBiome = BiomeFactory.creerBiomeParType(type, position);
-                ((ManageurBasique) manageur).remplacerBiome(position, nouveauBiome);
-                popup.setVisible(false);
-                if (displayer != null) {
-                    displayer.repaint();
+        for (int i = 0; i < types.length; i++) {
+            final TypeBiome type = types[i];
+            Color couleur = couleurs[i];
+            
+            JButton btn = new JButton() {
+                private java.awt.Image img = null;
+                {
+                    img = strategiePeinture.creerIconeBiome(type, 38);
                 }
+                @Override
+                protected void paintComponent(java.awt.Graphics g) {
+                    int w = getWidth();
+                    int h = getHeight();
+                    int size = Math.min(w, h) + 4;
+                    int ox = (w - size) / 2;
+                    int oy = (h - size) / 2;
+                    
+                    java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+                    g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                    
+                    java.awt.Shape circle = new java.awt.geom.Ellipse2D.Double(ox, oy, size, size);
+                    g2.setClip(circle);
+                    
+                    g2.setColor(couleur);
+                    g2.fill(circle);
+                    if (img != null) {
+                        g2.drawImage(img, ox, oy, size, size, null);
+                    }
+                    
+                    g2.setClip(null);
+                    if (biomeTypeSelectionne == type) {
+                        g2.setColor(COULEUR_SELECT);
+                        g2.setStroke(new java.awt.BasicStroke(3));
+                        g2.drawOval(ox + 1, oy + 1, size - 2, size - 2);
+                    } else {
+                        g2.setColor(new Color(0, 0, 0, 80));
+                        g2.setStroke(new java.awt.BasicStroke(1));
+                        g2.drawOval(ox, oy, size, size);
+                    }
+                }
+            };
+            btn.setPreferredSize(new Dimension(40, 40));
+            btn.setContentAreaFilled(false);
+            btn.setBorderPainted(false);
+            btn.setFocusPainted(false);
+            btn.setToolTipText(type.name());
+            btn.addActionListener(e -> {
+                biomeTypeSelectionne = type;
+                if (displayer != null) {
+                    displayer.setModePeinture(true, type);
+                }
+                panelSelecteurBiomes.repaint();
             });
-            popup.add(item);
+            panel.add(btn);
         }
         
-        popup.show(btnModifier, btnModifier.getWidth() / 2, 0);
+        return panel;
+    }
+    
+    public void setBiomeSelectionne(Biome biome) { 
     }
     
     public void setDisplayer(MainDisplayer displayer) {
@@ -154,12 +193,6 @@ public class PanelEdition extends JPanel implements ChangeListener {
         this.manageur = manageur;
         if (displayer != null) {
             displayer.setManageurPourModification(manageur);
-        }
-    }
-    
-    public void mettreAJourBoutonModifier() {
-        if (displayer != null) {
-            setBiomeSelectionne(displayer.getBiomeSelectionne());
         }
     }
     

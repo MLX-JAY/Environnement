@@ -207,7 +207,6 @@ public class MainGUI extends JFrame implements Runnable
             }
             if (displayerEdition != null) {
                 displayerEdition.repaint();
-                panelEdition.mettreAJourBoutonModifier();
             }
             panelStats.repaint();
             
