@@ -66,7 +66,7 @@ public class PanelBilanDeFin extends JPanel {
         JPanel bas = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         bas.setBackground(COULEUR_FOND);
 
-        JButton btnRetour = deseign.creerBeauBouton("Nouvelle Partie", new Color(100, 100, 180));
+        JButton btnRetour = deseign.creerBeauBouton("Recommencer", new Color(100, 100, 180));
         btnRetour.addActionListener(e -> {
             MainGUI gui = (MainGUI) javax.swing.SwingUtilities.getWindowAncestor(this);
             if (gui != null) {
@@ -74,6 +74,16 @@ public class PanelBilanDeFin extends JPanel {
             }
         });
         bas.add(btnRetour);
+
+        JButton btnStat = deseign.creerBeauBouton("Statistiques", new Color(180, 100, 100));
+        btnStat.addActionListener(e -> {
+            MainGUI gui = (MainGUI) javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (gui != null) {
+                JFrameStatistiques frame = new JFrameStatistiques(gui.getManageur());
+                frame.setVisible(true);
+            }
+        });
+        bas.add(btnStat);
 
         this.add(bas, BorderLayout.SOUTH);
     }
