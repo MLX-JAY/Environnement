@@ -1,0 +1,164 @@
+% ============================================================
+%  DÉROULEMENT DU PROJET — deroulement.tex
+% ============================================================
+\section{Déroulement du projet}
+\label{sec:deroulement}
+
+Cette section retrace l'organisation du travail d'équipe et les étapes successives
+ayant conduit à l'application décrite dans la section~\ref{sec:realisation}. Elle
+présente la méthode de collaboration adoptée, la répartition des responsabilités,
+les outils de développement utilisés, et les principaux obstacles surmontés au
+cours du projet.
+
+% ------------------------------------------------------------
+\subsection{Organisation et répartition du travail}
+\label{subsec:organisation_travail}
+
+L'équipe est composée de trois développeurs~: \textsc{Feraoun} Mohamed~Amine,
+\textsc{Anurajan} Thenuxshan et \textsc{Ouardani} Nidhal. Afin de tirer parti de
+la modularité de l'architecture décrite à la section~\ref{subsec:archi_globale},
+la répartition des tâches a suivi un découpage fonctionnel cohérent avec les
+quatre modules du projet.
+
+\paragraph{Répartition du travail.}
+Feraoun Mohamed Amine a piloté l'architecture modulaire et la conception des hiérarchies de classes (biomes, événements), en implémentant le cœur du moteur de simulation ainsi que l'interface graphique complète. Il a également géré l'intégration des statistiques JFreeChart, le système de journalisation Log4j et la rédaction du rapport.
+
+Anurajan Thenuxshan s'est concentré sur le module de configuration et la fenêtre d'édition (PanelEdition), assurant l'interface de paramétrage des événements. Il a fourni un support technique sur plusieurs composantes graphiques et participated aux tests d'intégration.
+
+Ouardani Nidhal a conçu l'algorithme de génération cohérente de la carte et implémenté la logique de déplacement fluide des événements mobiles. Sa contribution a portée sur les mécanismes de formation spatiale et la gestion dynamique des entités sur la grille.
+
+Cette répartition n'a pas été strictement cloisonnée~: des révisions croisées du
+code ont été systématiquement organisées pour garantir la cohérence globale du
+projet et mutualiser les connaissances techniques entre les membres de l'équipe.
+
+\paragraph{Méthode de travail collaborative.}
+Un dépôt Git commun~\cite{chacon2014pro} a servi de base au travail collaboratif.
+Chaque fonctionnalité a été développée sur une branche dédiée avant d'être
+fusionnée vers la branche principale après revue de code. Des réunions d'équipe
+hebdomadaires ont permis de synchroniser les avancées, d'identifier les dépendances
+entre modules et d'ajuster le planning.
+
+% ------------------------------------------------------------
+\subsection{Phases de développement}
+\label{subsec:phases}
+
+Le développement s'est articulé en quatre phases successives dont les jalons sont
+présentés dans le tableau~\ref{tab:planning}.
+
+\begin{table}[H]
+  \centering
+  \caption{Phases de développement et jalons du projet}
+  \label{tab:planning}
+  \begin{tabular}{clp{8cm}}
+    \toprule
+    \textbf{Phase} & \textbf{Période} & \textbf{Objectifs et livrables} \\
+    \midrule
+    1 & Semaines 1--2  & Analyse des besoins, conception de l'architecture,
+                         mise en place de l'environnement de développement
+                         et du dépôt Git \\[0.4em]
+    2 & Semaines 3--5  & Implémentation des classes de données (biomes,
+                         événements, carte), module \texttt{config},
+                         premières règles de transformation \\[0.4em]
+    3 & Semaines 6--8  & Développement du moteur de simulation
+                         (\texttt{ManageurBasique}), intégration des fabriques,
+                         réalisation de l'interface graphique \\[0.4em]
+    4 & Semaines 9--10 & Finalisation des différents concepts du projet
+                         (comme le mode édition), corrections des anomalies
+                         et bilan de fin ; rédaction du rapport \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+La phase~1 décrite dans le tableau~\ref{tab:planning} a été déterminante pour la
+suite du projet~: la décision d'adopter une architecture à quatre modules dès le
+départ a considérablement facilité le travail en parallèle et limité les conflits
+de fusion sur le dépôt Git. La phase~3 a représenté la charge la plus lourde, car
+elle a impliqué l'intégration simultanée des modules \texttt{moteur} et
+\texttt{gui}, dont les interfaces devaient être compatibles.
+
+% ------------------------------------------------------------
+\subsection{Outils et environnement de développement}
+\label{subsec:outils}
+
+Le tableau~\ref{tab:outils} présente les principaux outils utilisés au cours du projet.
+
+\begin{table}[H]
+  \centering
+  \caption{Outils et technologies employés dans le projet}
+  \label{tab:outils}
+  \begin{tabular}{lp{9cm}}
+    \toprule
+    \textbf{Outil / Technologie} & \textbf{Rôle et justification} \\
+    \midrule
+    Java~8                       & Langage principal, choix justifié par sa stabilité et la disponibilité des bibliothèques nécessaires \\[0.4em]
+    Eclipse IDE                  & IDE principal, facilite la gestion du build path et des dépendances JAR \\[0.4em]
+    Git                          & Contrôle de version, permet le travail collaboratif par branches \\[0.4em]
+    Log4j                        & Journalisation, support natif de sorties multiples et configuration externe \\[0.4em]
+    Java Swing                   & Interface graphique, incluse dans le JDK et sans dépendance externe \\[0.4em]
+    JUnit                        & Tests unitaires pour la validation du moteur de simulation \\[0.4em]
+    JFreeChart                   & Génération de graphiques pour l'affichage des statistiques en temps réel \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ------------------------------------------------------------
+\subsection{Difficultés rencontrées et solutions adoptées}
+\label{subsec:difficultes}
+
+Plusieurs difficultés techniques ont été rencontrées au cours du développement.
+Chacune est décrite ci-après sous la forme d'un couple problème/solution afin
+d'en faciliter la compréhension.
+
+\paragraph{Les statistiques.}
+\textbf{Problème.}
+Une première version des statistiques reposait sur des bulles visuelles se
+remplissant proportionnellement à l'état du monde. Cette représentation s'est
+révélée imprécise et insuffisante pour suivre l'évolution quantitative de
+l'écosystème au fil des rounds.
+
+\textbf{Solution.}
+La bibliothèque JFreeChart a été intégrée pour remplacer ce dispositif. Elle
+permet d'afficher des graphiques en courbes clairs alimentés en temps réel par les
+données de simulation, offrant une lecture précise et rigoureuse des propriétés
+des biomes au fil du temps.
+
+\paragraph{Les transformations écologiques.}
+\textbf{Problème.}
+La gestion dynamique des transformations de biomes s'est avérée complexe à
+implémenter~: un premier prototype fondé sur des conditions imbriquées dans le
+\texttt{ManageurBasique} était difficile à maintenir et ne tenait pas compte des
+spécificités de chaque biome.
+
+\textbf{Solution.}
+Un système de règles de transformation a été créé, matérialisé par l'interface
+\texttt{RegleTransformation}. Chaque règle est liée aux statistiques propres du
+biome concerné et encapsule sa logique de manière autonome. Le moteur se contente
+d'itérer sur la liste des règles, ce qui rend l'ensemble extensible et maintenable.
+
+\paragraph{Dynamique des biomes.}
+\textbf{Problème.}
+Dans une version initiale, la seule différence entre les biomes était d'ordre
+visuel (couleur et texture). Tous les biomes recevaient les mêmes types
+d'événements, ce qui rendait la simulation peu réaliste et les identités de biomes
+interchangeables.
+
+\textbf{Solution.}
+Le patron Visiteur (\texttt{GenerateurEvenementVisitor}) a été mis en place pour
+que les événements générés dépendent du type de biome visité. Un biome Mer génère
+ainsi des événements de type Pluie, tandis qu'un biome Désert favorise des
+événements de Zéphyr ou de Tornade. Cette logique renforce l'identité unique de
+chaque biome.
+
+\paragraph{Création des événements.}
+\textbf{Problème.}
+L'apparition d'un événement sur une seule case était peu lisible et manquait de
+cohérence visuelle. Un événement de type Orage occupant une cellule unique avait le
+même impact visuel qu'une simple Pluie, rendant la lecture de la grille confuse.
+
+\textbf{Solution.}
+Un système de formations spatiales a été implémenté directement dans
+l'\texttt{EvenementFactory}~: chaque événement est désormais créé selon une
+formation géométrique définie (ligne, carré, croix, etc.), via des méthodes de
+création dédiées. Ce mécanisme apporte un boost visuel et logique significatif~:
+chaque type d'événement possède une empreinte reconnaissable sur la grille, ce qui
+renforce la cohérence globale de l'interface.
