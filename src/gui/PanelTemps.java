@@ -22,7 +22,7 @@ public class PanelTemps extends JPanel {
         this.add(btnPause);
         btnPlay = deseign.creerBeauBouton("Play", new Color(60, 200, 60));
         this.add(btnPlay);
-        btnX2 = deseign.creerBeauBouton("Vitesse x2", new Color(60, 60, 200));
+        btnX2 = deseign.creerBeauBouton("Vitesse x0", new Color(60, 60, 200));
         this.add(btnX2);
         btnStop = deseign.creerBeauBouton("Bilan de fin", new Color(200, 200, 60));
         this.add(btnStop);
@@ -35,14 +35,12 @@ public class PanelTemps extends JPanel {
             btnPause.setEnabled(false);
             btnPlay.setEnabled(true);
             mainGUI.arreterSimulation();
-            GameConfiguration.VITESSE_JEU = 1000; // Réinitialiser la vitesse à la valeur par défaut
         });
 
         btnPlay.addActionListener(e -> {
             btnPlay.setEnabled(false);
             btnPause.setEnabled(true);
             mainGUI.reprendresimulation();
-            GameConfiguration.VITESSE_JEU = 1000; // Réinitialiser la vitesse à la valeur par défaut
         });
         
         btnStop.addActionListener(e -> {
@@ -55,6 +53,16 @@ public class PanelTemps extends JPanel {
             if (GameConfiguration.VITESSE_JEU > 250) {
                 GameConfiguration.VITESSE_JEU /= 2;
                 System.out.println("Vitesse de simulation doublée : " + GameConfiguration.VITESSE_JEU + " ms par tour.");
+                if (GameConfiguration.VITESSE_JEU == 500) {
+                    btnX2.setText("Vitesse x1");
+                }
+                else if (GameConfiguration.VITESSE_JEU == 250) {
+                    btnX2.setText("Vitesse x2");
+                }
+            }
+            else {
+                GameConfiguration.VITESSE_JEU = 1000; // Limite minimale pour éviter une vitesse trop rapide
+                btnX2.setText("Vitesse x0");
             }
         });
         
