@@ -1,17 +1,14 @@
 package gui;
 
 import config.GameConfiguration;
-
-import java.awt.Color;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-
 import moteur.donne.carte.Carte;
 import moteur.processus.Builder;
 import moteur.processus.Manageur;
@@ -54,7 +51,7 @@ public class MainGUI extends JFrame implements Runnable
         vueEdition = new JPanel(new BorderLayout());
         vueEdition.setBackground(new Color(163, 177, 138));
         
-        panelEdition = new PanelEdition(() -> demarrerSimulation(), () -> genererCarte());
+        panelEdition = new PanelEdition(() -> demarrerSimulation(), () -> genererCarte(), this::ouvrirFenetreTuto);
         panelEdition.setVueEdition(vueEdition);
         
         vueEdition.add(panelEdition, BorderLayout.NORTH);
@@ -81,6 +78,42 @@ public class MainGUI extends JFrame implements Runnable
         this.setVisible(true);
         
         genererCarte();
+    }
+
+    public void ouvrirFenetreTuto() {
+        JFrame fenetreTuto = new JFrame("Tutoriel");
+        fenetreTuto.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        fenetreTuto.setSize(760, 520);
+        fenetreTuto.setLocationRelativeTo(this);
+
+        JTabbedPane onglets = new JTabbedPane();
+        onglets.addTab("explication", new PanleTuto(
+            "Explication générale",
+            "Ce projet simule l'évolution d'un environnement sur une carte.\n\n"
+                + "Chaque tour applique des règles qui influencent les biomes et les événements.\n"
+                + "Tu peux d'abord préparer la carte en mode édition, puis lancer la simulation."
+        ));
+        onglets.addTab("edition", new PanleTuto(
+            "Mode édition",
+            "Dans le mode édition, tu peux générer aléatoirement une carte et en modifier les biomes."
+            + "Tu peux aussi changer les probabilités d'apparition de chaques événements.\n\n"
+                + "Menu du haut :\n- Générer Carte -> permet de générer une carte aléatoire.\n"
+                + "- Lancer Simulation -> démarre la simulation avec la carte actuelle.\n- Réinitialiser -> remet les probabilités à leurs valeurs par défaut.\n"
+                + "- Mettre à zéro -> remet les probabilités à 0%.\n"
+                + "- Boutons Biomes -> En cliquant sur l'un des 6 boutons, change le biome sélectionné en suite.\n\n"
+                + "Menu de gauche :\n- Permet d'ajuster les probabilités d'apparition de chaque événement."
+        ));
+        onglets.addTab("simulation", new PanleTuto(
+            "Mode simulation",
+            "Le mode simulation est le coeur de ce projet, il montre l'évolution de la carte en temps réel en fonction de l'impaxt des événements et des règles appliquées à chaque tour.\n\n"
+                + "Menu du haut :\n- Pause -> met en pause la simulation.\n- Play -> relance la simulation.\n- Vitesse x -> augmente la vitesse de la simulation.\n"
+                + "- Statistiques -> ouvre une fenêtre affichant des statistiques générales de la session en temps réel.\n\n"
+                + "Menu de gauche :\n- Affiche les statistiques d'un biome sélectionné."
+        ));
+        onglets.addTab("événements et biomes", new PanleTutoDraw());
+
+        fenetreTuto.setContentPane(onglets);
+        fenetreTuto.setVisible(true);
     }
 
     private void demarrerSimulation() {

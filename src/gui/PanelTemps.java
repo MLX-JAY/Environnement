@@ -1,8 +1,8 @@
 package gui;
 
+import config.GameConfiguration;
 import java.awt.*;
 import javax.swing.*;
-import config.GameConfiguration;
 
 public class PanelTemps extends JPanel {
     private JButton btnPause, btnPlay, btnX2, btnStop, btnStats;

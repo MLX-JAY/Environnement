@@ -25,6 +25,7 @@ import moteur.donne.evenement.mobile.Grele;
 import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.mobile.Orage;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.PluieAcide;
 import moteur.donne.evenement.mobile.PluieBenite;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
@@ -209,6 +210,9 @@ public class MainDisplayer extends JPanel
 	private void dessinerEvenement(Graphics g, Evenement evenement) {
 		if (evenement instanceof Pluie) {
 			stratDePeinture.paint((Pluie) evenement, g);
+		}
+		if (evenement instanceof PluieAcide) {
+			stratDePeinture.paint((PluieAcide) evenement, g);
 		}
 		if (evenement instanceof VentFroid) {
 			stratDePeinture.paint((VentFroid) evenement, g);

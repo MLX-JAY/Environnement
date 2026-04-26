@@ -1,20 +1,19 @@
 package gui;
 
+import config.ConfigurationCreationEvenement;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.BorderLayout;
-
-import config.ConfigurationCreationEvenement;
 import moteur.donne.biome.Biome;
 import moteur.processus.Manageur;
 import moteur.processus.usine.BiomeFactory.TypeBiome;
@@ -62,20 +61,48 @@ public class PanelEdition extends JPanel implements ChangeListener {
 
     private Manageur manageur;
     
-    public PanelEdition(Runnable actionFin, Runnable actionGenererCarte) {
+    public PanelEdition(Runnable actionFin, Runnable actionGenererCarte, Runnable actionAide) {
         this.actionGenererCarte = actionGenererCarte;
         
         this.setBackground(new Color(40, 54, 24));
         this.setPreferredSize(new Dimension(0, 80));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        this.setLayout(new BorderLayout());
+
+        JPanel ligneCommandes = new JPanel(new BorderLayout());
+        ligneCommandes.setOpaque(false);
+
+        Dimension zoneAide = new Dimension(85, 50);
+
+        JPanel panelAide = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        panelAide.setOpaque(false);
+        panelAide.setPreferredSize(zoneAide);
+
+        JButton btnAide = deseign.creerBeauBouton("?", new Color(90, 120, 190));
+        btnAide.setPreferredSize(new Dimension(55, 45));
+        if (actionAide != null) {
+            btnAide.addActionListener(e -> actionAide.run());
+        }
+        panelAide.add(btnAide);
+
+        JPanel panelActionsCentrees = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panelActionsCentrees.setOpaque(false);
+
+        JPanel compensateurDroite = new JPanel();
+        compensateurDroite.setOpaque(false);
+        compensateurDroite.setPreferredSize(zoneAide);
+
+        ligneCommandes.add(panelAide, BorderLayout.WEST);
+        ligneCommandes.add(panelActionsCentrees, BorderLayout.CENTER);
+        ligneCommandes.add(compensateurDroite, BorderLayout.EAST);
+        this.add(ligneCommandes, BorderLayout.CENTER);
 
         btnGenererCarte = deseign.creerBeauBouton("Générer Carte", new Color(100, 100, 180));
         if (actionGenererCarte != null) {
             btnGenererCarte.addActionListener(e -> actionGenererCarte.run());
-            this.add(btnGenererCarte);
+            panelActionsCentrees.add(btnGenererCarte);
         } else {
             btnGenererCarte.setEnabled(false);
-            this.add(btnGenererCarte);
+            panelActionsCentrees.add(btnGenererCarte);
         }
 
         btnFin = deseign.creerBeauBouton("Lancer", COULEUR_ACTION);
@@ -83,18 +110,18 @@ public class PanelEdition extends JPanel implements ChangeListener {
             sauvegarder();
             actionFin.run();
         });
-        this.add(btnFin);
+        panelActionsCentrees.add(btnFin);
 
         btnReinitialiser = deseign.creerBeauBouton("Réinitialiser", COULEUR_ACTION);
         btnReinitialiser.addActionListener(e -> reinitialiser());
-        this.add(btnReinitialiser);
+        panelActionsCentrees.add(btnReinitialiser);
 
         btnZero = deseign.creerBeauBouton("Mettre à zéro", new Color(180, 60, 60));
         btnZero.addActionListener(e -> mettreAZero());
-        this.add(btnZero);
+        panelActionsCentrees.add(btnZero);
 
         panelSelecteurBiomes = creerPanelSelecteurBiomes();
-        this.add(panelSelecteurBiomes);
+        panelActionsCentrees.add(panelSelecteurBiomes);
 
         panelConfig = creerPanneauConfig();
     }

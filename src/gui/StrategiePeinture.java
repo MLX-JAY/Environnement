@@ -1,7 +1,7 @@
 package gui;
-import java.awt.GradientPaint;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -10,7 +10,6 @@ import java.awt.geom.Path2D;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import moteur.donne.biome.Banquise;
-import moteur.donne.biome.Biome;
 import moteur.donne.biome.Desert;
 import moteur.donne.biome.Foret;
 import moteur.donne.biome.Mer;
@@ -19,12 +18,11 @@ import moteur.donne.biome.Village;
 import moteur.donne.biome.Ville;
 import moteur.donne.carte.Bloc;
 import moteur.donne.evenement.Evenement;
-import moteur.processus.usine.BiomeFactory;
-import moteur.processus.usine.BiomeFactory.TypeBiome;
 import moteur.donne.evenement.mobile.Grele;
 import moteur.donne.evenement.mobile.NuageToxique;
 import moteur.donne.evenement.mobile.Orage;
 import moteur.donne.evenement.mobile.Pluie;
+import moteur.donne.evenement.mobile.PluieAcide;
 import moteur.donne.evenement.mobile.PluieBenite;
 import moteur.donne.evenement.mobile.Pollution;
 import moteur.donne.evenement.mobile.Purification;
@@ -353,7 +351,7 @@ public class StrategiePeinture
 
     // --- Reflets sur la glace (éclats lumineux) ---
     g2.setColor(new Color(255, 255, 255, 160));
-    g2.fillOval(x + size/6, y + size/5, size/5, size/12);
+        g2.fillOval(x + size/6, y + size/5, size/5, size/12);
     g2.fillOval(x + size/2 + size/10, y + size/2, size/6, size/14);
 
     // --- Petits amas de neige ---
@@ -540,6 +538,35 @@ public class StrategiePeinture
         g2.fillOval(x + size / 8, y + size * 7 / 8, size * 3 / 4, size / 8);
 
         dessinerNuage(g2, x, y, size);
+        g2.dispose();
+    }
+
+    public void paint(PluieAcide pluieAcide, Graphics graphics) {
+        int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = (int) (pluieAcide.getPositionAnimationX() * size);
+        int y = (int) (pluieAcide.getPositionAnimationY() * size);
+        Graphics2D g2 = (Graphics2D) graphics.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setColor(new Color(45, 80, 20, 95));
+        g2.fillRect(x, y, size, size);
+
+        Random rand = new Random((int) pluieAcide.getPositionAnimationX() * 17 + (int) pluieAcide.getPositionAnimationY() * 13);
+        for (int i = 0; i < 10; i++) {
+            int gx = x + rand.nextInt(size - 4);
+            int gy = y + size / 4 + rand.nextInt(size * 3 / 4 - 4);
+            g2.setColor(new Color(170, 255, 60, 220));
+            g2.drawLine(gx, gy, gx - 2, gy + 7);
+        }
+
+        g2.setColor(new Color(120, 190, 40, 70));
+        g2.fillOval(x + size / 10, y + size * 3 / 4, size * 4 / 5, size / 5);
+
+        dessinerNuage(g2, x, y, size);
+
+        g2.setColor(new Color(180, 255, 110, 130));
+        g2.fillOval(x + size / 3, y + size / 5, size / 4, size / 8);
+
         g2.dispose();
     }
 
