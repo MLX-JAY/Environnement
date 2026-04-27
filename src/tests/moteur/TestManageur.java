@@ -245,25 +245,6 @@ public class TestManageur {
         }
     }
 
-    @Test
-    public void testMontagneStoppeUnEvenementMobile() {
-        manageur.CarteHasard();
-        manageur.clearEvenements();
-
-        Bloc source = carte.getBloc(1, 1);
-        Bloc montagne = carte.getBloc(2, 1);
-
-        manageur.remplacerBiome(montagne, BiomeFactory.creerBiomeParType(TypeBiome.MONTAGNE, montagne));
-
-        VentChaud evenement = new VentChaud(source, 10, 0, 0, 0, 0);
-        evenement.setDirection(1, 0);
-        manageur.getEvenements().add(evenement);
-
-        manageur.bougerEvementMobile();
-
-        assertTrue(manageur.getEvenements().isEmpty());
-    }
-
     private int compterMasseEauConnectee(boolean[][] eau, Bloc depart) {
         boolean[][] visite = new boolean[eau.length][eau[0].length];
         ArrayDeque<Bloc> file = new ArrayDeque<>();

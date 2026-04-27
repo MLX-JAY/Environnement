@@ -37,9 +37,9 @@ suivants.
     et des règles de transformation. Ce module est indépendant de l'interface
     graphique et peut fonctionner sans interaction utilisateur.
   \item \textbf{Module \texttt{gui}}~: gère l'interface utilisateur. Il contient
-    les classes d'affichage (\texttt{MainGUI}, \texttt{MainDisplayer},
-    \texttt{PanelStatistique}, \texttt{PanelTemps}, \texttt{PanelEdition},
-    \texttt{TutorielPanel}) et la classe de rendu (\texttt{StrategiePeinture}).
+    les classes d'affichage, à savoir \texttt{MainGUI}, \texttt{MainDisplayer},
+    \texttt{PanelStatistique}, \texttt{PanelTemps}, \texttt{PanelEdition}
+    et \texttt{TutorielPanel}, ainsi que la classe de rendu (\texttt{StrategiePeinture}).
     Ce module dépend du module \texttt{moteur} pour récupérer les données à
     afficher.
   \item \textbf{Module \texttt{config}}~: centralise tous les paramètres~:
@@ -362,7 +362,7 @@ non nul.
 \needspace{7\baselineskip}
 \paragraph{Génération d'événements depuis les biomes.}
 La classe \texttt{EvenementFactory} crée des événements selon des probabilités
-configurées dans \texttt{ConfigurationCreationEvenement}. Le patron Visiteur est
+configurées dans \texttt{Configuration\allowbreak Creation\allowbreak Evenement}. Le patron Visiteur est
 incarné par la classe \texttt{GenerateurEvenementVisitor}, qui parcourt la carte et
 génère des événements supplémentaires depuis certains biomes (par exemple, un biome
 Mer génère périodiquement un événement Pluie selon son identité propre). Les

@@ -19,6 +19,12 @@ public class ConfigurationEvenement
     public static final int VENTFROID_IMPACT_HUMIDITE  = 0;
     public static final int VENTFROID_IMPACT_POLLUTION  = 0;
     public static final int VENTFROID_IMPACT_PURIFICATION  = 0;
+
+    public static final int VENTCHAUD_IMPACT_DUREE = 4;
+    public static final int VENTCHAUD_IMPACT_TEMPERATURE  = +10;
+    public static final int VENTCHAUD_IMPACT_HUMIDITE  = 0;
+    public static final int VENTCHAUD_IMPACT_POLLUTION  = 0;
+    public static final int VENTCHAUD_IMPACT_PURIFICATION  = 0;
     
     public static final int PURIFICATION_IMPACT_DUREE = 4;
     public static final int PURIFICATION_IMPACT_TEMPERATURE  = 0;
@@ -41,7 +47,6 @@ public class ConfigurationEvenement
     
     public static final int PURIFICATION_DUREE = 4;
     public static final int VENT_CHAUD_DUREE = 4;
-    public static final int VENT_FROID_DUREE = 4;
     
     public static final int ORAGE_IMPACT_DUREE = 6;
     public static final int ORAGE_IMPACT_TEMPERATURE = 0;
