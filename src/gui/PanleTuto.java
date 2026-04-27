@@ -94,30 +94,39 @@ public class PanleTuto extends JPanel {
         int lar = (customLar > 0) ? customLar : imageLargeurDefaut;
         int haut = (customHaut > 0) ? customHaut : imageHauteurDefaut;
         
-        JPanel ligne = new JPanel();
-        ligne.setLayout(new BoxLayout(ligne, BoxLayout.Y_AXIS));
-        ligne.setBackground(COULEUR_FOND_SECTION);
-        ligne.setBorder(BorderFactory.createCompoundBorder(
+        JPanel ligneTexte = new JPanel();
+        ligneTexte.setLayout(new BoxLayout(ligneTexte, BoxLayout.Y_AXIS));
+        ligneTexte.setBackground(COULEUR_FOND_SECTION);
+        ligneTexte.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(75, 105, 78), 1),
             BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
-        ligne.setAlignmentX(LEFT_ALIGNMENT);
-        ligne.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2000));
+        ligneTexte.setAlignmentX(LEFT_ALIGNMENT);
+        ligneTexte.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2000));
         
         JLabel texteLabel = new JLabel("<html>" + texte.replace("\n", "<br>") + "</html>");
         texteLabel.setForeground(COULEUR_TEXTE);
         texteLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         texteLabel.setAlignmentX(LEFT_ALIGNMENT);
-        ligne.add(texteLabel);
+        ligneTexte.add(texteLabel);
+        
+        parent.add(ligneTexte);
+        parent.add(Box.createVerticalStrut(6));
         
         if (imagePath != null && !imagePath.isEmpty()) {
-            ligne.add(Box.createVerticalStrut(8));
+            JPanel ligneImage = new JPanel();
+            ligneImage.setLayout(new BorderLayout(8, 0));
+            ligneImage.setBackground(COULEUR_FOND_SECTION);
+            ligneImage.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(75, 105, 78), 1),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)
+            ));
+            ligneImage.setAlignmentX(LEFT_ALIGNMENT);
+            
             JPanel imagePanel = new JPanel();
             imagePanel.setLayout(new BorderLayout(0, 0));
             imagePanel.setOpaque(false);
             imagePanel.setPreferredSize(new Dimension(lar, haut));
-            imagePanel.setMaximumSize(new Dimension(lar, haut));
-            imagePanel.setAlignmentX(LEFT_ALIGNMENT);
             
             try {
                 String basePath = System.getProperty("user.dir");
@@ -167,10 +176,14 @@ public class PanleTuto extends JPanel {
                 imagePanel.add(placeholder, BorderLayout.CENTER);
             }
             
-            ligne.add(imagePanel, BorderLayout.SOUTH);
+            JPanel videPanel = new JPanel();
+            videPanel.setOpaque(false);
+            
+            ligneImage.add(imagePanel, BorderLayout.WEST);
+            ligneImage.add(videPanel, BorderLayout.CENTER);
+            
+            parent.add(ligneImage);
+            parent.add(Box.createVerticalStrut(6));
         }
-        
-        parent.add(ligne);
-        parent.add(Box.createVerticalStrut(6));
     }
 }

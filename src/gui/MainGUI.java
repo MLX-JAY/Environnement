@@ -111,7 +111,7 @@ JTabbedPane onglets = new JTabbedPane();
         String[][] expImages = {
             {"explication_generale", "720", "480"},
             {"", "0", "0"},
-            {"biomes_vue", "480", "120"},
+            {"biomes_vue", "480", "100"},
             {"", "0", "0"},
             {"", "0", "0"}
         };
@@ -134,7 +134,7 @@ JTabbedPane onglets = new JTabbedPane();
         String[][] editImages = {
             {"edition_generer", "120", "60"},
             {"edition_biomes", "600", "120"},
-            {"edition_config", "180", "120"},
+            {"edition_config", "360", "240"},
             {"edition_lancer", "120", "60"}
         };
         PanleTuto panelEdition = new PanleTuto("Mode edition", editSections, editContenu, editImages);
