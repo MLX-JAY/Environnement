@@ -83,34 +83,65 @@ public class MainGUI extends JFrame implements Runnable
     public void ouvrirFenetreTuto() {
         JFrame fenetreTuto = new JFrame("Tutoriel");
         fenetreTuto.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        fenetreTuto.setSize(760, 520);
+        fenetreTuto.setSize(1200, 600);
         fenetreTuto.setLocationRelativeTo(this);
 
-        JTabbedPane onglets = new JTabbedPane();
-        onglets.addTab("explication", new PanleTuto(
-            "Explication générale",
-            "Ce projet simule l'évolution d'un environnement sur une carte.\n\n"
-                + "Chaque tour applique des règles qui influencent les biomes et les événements.\n"
-                + "Tu peux d'abord préparer la carte en mode édition, puis lancer la simulation."
-        ));
-        onglets.addTab("edition", new PanleTuto(
-            "Mode édition",
-            "Dans le mode édition, tu peux générer aléatoirement une carte et en modifier les biomes."
-            + "Tu peux aussi changer les probabilités d'apparition de chaques événements.\n\n"
-                + "Menu du haut :\n- Générer Carte -> permet de générer une carte aléatoire.\n"
-                + "- Lancer Simulation -> démarre la simulation avec la carte actuelle.\n- Réinitialiser -> remet les probabilités à leurs valeurs par défaut.\n"
-                + "- Mettre à zéro -> remet les probabilités à 0%.\n"
-                + "- Boutons Biomes -> En cliquant sur l'un des 6 boutons, change le biome sélectionné en suite.\n\n"
-                + "Menu de gauche :\n- Permet d'ajuster les probabilités d'apparition de chaque événement."
-        ));
-        onglets.addTab("simulation", new PanleTuto(
-            "Mode simulation",
-            "Le mode simulation est le coeur de ce projet, il montre l'évolution de la carte en temps réel en fonction de l'impaxt des événements et des règles appliquées à chaque tour.\n\n"
-                + "Menu du haut :\n- Pause -> met en pause la simulation.\n- Play -> relance la simulation.\n- Vitesse x -> augmente la vitesse de la simulation.\n"
-                + "- Statistiques -> ouvre une fenêtre affichant des statistiques générales de la session en temps réel.\n\n"
-                + "Menu de gauche :\n- Affiche les statistiques d'un biome sélectionné."
-        ));
-        onglets.addTab("événements et biomes", new PanleTutoDraw());
+JTabbedPane onglets = new JTabbedPane();
+        
+        String[] expSections = {"Objectif du jeu", "Comment jouer", "Les biomes", "Les événements", "Gagner ou perdre"};
+        String[][] expContenu = {
+            {"Simulation d'écosysteme avec évolution automatique. Genere des aléas climatiques (pluie, orage, pollution...) qui transforment les biomes au fil du temps.",
+             "But : Observer comment l'écosysteme évolue et créer différentes scénarios grâce aux différents paramètres disponibles."},
+            {"1. <b>Génerer une carte</b> en mode Edition ou la modifier manuellement.",
+             "2. <b>Ajuster les probabilités</b> d'apparition des évenements.",
+             "3. <b>Lancer la simulation</b> et observer l'évolution.",
+             "4. <b>Mettre en pause</b> ou <b>accélérer</b> si besoin."},
+            {"<b>Foret</b> : Génère Purification (nettoie la pollution). <span style='color:#64c864'>+</span>",
+             "<b>Mer</b> : Génère Pluie, Orage (humidite). <span style='color:#64c864'>+</span>",
+             "<b>Desert</b> : Génère Vent chaud, Tornade (sec). <span style='color:#dcdc64'>~</span>",
+             "<b>Ville</b> : Génère Pollution (mauvais). <span style='color:#dc6464'>-</span>",
+             "<b>Montagne</b> : Neutre, ne genere rien, mais permet d'annihiler les evenements adjacents. <span style='color:#dcdc64'>!</span>"},
+            {"<b>Evenements positifs</b> : Pluie, Purification, Pluie benite - Ameliorent l'ecosysteme",
+             "<b>Evenements negatifs</b> : Pollution, Smog, Nuage toxique, Pluie Acide - Detruisent l'ecosysteme",
+             "<b>Evenements neutres</b> : Grèle, Orage, Tonnerre, Vent Chaud/Froid, Zephyr - Modifient les equilibres"},
+            {"Survie des <b>Forets</b> et <b>Mers</b> = <span style='color:#64c864'>Bon signe</span>",
+             "Pollution croissante = <span style='color:#dc6464'>Mauvais signe</span>",
+             "Biodiversite (types de biomes) = <span style='color:#ffc864'>Indicateur de developpement sain</span>"}
+        };
+        onglets.addTab("explication", new PanleTuto("Explication generale", expSections, expContenu));
+        
+        String[] editSections = {"Generer une carte", "Modifier les biomes", "Configurer les probabilites", "Lancer la simulation"};
+        String[][] editContenu = {
+            {"Cliquer autant de fois que nécéssaire sur <b>Générer Carte</b> pour creer une carte pseudo-aléatoire.",
+             "La taille depend de la configuration du jeu."},
+            {"Cliquer sur une <b>icone de biome</b> (cercles en haut) pour la séléctionner.",
+             "Cliquer sur la carte pour placer le biome choisi.",
+             "Le contour rouge indique le biome selectionne."},
+            {"Les <b>sliders</b> a gauche permettent d'ajuster les probabilites.",
+             "Chaque biome a ses propres evenements configurables.",
+             "<b>Reinitialiser</b> : Remet les valeurs par defaut.",
+             "<b>Mettre a zero</b> : Desactive tous les evenements."},
+            {"Cliquer sur <b>Lancer</b> pour demarrer la simulation.",
+             "Les parametres sont sauvegardes automatiquement."}
+        };
+        onglets.addTab("edition", new PanleTuto("Mode edition", editSections, editContenu));
+        
+        String[] simuSections = {"Principe", "Controles", "Statistiques", "Objectif"};
+        String[][] simuContenu = {
+            {"La simulation évolue carte en temps réel. A chaque tour, le jeu applique les evenements et les regles de transformation.",
+             "Les biomes peuvent se transformer selon les conditions (temperature, humidite, pollution, purification)."},
+            {"<b>Pause</b> : Met en pause la simulation.",
+             "<b>Play</b> : Relance la simulation.",
+             "<b>Vitesse x</b> : Accelere le rythme (1x, 2x, 4x).",
+             "<b>Statistiques</b> : Ouvre une fenetre avec graphiques."},
+            {"Selectionner un biome pour voir ses statistiques detaillees de la Partie.",
+             "Les differents condittions des biomes, le pourcentage d'evenements/ biomes, le tout en temps reel.",
+             "<b>Bilan de fin</b> : Affiche le resume quand la partie se termine, avec un cetain score de l'etat de l'ecosysteme."},
+            {"Observer l'evolution et maintenir des conditions favorables.",
+             "Prevention : Maintenir Forets et Mers pour un ecosysteme sain."}
+};
+        onglets.addTab("simulation", new PanleTuto("Mode simulation", simuSections, simuContenu));
+        onglets.addTab("évenements et biomes", new PanleTutoDraw());
 
         fenetreTuto.setContentPane(onglets);
         fenetreTuto.setVisible(true);

@@ -73,7 +73,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
 
         Dimension zoneAide = new Dimension(85, 50);
 
-        JPanel panelAide = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
+        JPanel panelAide = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 18));
         panelAide.setOpaque(false);
         panelAide.setPreferredSize(zoneAide);
 

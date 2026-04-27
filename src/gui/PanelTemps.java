@@ -12,22 +12,38 @@ public class PanelTemps extends JPanel {
         this.mainGUI = mainGUI;
         this.setBackground(new Color(40, 54, 24));
         this.setPreferredSize(new Dimension(0, 80));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        this.setLayout(new BorderLayout());
 
         initComposants();
     }
 
     private void initComposants() {
+        JPanel panelGauche = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 18));
+        panelGauche.setOpaque(false);
+        
+        JButton btnAide = deseign.creerBeauBouton("?", new Color(90, 120, 190));
+        btnAide.setPreferredSize(new Dimension(55, 45));
+        btnAide.addActionListener(e -> mainGUI.ouvrirFenetreTuto());
+        panelGauche.add(btnAide);
+        
+        this.add(panelGauche, BorderLayout.WEST);
+        
+        JPanel panelCentre = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panelCentre.setOpaque(false);
+        panelCentre.setBackground(new Color(40, 54, 24));
+        
         btnPause = deseign.creerBeauBouton("Pause", new Color(200, 60, 60));
-        this.add(btnPause);
+        panelCentre.add(btnPause);
         btnPlay = deseign.creerBeauBouton("Play", new Color(60, 200, 60));
-        this.add(btnPlay);
-        btnX2 = deseign.creerBeauBouton("Vitesse x0", new Color(60, 60, 200));
-        this.add(btnX2);
+        panelCentre.add(btnPlay);
+        btnX2 = deseign.creerBeauBouton("Vitesse x1", new Color(60, 60, 200));
+        panelCentre.add(btnX2);
         btnStop = deseign.creerBeauBouton("Bilan de fin", new Color(200, 200, 60));
-        this.add(btnStop);
+        panelCentre.add(btnStop);
         btnStats = deseign.creerBeauBouton("Statistiques", new Color(100, 100, 180));
-        this.add(btnStats);
+        panelCentre.add(btnStats);
+        
+        this.add(panelCentre, BorderLayout.CENTER);
 
         btnPlay.setEnabled(false);
 
@@ -54,15 +70,15 @@ public class PanelTemps extends JPanel {
                 GameConfiguration.VITESSE_JEU /= 2;
                 System.out.println("Vitesse de simulation doublée : " + GameConfiguration.VITESSE_JEU + " ms par tour.");
                 if (GameConfiguration.VITESSE_JEU == 500) {
-                    btnX2.setText("Vitesse x1");
+                    btnX2.setText("Vitesse x2");
                 }
                 else if (GameConfiguration.VITESSE_JEU == 250) {
-                    btnX2.setText("Vitesse x2");
+                    btnX2.setText("Vitesse x4");
                 }
             }
             else {
                 GameConfiguration.VITESSE_JEU = 1000; // Limite minimale pour éviter une vitesse trop rapide
-                btnX2.setText("Vitesse x0");
+                btnX2.setText("Vitesse x1");
             }
         });
         
