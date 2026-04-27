@@ -46,6 +46,13 @@ import moteur.processus.usine.EvenementFactory;
 
 public class PanleTutoDraw extends JPanel {
 
+    private static final Color COULEUR_HUMIDITE = new Color(64, 144, 224);
+    private static final Color COULEUR_TEMPERATURE = new Color(224, 112, 32);
+    private static final Color COULEUR_POLLUTION = new Color(112, 112, 112);
+    private static final Color COULEUR_PURIFICATION = new Color(64, 160, 64);
+    private static final Color COULEUR_MIXTE = new Color(128, 96, 160);
+    private static final Color COULEUR_NEUTRE = new Color(150, 150, 150);
+    
     private final StrategiePeinture strategie;
     private final EvenementFactory evenementFactory;
     private final Bloc blocReference;
@@ -70,30 +77,37 @@ public class PanleTutoDraw extends JPanel {
         contenu.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
         ajouterSection(contenu, "Evenements");
-        ajouterLigneEvenement(contenu, "Pluie", "Humidite +5", evenementFactory.creerPluie(blocReference));
-        ajouterLigneEvenement(contenu, "Orage", "Humidite +10", evenementFactory.creerOrage(blocReference));
-        ajouterLigneEvenement(contenu, "Tonnerre", "Humidite +8", evenementFactory.creerTonnerre(blocReference));
-        ajouterLigneEvenement(contenu, "Vent froid", "Temperature -5", evenementFactory.creerVentFroid(blocReference));
-        ajouterLigneEvenement(contenu, "Grele", "Temperature -10, Humidite +5", evenementFactory.creerGrele(blocReference));
-        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature -5 (impl. actuelle)", evenementFactory.creerVentChaud(blocReference));
-        ajouterLigneEvenement(contenu, "Zephyr", "Temperature +5", evenementFactory.creerZephyr(blocReference));
-        ajouterLigneEvenement(contenu, "Tornade", "Humidite +5, Pollution +5", evenementFactory.creerTornade(blocReference));
-        ajouterLigneEvenement(contenu, "Pollution", "Pollution +10", evenementFactory.creerPollution(blocReference));
-        ajouterLigneEvenement(contenu, "Smog", "Pollution +15", evenementFactory.creerSmog(blocReference));
-        ajouterLigneEvenement(contenu, "Nuage toxique", "Pollution +20", evenementFactory.creerNuageToxique(blocReference));
-        ajouterLigneEvenement(contenu, "Purification", "Purification +5", evenementFactory.creerPurification(blocReference));
-        ajouterLigneEvenement(contenu, "Pluie benite", "Humidite +8, Pollution -5, Purification +10", evenementFactory.creerPluieBenite(blocReference));
-        ajouterLigneEvenement(contenu, "Pluie acide", "Humidite +5, Pollution +10", evenementFactory.creerPluieAcide(blocReference));
-        ajouterLigneEvenement(contenu, "Meteore", "Temperature +50, Pollution +20", evenementFactory.creerMeteore(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie", "Humidite +5", COULEUR_HUMIDITE, 5, 10, evenementFactory.creerPluie(blocReference));
+        ajouterLigneEvenement(contenu, "Orage", "Humidite +10", COULEUR_HUMIDITE, 10, 10, evenementFactory.creerOrage(blocReference));
+        ajouterLigneEvenement(contenu, "Tonnerre", "Humidite +8", COULEUR_HUMIDITE, 8, 10, evenementFactory.creerTonnerre(blocReference));
+        ajouterLigneEvenement(contenu, "Vent froid", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentFroid(blocReference));
+        ajouterLigneEvenement(contenu, "Grele", "Temp -10, Humid +5", COULEUR_MIXTE, 10, 10, evenementFactory.creerGrele(blocReference));
+        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentChaud(blocReference));
+        ajouterLigneEvenement(contenu, "Zephyr", "Temperature +5", COULEUR_TEMPERATURE, 5, 10, evenementFactory.creerZephyr(blocReference));
+        ajouterLigneEvenement(contenu, "Tornade", "Humid +5, Poll +5", COULEUR_MIXTE, 5, 10, evenementFactory.creerTornade(blocReference));
+        ajouterLigneEvenement(contenu, "Pollution", "Pollution +10", COULEUR_POLLUTION, 10, 10, evenementFactory.creerPollution(blocReference));
+        ajouterLigneEvenement(contenu, "Smog", "Pollution +15", COULEUR_POLLUTION, 15, 10, evenementFactory.creerSmog(blocReference));
+        ajouterLigneEvenement(contenu, "Nuage toxique", "Pollution +20", COULEUR_POLLUTION, 20, 10, evenementFactory.creerNuageToxique(blocReference));
+        ajouterLigneEvenement(contenu, "Purification", "Purification +5", COULEUR_PURIFICATION, 5, 10, evenementFactory.creerPurification(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie benite", "Humid +8, Poll -5", COULEUR_PURIFICATION, 8, 10, evenementFactory.creerPluieBenite(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie acide", "Humid +5, Poll +10", COULEUR_MIXTE, 10, 10, evenementFactory.creerPluieAcide(blocReference));
+        ajouterLigneEvenement(contenu, "Meteore", "Temp +50, Poll +20", COULEUR_MIXTE, 20, 10, evenementFactory.creerMeteore(blocReference));
 
         ajouterSection(contenu, "Biomes");
-        ajouterLigneBiome(contenu, "Foret", "Genere: Purification, Pluie benite", TypeBiome.FORET);
-        ajouterLigneBiome(contenu, "Desert", "Genere: Vent chaud, Zephyr, Tornade", TypeBiome.DESERT);
-        ajouterLigneBiome(contenu, "Mer", "Genere: Pluie, Orage, Tonnerre", TypeBiome.MER);
-        ajouterLigneBiome(contenu, "Banquise", "Genere: Vent froid, Grele", TypeBiome.BANQUISE);
-        ajouterLigneBiome(contenu, "Ville", "Genere: Pollution, Smog, Nuage toxique", TypeBiome.VILLE);
-        ajouterLigneBiome(contenu, "Village", "Genere: Pollution", TypeBiome.VILLAGE);
-        ajouterLigneBiome(contenu, "Montagne", "Ne genere pas d'evenement", TypeBiome.MONTAGNE);
+        ajouterLigneBiome(contenu, "Foret", new Object[]{TypeBiome.FORET}, 
+            new Evenement[]{evenementFactory.creerPurification(blocReference), evenementFactory.creerPluieBenite(blocReference)});
+        ajouterLigneBiome(contenu, "Desert", new Object[]{TypeBiome.DESERT}, 
+            new Evenement[]{evenementFactory.creerVentChaud(blocReference), evenementFactory.creerZephyr(blocReference), evenementFactory.creerTornade(blocReference)});
+        ajouterLigneBiome(contenu, "Mer", new Object[]{TypeBiome.MER}, 
+            new Evenement[]{evenementFactory.creerPluie(blocReference), evenementFactory.creerOrage(blocReference), evenementFactory.creerTonnerre(blocReference)});
+        ajouterLigneBiome(contenu, "Banquise", new Object[]{TypeBiome.BANQUISE}, 
+            new Evenement[]{evenementFactory.creerVentFroid(blocReference), evenementFactory.creerGrele(blocReference)});
+        ajouterLigneBiome(contenu, "Ville", new Object[]{TypeBiome.VILLE}, 
+            new Evenement[]{evenementFactory.creerPollution(blocReference), evenementFactory.creerSmog(blocReference), evenementFactory.creerNuageToxique(blocReference)});
+        ajouterLigneBiome(contenu, "Village", new Object[]{TypeBiome.VILLAGE}, 
+            new Evenement[]{evenementFactory.creerPollution(blocReference)});
+        ajouterLigneBiome(contenu, "Montagne", new Object[]{TypeBiome.MONTAGNE}, 
+            new Evenement[]{});
 
         JScrollPane scroll = new JScrollPane(contenu);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -113,20 +127,7 @@ public class PanleTutoDraw extends JPanel {
         parent.add(Box.createVerticalStrut(8));
     }
 
-    private void ajouterLigneEvenement(JPanel parent, String nom, String details, Evenement evenement) {
-        JPanel ligne = creerLigneBase(nom, details, g2 -> dessinerEvenement(g2, evenement));
-        parent.add(ligne);
-        parent.add(Box.createVerticalStrut(8));
-    }
-
-    private void ajouterLigneBiome(JPanel parent, String nom, String details, TypeBiome typeBiome) {
-        Biome biome = BiomeFactory.creerBiomeParType(typeBiome, blocReference);
-        JPanel ligne = creerLigneBase(nom, details, g2 -> dessinerBiome(g2, biome));
-        parent.add(ligne);
-        parent.add(Box.createVerticalStrut(8));
-    }
-
-    private JPanel creerLigneBase(String nom, String details, DessinApercu dessinApercu) {
+    private void ajouterLigneEvenement(JPanel parent, String nom, String details, Color couleurBadge, int valeur, int maxValeur, Evenement evenement) {
         JPanel ligne = new JPanel(new BorderLayout(12, 0));
         ligne.setBackground(new Color(44, 67, 56));
         ligne.setBorder(BorderFactory.createCompoundBorder(
@@ -156,7 +157,7 @@ public class PanleTutoDraw extends JPanel {
 
                 g2.translate(decalageX, decalageY);
                 g2.scale(echelle, echelle);
-                dessinApercu.dessiner(g2);
+                dessinerEvenement(g2, evenement);
                 g2.dispose();
             }
         };
@@ -167,23 +168,164 @@ public class PanleTutoDraw extends JPanel {
         texte.setLayout(new BoxLayout(texte, BoxLayout.Y_AXIS));
         texte.setBackground(new Color(44, 67, 56));
 
+        JPanel header = new JPanel(new BorderLayout(0, 0));
+        header.setBackground(new Color(44, 67, 56));
+        
         JLabel nomLabel = new JLabel(nom);
         nomLabel.setForeground(new Color(255, 230, 165));
-        nomLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        nomLabel.setAlignmentX(LEFT_ALIGNMENT);
+        nomLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        
+        JLabel genereLabel = new JLabel("Génère : ");
+        genereLabel.setForeground(couleurBadge);
+        genereLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        
+        JLabel effetLabel = new JLabel(details);
+        effetLabel.setForeground(Color.WHITE);
+        effetLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        
+        JPanel detailsPanel = new JPanel(new BorderLayout(0, 0));
+        detailsPanel.setBackground(new Color(44, 67, 56));
+        detailsPanel.add(genereLabel, BorderLayout.WEST);
+        detailsPanel.add(effetLabel, BorderLayout.CENTER);
 
-        JLabel detailsLabel = new JLabel("<html>" + details + "</html>");
-        detailsLabel.setForeground(Color.WHITE);
-        detailsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        detailsLabel.setAlignmentX(LEFT_ALIGNMENT);
+        header.add(nomLabel, BorderLayout.NORTH);
+        
+        JPanel generePanel = new JPanel(new BorderLayout(0, 0));
+        generePanel.setBackground(new Color(44, 67, 56));
+        generePanel.add(detailsPanel, BorderLayout.CENTER);
 
-        texte.add(nomLabel);
-        texte.add(Box.createVerticalStrut(4));
-        texte.add(detailsLabel);
+        JPanel barrePanel = new JPanel(new BorderLayout(0, 0));
+        barrePanel.setBackground(new Color(44, 67, 56));
+        
+        int barreLargeur = Math.min(100, Math.abs(valeur) * 8);
+        JPanel barre = new JPanel();
+        barre.setPreferredSize(new Dimension(barreLargeur, 12));
+        barre.setBackground(couleurBadge);
+        
+        barrePanel.add(barre, BorderLayout.WEST);
 
-        ligne.add(vignette, BorderLayout.WEST);
-        ligne.add(texte, BorderLayout.CENTER);
-        return ligne;
+        texte.add(header);
+        texte.add(Box.createVerticalStrut(2));
+        texte.add(generePanel);
+        texte.add(barrePanel);
+
+        ligne.add(texte, BorderLayout.WEST);
+        ligne.add(vignette, BorderLayout.EAST);
+        parent.add(ligne);
+        parent.add(Box.createVerticalStrut(8));
+    }
+
+    private void ajouterLigneBiome(JPanel parent, String nom, Object[] typeBiome, Evenement[] evenements) {
+        JPanel ligne = new JPanel(new BorderLayout(12, 0));
+        ligne.setBackground(new Color(44, 67, 56));
+        ligne.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(75, 105, 78), 1),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        ligne.setAlignmentX(LEFT_ALIGNMENT);
+        ligne.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
+
+        TypeBiome type = (TypeBiome) typeBiome[0];
+        Biome biome = BiomeFactory.creerBiomeParType(type, blocReference);
+
+        JPanel texte = new JPanel();
+        texte.setLayout(new BoxLayout(texte, BoxLayout.Y_AXIS));
+        texte.setBackground(new Color(44, 67, 56));
+
+        JPanel header = new JPanel(new BorderLayout(0, 0));
+        header.setBackground(new Color(44, 67, 56));
+        
+        JLabel nomLabel = new JLabel(nom);
+        nomLabel.setForeground(new Color(255, 230, 165));
+        nomLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        
+        JLabel genereLabel = new JLabel("Génère : ");
+        genereLabel.setForeground(new Color(255, 220, 140));
+        genereLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        
+        JLabel aucunLabel = new JLabel("Aucun");
+        aucunLabel.setForeground(new Color(150, 150, 150));
+        aucunLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        JPanel eventsPanel = new JPanel();
+        eventsPanel.setLayout(new BoxLayout(eventsPanel, BoxLayout.Y_AXIS));
+        eventsPanel.setBackground(new Color(44, 67, 56));
+
+        if (evenements.length == 0) {
+            eventsPanel.add(aucunLabel);
+        } else {
+            JPanel eventsLigne = new JPanel();
+            eventsLigne.setLayout(new BoxLayout(eventsLigne, BoxLayout.X_AXIS));
+            eventsLigne.setBackground(new Color(44, 67, 56));
+            
+            for (Evenement evt : evenements) {
+                JPanel miniVignette = new JPanel() {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(new Color(30, 35, 30));
+                        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 6, 6);
+                        double echelle = Math.min(getWidth(), getHeight()) * 0.8 / GameConfiguration.TAILLE_BLOC;
+                        double decalageX = (getWidth() - GameConfiguration.TAILLE_BLOC * echelle) / 2.0;
+                        double decalageY = (getHeight() - GameConfiguration.TAILLE_BLOC * echelle) / 2.0;
+                        g2.translate(decalageX, decalageY);
+                        g2.scale(echelle, echelle);
+                        dessinerEvenement(g2, evt);
+                        g2.dispose();
+                    }
+                };
+                miniVignette.setPreferredSize(new Dimension(36, 36));
+                miniVignette.setMaximumSize(new Dimension(36, 36));
+                eventsLigne.add(miniVignette);
+                eventsLigne.add(Box.createHorizontalStrut(2));
+            }
+            eventsPanel.add(eventsLigne);
+        }
+
+        header.add(nomLabel, BorderLayout.NORTH);
+        
+        JPanel generePanel = new JPanel(new BorderLayout(0, 0));
+        generePanel.setBackground(new Color(44, 67, 56));
+        generePanel.add(genereLabel, BorderLayout.WEST);
+        generePanel.add(eventsPanel, BorderLayout.CENTER);
+        
+        texte.add(header);
+        texte.add(Box.createVerticalStrut(2));
+        texte.add(generePanel);
+
+        JPanel vignette = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(20, 28, 25));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+
+                double marge = 6.0;
+                double echelle = Math.min(
+                    (getWidth() - marge * 2.0) / GameConfiguration.TAILLE_BLOC,
+                    (getHeight() - marge * 2.0) / GameConfiguration.TAILLE_BLOC
+                );
+                double decalageX = (getWidth() - GameConfiguration.TAILLE_BLOC * echelle) / 2.0;
+                double decalageY = (getHeight() - GameConfiguration.TAILLE_BLOC * echelle) / 2.0;
+
+                g2.translate(decalageX, decalageY);
+                g2.scale(echelle, echelle);
+                dessinerBiome(g2, biome);
+                g2.dispose();
+            }
+        };
+        vignette.setPreferredSize(new Dimension(86, 86));
+        vignette.setOpaque(false);
+
+        ligne.add(texte, BorderLayout.WEST);
+        ligne.add(vignette, BorderLayout.EAST);
+        parent.add(ligne);
+        parent.add(Box.createVerticalStrut(8));
     }
 
     private void dessinerEvenement(Graphics2D g2, Evenement evenement) {

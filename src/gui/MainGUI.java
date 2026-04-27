@@ -107,14 +107,21 @@ JTabbedPane onglets = new JTabbedPane();
             {"Survie des <b>Forets</b> et <b>Mers</b> = <span style='color:#64c864'>Bon signe</span>",
              "Pollution croissante = <span style='color:#dc6464'>Mauvais signe</span>",
              "Biodiversite (types de biomes) = <span style='color:#ffc864'>Indicateur de developpement sain</span>"}
+};
+        String[][] expImages = {
+            {"explication_generale", "720", "480"},
+            {"", "0", "0"},
+            {"biomes_vue", "480", "120"},
+            {"", "0", "0"},
+            {"", "0", "0"}
         };
-        onglets.addTab("explication", new PanleTuto("Explication generale", expSections, expContenu));
+        onglets.addTab("explication", new PanleTuto("Explication generale", expSections, expContenu, expImages));
         
         String[] editSections = {"Generer une carte", "Modifier les biomes", "Configurer les probabilites", "Lancer la simulation"};
         String[][] editContenu = {
-            {"Cliquer autant de fois que nécéssaire sur <b>Générer Carte</b> pour creer une carte pseudo-aléatoire.",
+            {"Cliquer autant de fois que necessaire sur <b>Generer Carte</b> pour creer une carte pseudo-aleatoire.",
              "La taille depend de la configuration du jeu."},
-            {"Cliquer sur une <b>icone de biome</b> (cercles en haut) pour la séléctionner.",
+            {"Cliquer sur une <b>icone de biome</b> (cercles en haut) pour la selectionner.",
              "Cliquer sur la carte pour placer le biome choisi.",
              "Le contour rouge indique le biome selectionne."},
             {"Les <b>sliders</b> a gauche permettent d'ajuster les probabilites.",
@@ -124,11 +131,19 @@ JTabbedPane onglets = new JTabbedPane();
             {"Cliquer sur <b>Lancer</b> pour demarrer la simulation.",
              "Les parametres sont sauvegardes automatiquement."}
         };
-        onglets.addTab("edition", new PanleTuto("Mode edition", editSections, editContenu));
+        String[][] editImages = {
+            {"edition_generer", "120", "60"},
+            {"edition_biomes", "600", "120"},
+            {"edition_config", "180", "120"},
+            {"edition_lancer", "120", "60"}
+        };
+        PanleTuto panelEdition = new PanleTuto("Mode edition", editSections, editContenu, editImages);
+        panelEdition.setImageSize(180, 120);
+        onglets.addTab("edition", panelEdition);
         
         String[] simuSections = {"Principe", "Controles", "Statistiques", "Objectif"};
         String[][] simuContenu = {
-            {"La simulation évolue carte en temps réel. A chaque tour, le jeu applique les evenements et les regles de transformation.",
+            {"La simulation evolue carte en temps reel. A chaque tour, le jeu applique les evenements et les regles de transformation.",
              "Les biomes peuvent se transformer selon les conditions (temperature, humidite, pollution, purification)."},
             {"<b>Pause</b> : Met en pause la simulation.",
              "<b>Play</b> : Relance la simulation.",
@@ -139,8 +154,16 @@ JTabbedPane onglets = new JTabbedPane();
              "<b>Bilan de fin</b> : Affiche le resume quand la partie se termine, avec un cetain score de l'etat de l'ecosysteme."},
             {"Observer l'evolution et maintenir des conditions favorables.",
              "Prevention : Maintenir Forets et Mers pour un ecosysteme sain."}
-};
-        onglets.addTab("simulation", new PanleTuto("Mode simulation", simuSections, simuContenu));
+        };
+        String[][] simuImages = {
+            {"", "0", "0"},
+            {"simulation_controles", "900", "60"},
+            {"simulation_stats",  "720", "480"},
+            {"", "0", "0"}
+        };
+        PanleTuto panelSimulation = new PanleTuto("Mode simulation", simuSections, simuContenu, simuImages);
+        panelSimulation.setImageSize(180, 100);
+        onglets.addTab("simulation", panelSimulation);
         onglets.addTab("évenements et biomes", new PanleTutoDraw());
 
         fenetreTuto.setContentPane(onglets);
