@@ -21,13 +21,13 @@ L'application est organisée en quatre modules distincts selon une architecture
 modulaire à responsabilités séparées. La figure~\ref{fig:architecture} représente
 cette décomposition ainsi que les dépendances entre modules.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{images/architecture.png}
   \caption{Architecture modulaire de l'application Environnement}
   \label{fig:architecture}
 \end{figure}
-
+\needspace{5\baselineskip}
 Les quatre modules identifiés dans la figure~\ref{fig:architecture} sont les
 suivants.
 
@@ -51,53 +51,20 @@ suivants.
 \end{itemize}
 
 Cette séparation en modules garantit que toute modification d'un module n'impacte
-pas les autres, à condition de respecter les interfaces publiques définies. Elle
-facilite également les tests unitaires de chaque composant de manière isolée.
+  pas les autres, à condition de respecter les interfaces publiques définies. Elle
+  facilite également les tests unitaires de chaque composant de manière isolée.
+
+  \paragraph{Positionnement MVC.}
+  L'architecture du projet s'articule autour du modèle MVC (Modèle-Vue-Contrôleur).
+  Le Modèle (M) correspond au module \texttt{moteur}, qui contient les classes
+  \texttt{ManageurBasique}, \texttt{Carte}, \texttt{Biome} et \texttt{Evenement}.
+  La Vue (V) est assurée par le module \texttt{gui} via les classes
+  \texttt{MainGUI} et \texttt{StrategiePeinture} qui gèrent le rendu graphique.
+  Les Contrôleurs (C) sont les Listeners des boutons Swing, qui font le lien entre
+  les interactions utilisateur et le moteur de simulation.
 
 % ------------------------------------------------------------
-\subsection{Patrons de conception utilisés}
-\label{subsec:design_patterns}
-
-Les choix de conception reposent sur des patrons de conception éprouvés issus de
-la littérature sur le génie logiciel~\cite{gamma1994design, freeman2004head}. Ces
-patrons ont été sélectionnés pour répondre aux contraintes d'extensibilité et de
-maintenabilité identifiées dans la section~\ref{subsec:enjeux}.
-
-\paragraph{Patron Fabrique (Factory).}
-Le patron Fabrique est mis en œuvre par les classes \texttt{BiomeFactory} et
-\texttt{EvenementFactory}~\cite{gamma1994design}. La \texttt{BiomeFactory}
-centralise la création de tous les objets biomes, permettant d'instancier un biome
-à partir de son type sans connaître la classe concrète concernée. La
-\texttt{EvenementFactory}, quant à elle, va plus loin que la simple instanciation~:
-elle crée chaque événement sous une \emph{formation spatiale} précise (unique,
-ligne horizontale, ligne verticale, carré $2 \times 2$, carré $3 \times 3$, T, L,
-diagonale, cercle ou croix), selon des probabilités configurées dans le module
-\texttt{config}. Cette capacité à construire des formations cohérentes apporte une
-grande cohérence visuelle au projet, en donnant à chaque événement une empreinte
-reconnaissable sur la grille. Ce patron garantit de plus que l'ajout d'un nouveau
-type de biome ou d'événement ne nécessite de modifier que la fabrique et la classe
-concrète correspondante, sans toucher au reste du code.
-
-\paragraph{Patron Visiteur (Visitor).}
-Le patron Visiteur est utilisé pour la génération d'événements liés aux biomes
-via la classe \texttt{GenerateurEvenementVisitor}. Ce patron sépare l'algorithme
-de génération des structures de données qu'il parcourt~\cite{gamma1994design}.
-Ainsi, chaque type de biome peut être visité pour déclencher des événements
-spécifiques à ses caractéristiques (par exemple, une Mer génère des événements
-de type Pluie) sans modifier la hiérarchie des biomes. Dans notre code, cette
-classe parcourt la carte à chaque round et applique la logique de génération
-propre à chaque biome rencontré, ce qui maintient la responsabilité de génération
-hors de la classe \texttt{Carte} elle-même.
-
-\paragraph{Programmation par interfaces.}
-L'interface \texttt{RegleTransformation} est implémentée par chacune des six règles
-de transformation. Ce mécanisme garantit que tout objet implémentant cette interface
-peut être évalué par le moteur de simulation de manière uniforme~: le
-\texttt{ManageurBasique} itère simplement sur une liste de \texttt{RegleTransformation}
-sans connaître les classes concrètes. Cela permet d'ajouter ou de supprimer une
-règle sans modifier l'algorithme principal du moteur.
-
-% ------------------------------------------------------------
+\needspace{15\baselineskip}
 \subsection{Classes de données}
 \label{subsec:classes_donnees}
 
@@ -125,27 +92,6 @@ propriétés pour chaque type de biome, telles que définies dans la classe
 simulation et influencent directement la fréquence et la nature des transformations
 déclenchées.
 
-\begin{table}[H]
-  \centering
-  \caption{Valeurs initiales des propriétés des biomes (définies dans
-           \texttt{ConfigurationBiome})}
-  \label{tab:biomes_init}
-  \begin{tabular}{lrrrr}
-    \toprule
-    \textbf{Biome} & \textbf{Température} & \textbf{Humidité}
-                   & \textbf{Pollution} & \textbf{Purification} \\
-    \midrule
-    Forêt      & 18{,}0    & 70  &  5 & 20 \\
-    Désert     & 45{,}0    &  5  &  0 &  2 \\
-    Mer        & 15{,}0    & 100 & 10 &  5 \\
-    Village    & 22{,}0    &  40 & 50 &  0 \\
-    Banquise   & $-$10{,}0 &  80 &  0 &  5 \\
-    Montagne   &  5{,}0    &  30 &  2 & 10 \\
-    Ville      & 25{,}0    &  50 & 40 &  5 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
 Les propriétés listées dans le tableau~\ref{tab:biomes_init} évoluent sous l'effet
 des événements climatiques et peuvent déclencher les transformations automatiques
 définies dans le tableau~\ref{tab:transformations}. La Montagne est la seule
@@ -162,13 +108,22 @@ les événements statiques (\texttt{Meteore}) qui restent à position fixe, et l
 \texttt{Pollution}, \texttt{Purification}, \texttt{Orage}, \texttt{Grele},
 \texttt{Tornade}, \texttt{PluieBenite}, \texttt{Zephyr}, \texttt{Tonnerre},
 \texttt{Smog}, \texttt{NuageToxique}) qui se déplacent d'une case à chaque round.
-
+\needspace{5\baselineskip}
 \paragraph{Gestion de la carte.}
 La classe \texttt{Carte} gère la grille de simulation. Elle contient un tableau
 bidimensionnel d'objets \texttt{Bloc}. Chaque objet \texttt{Bloc} encapsule un
 biome et ses coordonnées $(x, y)$. La classe \texttt{Carte} expose des méthodes
 pour accéder aux blocs via leurs coordonnées et pour valider la position avant
 tout accès, évitant ainsi les accès hors limites.
+
+Le patron Fabrique~\cite{gamma1994design,freeman2004head} est mis en œuvre par les classes
+\texttt{BiomeFactory} et \texttt{EvenementFactory}. La \texttt{BiomeFactory}
+centralise la création de tous les biomes, permettant d'instancier un biome à
+partir de son type sans connaître la classe concrète. La \texttt{EvenementFactory}
+crée chaque événement selon une \emph{formation spatiale} précise (unique,
+ligne, carré, T, L, diagonale, cercle, croix), définie dans le module
+\texttt{config}. Ce patron garantit que l'ajout d'un nouveau type de biome ou
+d'événement ne nécessite de modifier que la factory correspondante.
 
 % ------------------------------------------------------------
 \subsection{Interface Homme-Machine graphique}
@@ -191,20 +146,23 @@ village, banquise). La barre inférieure propose les boutons \textit{Générer C
 pour remplir la grille aléatoirement, \textit{Lancer} pour démarrer la
 simulation, \textit{Réinitialiser} et \textit{Mettre à zéro} pour restaurer les
 valeurs par défaut, ainsi que \textit{Modifier} pour changer manuellement un biome
-sélectionné sur la grille.
+sélectionné sur la grille. Le mode édition est accessible uniquement avant le
+lancement de la simulation ; une fois celle-ci démarrée, la modification
+manuelle des cellules est désactivée.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/mode_edition.png}
+  \caption{Schéma conceptuel de l'interface de configuration initiale}
+  \label{fig:schema_edition}
+\end{figure}
+
+\needspace{7\baselineskip}
 \paragraph{Fenêtre de simulation.}
 Lorsque l'utilisateur clique sur le bouton \textit{Lancer}, la fenêtre d'édition
 se ferme et la fenêtre principale de simulation s'ouvre. Comme le montre la
 figure~\ref{fig:fenetre_simulation}, elle est composée de trois zones
 fonctionnelles.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/fenetre_simulation.png}
-  \caption{Fenêtre principale de simulation avec ses trois zones fonctionnelles}
-  \label{fig:fenetre_simulation}
-\end{figure}
 
 Les trois zones visibles dans la figure~\ref{fig:fenetre_simulation} sont les
 suivantes~:
@@ -219,6 +177,24 @@ suivantes~:
     simulation (Play, Pause, Vitesse~$\times 2$, Bilan de fin).
 \end{itemize}
 
+La structure logique de ces contrôles de pilotage est illustrée dans la
+figure~\ref{fig:schema_simulation}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{images/mode_simulation.png}
+  \caption{Schéma conceptuel de l'interface de pilotage dynamique}
+  \label{fig:schema_simulation}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/fenetre_simulation.png}
+  \caption{Fenêtre principale de simulation avec ses trois zones fonctionnelles}
+  \label{fig:fenetre_simulation}
+\end{figure}
+
+\needspace{10\baselineskip}
 \paragraph{Fenêtre de tutoriel.}
 Afin d'améliorer l'accessibilité de l'application, une fenêtre de tutoriel a été
 intégrée. Accessible depuis la fenêtre principale via un bouton dédié, elle est
@@ -229,7 +205,14 @@ la logique des transformations écologiques. L'affichage modal garantit que
 l'utilisateur peut consulter ces informations contextuelles sans que la simulation
 en cours ne soit interrompue ni fermée.
 
-\paragraph{Stratégie de rendu.}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/fenetre_aide.png}
+  \caption{Fenêtre de tutoriel}
+  \label{fig:fenetre_aide}
+\end{figure}
+
+\paragraph{Strategy de rendu.}
 La classe \texttt{StrategiePeinture} centralise le rendu graphique de l'ensemble
 des éléments de la simulation. Chaque méthode \texttt{paintComponent} est
 spécialisée pour dessiner un type précis de biome ou d'événement, ce qui permet
@@ -238,6 +221,7 @@ d'affichage. Cette spécialisation facilite l'ajout d'un nouveau rendu graphique
 sans modifier les classes de données ni le moteur de simulation.
 
 % ------------------------------------------------------------
+\needspace{8\baselineskip}
 \subsection{Conception des traitements algorithmiques}
 \label{subsec:traitements}
 
@@ -255,34 +239,35 @@ si un nombre aléatoire tiré uniformément est inférieur à cette probabilité
 
 \begin{equation}
   \label{eq:proba_generation}
-  P(\text{génération}) = p_{\text{configurée}}
+  P(\text{génération}) = p_{\text{configurée}}.
 \end{equation}
 
 La formule~\ref{eq:proba_generation} permet de contrôler finement la fréquence
 d'apparition de chaque type d'événement.
 
-La deuxième formule décrit le \textbf{calcul des impacts sur les propriétés}.
+L'équation~\ref{eq:impact} décrit le \textbf{calcul des impacts sur les propriétés}.
 Lorsqu'un événement affecte un biome, ses propriétés sont mises à jour par
 addition~:
 
 \begin{equation}
   \label{eq:impact}
-  p_{\text{nouvelle}} = p_{\text{actuelle}} + \Delta p_{\text{événement}}
+  p_{\text{nouvelle}} = p_{\text{actuelle}} + \Delta p_{\text{événement}}.
 \end{equation}
 
-La troisième formule assure le \textbf{bornage des valeurs}. Toutes les propriétés
+L'équation~\ref{eq:bornage} assure le \textbf{bornage des valeurs}. Toutes les propriétés
 sont contraintes dans l'intervalle $[0, 100]$ pour garantir la cohérence des
 données~:
 
 \begin{equation}
   \label{eq:bornage}
-  p_{\text{bornée}} = \max\!\left(0,\; \min\!\left(100,\; p\right)\right)
+  p_{\text{bornée}} = \max\!\left(0,\; \min\!\left(100,\; p\right)\right).
 \end{equation}
 
 En Java, la formule~\ref{eq:bornage} est implémentée via les méthodes
 \texttt{Math.max} et \texttt{Math.min}, appliquées systématiquement après chaque
 mise à jour de propriété.
 
+\needspace{7\baselineskip}
 \paragraph{Algorithme de la boucle de simulation.}
 L'algorithme principal est implémenté dans la méthode
 \texttt{ManageurBasique.nextRound()}. Il exécute un cycle complet à chaque round
@@ -312,6 +297,7 @@ FIN ALGORITHME
 L'algorithme présenté dans le listing~\ref{lst:nextrond} garantit que les quatre
 étapes de la simulation sont exécutées dans un ordre déterministe à chaque round.
 
+\needspace{20\baselineskip}
 \paragraph{Algorithme de génération de la carte.}
 La génération cohérente des biomes est implémentée dans
 \texttt{BiomeFactory.creerBiomesCoherents()}. Cet algorithme crée une distribution
@@ -354,6 +340,7 @@ Densification. Chaque règle encapsule ses conditions dans une méthode
 conditions ne sont pas réunies~; le moteur applique simplement le premier résultat
 non nul.
 
+\needspace{7\baselineskip}
 \paragraph{Génération d'événements depuis les biomes.}
 La classe \texttt{EvenementFactory} crée des événements selon des probabilités
 configurées dans \texttt{ConfigurationCreationEvenement}. Le patron Visiteur est

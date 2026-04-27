@@ -20,10 +20,8 @@ de développement intégré est également requis pour compiler le projet~; Ecli
 est recommandé car il a été utilisé lors du développement et garantit une
 compatibilité optimale avec la configuration du projet.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
-  \caption{Bibliothèques prérequises pour le bon fonctionnement de l'application}
-  \label{tab:prerequis}
   \begin{tabular}{ll}
     \toprule
     \textbf{Bibliothèque} & \textbf{Rôle} \\
@@ -37,6 +35,8 @@ compatibilité optimale avec la configuration du projet.
     swtgraphics2d & Pont entre SWT et Graphics2D \\
     \bottomrule
   \end{tabular}
+  \caption{Bibliothèques prérequises pour le bon fonctionnement de l'application}
+  \label{tab:prerequis}
 \end{table}
 
 L'application est compatible avec les systèmes d'exploitation Windows~10 ou
@@ -45,6 +45,7 @@ Une résolution d'écran d'au moins 1920\,$\times$\,1080~pixels est recommandée
 un affichage optimal de l'interface graphique.
 
 % ------------------------------------------------------------
+\needspace{10\baselineskip}
 \subsection{Récupération et compilation du projet}
 \label{subsec:compilation}
 
@@ -53,8 +54,8 @@ réalisée depuis Eclipse.
 
 \paragraph{Récupération du code source.}
 La méthode recommandée est d'utiliser GitHub Desktop, qui simplifie la gestion du
-dépôt. Après installation, le dépôt se clone via
-\textit{File > Clone repository} en renseignant l'URL du projet~:
+dépôt. Après installation, le dépôt se clone via la procédure illustrée dans le
+listing~\ref{lst:clone}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:clone,
     caption={Clonage du dépôt via GitHub Desktop}]
@@ -62,7 +63,8 @@ File > Clone repository > URL > coller l'URL du depot > Clone
 \end{lstlisting}
 
 Pour les utilisateurs ne souhaitant pas installer GitHub Desktop, il est possible
-de télécharger le projet directement depuis l'interface web de GitHub~:
+de télécharger le projet directement depuis l'interface web de GitHub via la
+procédure illustrée dans le listing~\ref{lst:zip}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:zip,
     caption={Téléchargement du projet via l'interface web}]
@@ -71,7 +73,7 @@ Code > Download ZIP > extraire l'archive sur la machine locale
 
 \paragraph{Compilation avec Eclipse.}
 Une fois le projet récupéré, il convient de l'importer dans Eclipse en
-suivant le chemin~:
+suivant la procédure illustrée dans le listing~\ref{lst:import}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:import,
     caption={Import du projet dans Eclipse}]
@@ -80,7 +82,7 @@ File > Import > Existing Projects into Workspace
 \end{lstlisting}
 
 Les bibliothèques listées dans le tableau~\ref{tab:prerequis} doivent ensuite être
-ajoutées au build path~:
+ajoutées au build path via la procédure illustrée dans le listing~\ref{lst:buildpath}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:buildpath,
     caption={Ajout des bibliothèques au build path}]
@@ -91,12 +93,14 @@ La compilation s'effectue ensuite automatiquement à chaque sauvegarde si l'opti
 \textit{Build Automatically} est activée dans le menu \textit{Project}.
 
 % ------------------------------------------------------------
+\needspace{7\baselineskip}
 \subsection{Lancement et utilisation de l'application}
 \label{subsec:lancement}
 
 Une fois le projet compilé conformément à la section~\ref{subsec:compilation},
 l'application se lance depuis Eclipse en exécutant directement le fichier
-\texttt{Environnement.java} via le menu~:
+\texttt{Environnement.java} via la procédure illustrée dans le
+listing~\ref{lst:run}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:run,
     caption={Lancement de l'application depuis Eclipse}]
@@ -105,7 +109,7 @@ Run > Run As > Java Application
 
 Il est également possible de lancer l'application depuis un terminal si un fichier
 \texttt{.jar} exécutable a été exporté au préalable via
-\textit{File > Export > Runnable JAR file}~:
+la procédure illustrée dans le listing~\ref{lst:runjar}~:
 
 \begin{lstlisting}[style=java, language=bash, label=lst:runjar,
     caption={Lancement de l'application depuis un terminal}]
@@ -119,14 +123,14 @@ Au lancement, la fenêtre d'édition s'affiche. Elle permet de configurer manuel
 la carte avant de démarrer la simulation. La figure~\ref{fig:manuel_edition}
 présente l'aspect de cette fenêtre avec ses différentes zones de contrôle.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.85\textwidth]{images/image_edition}
   \caption{Fenêtre d'édition~: configuration de la carte et des probabilités
            d'événements}
   \label{fig:manuel_edition}
 \end{figure}
-
+\needspace{8\baselineskip}
 Comme on peut le constater sur la figure~\ref{fig:manuel_edition}, les opérations
 disponibles dans cette fenêtre sont les suivantes~:
 
@@ -150,10 +154,8 @@ Les contrôles disponibles dans le panneau inférieur (\texttt{PanelTemps})
 permettent de piloter l'exécution. Le tableau~\ref{tab:controles} décrit chaque
 bouton et son effet.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
-  \caption{Contrôles de la simulation et leurs effets}
-  \label{tab:controles}
   \begin{tabular}{ll}
     \toprule
     \textbf{Contrôle} & \textbf{Effet} \\
@@ -166,6 +168,8 @@ bouton et son effet.
     \textit{Tutoriel}          & Ouvre la fenêtre d'aide et de présentation des règles \\
     \bottomrule
   \end{tabular}
+  \caption{Contrôles de la simulation et leurs effets}
+  \label{tab:controles}
 \end{table}
 
 \paragraph{Étape 4 — Lecture des statistiques.}
@@ -173,7 +177,7 @@ La figure~\ref{fig:manuel_simulation} illustre l'interface principale lors d'une
 session en cours, avec ses trois zones fonctionnelles~: la grille centrale de
 simulation, le panneau de statistiques et les contrôles de pilotage.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.9\textwidth]{images/image_simulation}
   \caption{Fenêtre principale de simulation~: grille, statistiques JFreeChart et

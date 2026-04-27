@@ -22,7 +22,7 @@ Le fonctionnement repose sur un modèle de simulation par \emph{rounds} successi
 À chaque round, le système exécute un cycle complet divisé en quatre étapes
 distinctes, comme l'illustre la figure~\ref{fig:flux_round}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth]{images/flux_round.png}
   \caption{Flux d'exécution d'un round de simulation}
@@ -38,6 +38,7 @@ distinctes, comme l'illustre la figure~\ref{fig:flux_round}.
     les biomes Montagne.
   \item \textbf{Application des impacts}~: les événements modifient les propriétés
     numériques des biomes qu'ils occupent.
+    \needspace{1\baselineskip}
   \item \textbf{Évaluation des transformations}~: les règles de transformation
     vérifient les propriétés de chaque biome~; si les conditions sont satisfaites,
     le biome se transforme en un autre type.
@@ -68,33 +69,17 @@ Les termes techniques récurrents dans ce rapport sont définis comme suit.
 \end{itemize}
 
 \paragraph{Contraintes et limitations connues.}
-L'application présente plusieurs contraintes et limitations identifiées lors de
-son développement.
+L'application présente plusieurs contraintes et limitations identifiées lors de son développement.
 
-La première limitation concerne l'\textbf{absence de persistance des données}.
-L'état de l'écosystème est intégralement géré en mémoire vive durant l'exécution.
-Le logiciel ne dispose pas de mécanisme de sérialisation permettant de sauvegarder
-l'état d'une simulation pour la reprendre ultérieurement.
+\begin{enumerate}
+  \item \textbf{L'absence de persistance des données (Limitation technique).} L'état de l'écosystème est intégralement géré en mémoire vive durant l'exécution de la simulation. Le logiciel ne dispose pas de mécanisme de sérialisation pour sauvegarder l'état d'une simulation et la reprendre ultérieurement.
 
-La deuxième limitation porte sur les \textbf{contraintes de l'interface
-Homme-Machine}. L'interface graphique possède une résolution fixée à
-1920\,$\times$\,1080~pixels. Le positionnement absolu des composants Swing empêche
-un redimensionnement dynamique de la fenêtre, et l'ergonomie du mode édition ne
-prend pas en charge la sélection de masse ni la duplication de zones.
+  \item \textbf{Les contraintes liées à l'Interface Homme-Machine (IHM).} L'interface graphique possède une résolution fixée à 1920\,$\times$\,1080~pixels. Le positionnement absolu des composants Swing impide un redimensionnement dynamique de la fenêtre. L'ergonomie du mode édition ne prend pas en charge la sélection de masse ni la duplication de zones. Une fois la simulation démarrée, la modification manuelle des cellules est désactivée pour garantir l'intégrité du cycle de simulation.
+\needspace{1\baselineskip}
+  \item \textbf{L'absence de parallélisme (Limitation de performance).} Le moteur de simulation ne possède pas de parallélisme ; toutes les étapes d'un round s'exécutent séquentiellement dans un unique thread. Sur des cartes de grande taille ou avec un nombre d'entités élevé, cette approche séquentielle constitue un goulot d'étranglement car elle ne tire pas parti du multi-cœur du processeur.
 
-La troisième limitation concerne le \textbf{couplage entre le moteur et
-l'interface graphique}. Le gestionnaire de simulation (\texttt{ManageurBasique})
-communique directement avec certains composants Swing, ce qui crée une dépendance
-bidirectionnelle entre la logique métier et la couche de présentation. Ce couplage
-rend le remplacement ou le test isolé du moteur plus complexe qu'avec une
-architecture entièrement découplée.
-
-La quatrième limitation est l'\textbf{absence de parallélisme dans le moteur de
-simulation}. Toutes les étapes d'un round~--- génération, déplacement, impact et
-transformation~--- s'exécutent séquentiellement dans un unique thread. Sur des
-cartes de grande taille ou avec un nombre d'entités élevé, cette approche
-séquentielle constitue un goulot d'étranglement, car les interactions entre
-événements et biomes ne tirent aucun parti du multi-cœur du processeur.
+  \item \textbf{Les contraintes du modèle écologique (Limites conceptuelles).} Les quatre propriétés numériques d'un biome (température, humidité, pollution, purification) sont mathématiquement contraintes et bornées dans l'intervalle 0 à 100. Le biome Montagne constitue une exception : il est immuable et ses propriétés ne peuvent être modifiées par aucune règle ni aucun événement.
+\end{enumerate}
 
 % ------------------------------------------------------------
 \subsection{Fonctionnalités attendues du projet}
@@ -110,7 +95,7 @@ $(x, y)$. Les dimensions de la grille sont configurables (par exemple
 $20 \times 20$ ou $30 \times 30$). La figure~\ref{fig:grille_biome} montre un
 exemple de grille peuplée de biomes variés.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{images/grille_biome.png}
   \caption{Exemple de grille de biomes générée par l'application}
@@ -119,7 +104,7 @@ exemple de grille peuplée de biomes variés.
 
 La génération de la carte peut s'effectuer de manière aléatoire, les probabilités
 de chaque type de biome étant définies dans le fichier de configuration. Chaque bloc
-est accessible et modifiable via des méthodes d'accès dédiées. Les coordonnées sont
+est accessible et modifiable via des méthodes dédiées. Le système permet de consulter ou de modifier l'état de chaque case de la grille. Les coordonnées sont
 validées avant tout accès pour garantir la cohérence des données.
 
 \paragraph{Gestion des biomes.}
@@ -140,15 +125,13 @@ Météore est le seul représentant de cette catégorie. Les événements mobile
 déplacent d'une case à chaque round dans une direction assignée. Le
 tableau~\ref{tab:evenements} synthétise les propriétés de chaque événement.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
-  \caption{Propriétés des événements météorologiques}
-  \label{tab:evenements}
   \begin{tabular}{llrrrr>{\small}r}
     \toprule
     \textbf{Événement} & \textbf{Catégorie} & \textbf{Durée}
       & $\Delta$\textbf{Temp.} & $\Delta$\textbf{Hum.}
-      & $\Delta$\textbf{Poll.} & $\Delta$\textbf{Purif.} \\
+      & $\Delta$\textbf{Poll.} & $\Delta$\textbf{Purification} \\
     \midrule
     Pluie         & Mobile  &  4 &   0   & $+$5  &   0   &  0 \\
     VentFroid     & Mobile  &  4 & $-$5  &   0   &   0   &  0 \\
@@ -165,6 +148,8 @@ tableau~\ref{tab:evenements} synthétise les propriétés de chaque événement.
     NuageToxique  & Mobile  &  7 &   0   &   0   & $+$20 &  0 \\
     \bottomrule
   \end{tabular}
+  \caption{Propriétés des événements météorologiques}
+  \label{tab:evenements}
 \end{table}
 
 Comme le montre le tableau~\ref{tab:evenements}, les événements mobiles exercent
@@ -178,10 +163,8 @@ une empreinte visuelle reconnaissable sur la grille. Le
 tableau~\ref{tab:formations} détaille la formation associée à chaque type
 d'événement.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
-  \caption{Formations spatiales des événements météorologiques}
-  \label{tab:formations}
   \begin{tabular}{ll}
     \toprule
     \textbf{Événement} & \textbf{Formation} \\
@@ -196,6 +179,8 @@ d'événement.
     Pollution, Purification, Météore & Unique \\
     \bottomrule
   \end{tabular}
+  \caption{Formations spatiales des événements météorologiques}
+  \label{tab:formations}
 \end{table}
 
 \paragraph{Système de transformation des biomes.}
@@ -203,28 +188,26 @@ Six règles de transformation écologique contrôlent l'évolution des biomes au
 des rounds. Le tableau~\ref{tab:transformations} présente les conditions
 d'activation de chaque règle et le biome cible associé.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
-  \caption{Règles de transformation écologique et conditions d'activation}
-  \label{tab:transformations}
   \begin{tabular}{llp{7cm}}
     \toprule
     \textbf{Règle} & \textbf{Biome cible} & \textbf{Condition principale} \\
     \midrule
-    Inondation      & Mer      & Humidité $\geq 90$, Temp.\ $\geq 5$, Poll.\ $\leq 40$ \\
-    Glaciation      & Banquise & Temp.\ $\leq 0$, Hum.\ $\geq 20$, Poll.\ $\leq 20$ \\
-    Désertification & Désert   & Temp.\ $\geq 50$ ou Hum.\ $\leq 10$ \\
-    Forestation     & Forêt    & Temp.\ $\in [10, 35]$, Hum.\ $\in [60, 90]$, Poll.\ $\leq 25$ \\
-    Civilisation    & Village  & Temp.\ $\in [15, 40]$, Hum.\ $\in [20, 80]$, Poll.\ $\leq 10$ \\
-    Densification   & Ville    & Temp.\ $\in [18, 45]$, Hum.\ $\in [30, 70]$, Poll.\ $\in [10, 60]$ \\
+    Inondation      & Mer      & $\text{Hum.} \geq 90$, $\text{Temp.} \geq 5$, $\text{Poll.} \leq 40$ \\
+    Glaciation      & Banquise & $\text{Temp.} \leq 0$, $\text{Hum.} \geq 20$, $\text{Poll.} \leq 20$ \\
+    Désertification & Désert   & $\text{Temp.} \geq 50$ ou $\text{Hum.} \leq 10$ \\
+    Forestation     & Forêt    & $\text{Temp.} \in [10, 35]$, $\text{Hum.} \in [60, 90]$, $\text{Poll.} \leq 25$ \\
+    Civilisation    & Village  & $\text{Temp.} \in [15, 40]$, $\text{Hum.} \in [20, 80]$, $\text{Poll.} < 10$ \\
+    Densification   & Ville    & $\text{Temp.} \in [18, 45]$, $\text{Hum.} \in [30, 70]$, $\text{Poll.} \in [10, 60]$ \\
     \bottomrule
   \end{tabular}
+  \caption{Règles de transformation écologique et conditions d'activation}
+  \label{tab:transformations}
 \end{table}
 
 Les conditions décrites dans le tableau~\ref{tab:transformations} sont évaluées à
-chaque round pour chaque biome de la carte. Chaque règle est implémentée sous
-forme d'un objet indépendant, ce qui garantit leur évaluation uniforme par le
-moteur de simulation sans modification de l'algorithme principal.
+chaque round pour chaque biome de la carte.
 
 \paragraph{Interface graphique.}
 L'interface graphique permet de visualiser et de contrôler la simulation en temps
@@ -233,6 +216,8 @@ représente un biome distinct. Les événements sont superposés à la grille so
 de symboles animés. L'interface propose les contrôles suivants~: Play pour démarrer
 la simulation, Pause pour la suspendre, Vitesse~$\times 2$ pour accélérer
 l'exécution, Bilan de fin pour consulter le récapitulatif, et Statistiques pour
-ouvrir la fenêtre d'analyse détaillée. Un mode édition permet de modifier
-manuellement les biomes avant ou pendant la simulation. Une fenêtre de tutoriel
+ouvrir la fenêtre d'analyse détaillée. Le mode édition permet de configurer manuellement
+la carte avant le lancement de la simulation ; une fois celle-ci démarrée, la
+modification manuelle des cellules est désactivée pour garantir l'intégrité du
+cycle de simulation. Une fenêtre de tutoriel
 est également disponible pour guider l'utilisateur lors de sa première utilisation.

@@ -15,6 +15,13 @@ Ville et Village. Chaque biome possède des propriétés intrinsèques (tempéra
 humidité, pollution, purification) qui définissent son état environnemental à
 un instant donné.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.25\textwidth]{images/logo.png}
+  \caption{Logo du projet Environnement}
+  \label{fig:logo_projet}
+\end{figure}
+
 La dimension temporelle de la simulation est structurée par des \emph{rounds}.
 À chaque round, des événements météorologiques (Pluie, Vent, Pollution, Météore,
 entre autres) affectent les caractéristiques des biomes et peuvent déclencher
@@ -26,14 +33,15 @@ en désert.
 \label{subsec:problematique}
 
 La problématique centrale consiste à concevoir un système de simulation permettant
-de gérer l'évolution dynamique d'un écosystème sur une grille bidimensionnelle.
+de gérer l'évolution dynamique d'un écosystème sur une grille bidimensionnelle,
+dans la tradition des automates cellulaires popularisés par Conway~\cite{gardner1970life}.
 Plusieurs questions ont guidé le développement~: comment un biome réagit-il aux
 conditions environnementales changeantes telles que la température, l'humidité et
 la pollution~? Comment les événements climatiques propagent-ils leurs effets sur
 la carte~? Quand et selon quelles conditions un biome se transforme-t-il en un
 autre type~? Comment visualiser cette évolution de manière fluide et interactive
 sur une interface graphique~?
-
+\needspace{1\baselineskip}
 Ces questions convergent vers un objectif synthétique~: créer une simulation
 dynamique et réaliste, accessible et pilotable via une interface graphique
 développée avec la bibliothèque Java Swing.
@@ -42,7 +50,7 @@ développée avec la bibliothèque Java Swing.
 \label{subsec:enjeux}
 
 Ce projet présente plusieurs enjeux majeurs sur le plan de la conception logicielle.
-Les enjeux identifiés sont les suivants.
+Les enjeux identifiés sont les suivants: 
 
 \begin{itemize}
   \item \textbf{Extensibilité}~: l'architecture doit permettre l'ajout de nouveaux
@@ -75,7 +83,7 @@ L'objectif principal est de développer une application complète de simulation
   \item la visualisation en temps réel via une interface graphique interactive
     développée avec Java Swing.
 \end{itemize}
-
+\needspace{5\baselineskip}
 Plusieurs fonctionnalités secondaires ont également été intégrées~: une fenêtre de
 statistiques en temps réel avec des graphiques d'évolution générés par la
 bibliothèque JFreeChart, un mode édition interactif, une fenêtre de tutoriel
@@ -86,11 +94,11 @@ contrôle de la vitesse de simulation.
 \label{subsec:organisation}
 
 Ce rapport est structuré en six sections principales qui couvrent l'ensemble du
-cycle de vie du projet. La section~\ref{sec:specification} établit le référentiel
+cycle de vie du projet~\cite{wikibooks2024latex}. La section~\ref{sec:specification} établit le référentiel
 fonctionnel~: fonctionnalités attendues, terminologie, contraintes techniques et
 règles de comportement du simulateur. La section~\ref{sec:realisation} détaille
 la conception logicielle et sa mise en œuvre~: architecture modulaire, hiérarchie
-des classes, patrons de conception appliqués à notre code et traitements
+des classes, design patterns appliqués à notre code et traitements
 algorithmiques au cœur du moteur. Le manuel d'installation et d'utilisation,
 constituant un guide opérationnel destiné à tout utilisateur souhaitant prendre
 en main l'application, est proposé à la section~\ref{sec:manuel}. La

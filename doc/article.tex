@@ -17,6 +17,8 @@
 \usepackage{fancyhdr}
 \usepackage{emptypage}
 \usepackage{setspace}
+\usepackage{etoolbox}
+\usepackage{needspace}
 
 % --- Typographie ---
 \usepackage{microtype}
@@ -107,15 +109,16 @@
 }
 
 % --- Hyperliens ---
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks, hypertexnames=false]{hyperref}
 \usepackage{url}
 
 % --- Formatage des titres ---
 \usepackage{titlesec}
-\titleformat{\section}{\Large\bfseries}{}{0em}{\thesection\quad}[\vspace{0.3em}\hrule\vspace{0.5em}]
-\titleformat{\subsection}{\large\bfseries}{\thesubsection\quad}{0em}{}
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}[\vspace{0.3em}\hrule\vspace{0.5em}]
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
 \titlespacing*{\section}{0pt}{2em}{1em}
 \titlespacing*{\subsection}{0pt}{1.5em}{0.5em}
+\pretocmd{\section}{\clearpage}{}{}   
 
 % Numérotation des sections
 \setcounter{secnumdepth}{2}
@@ -145,18 +148,19 @@
 \input{titre}
 
 % --- Table des matières ---
-\clearpage
 \tableofcontents
 \clearpage
 
 % --- Liste des figures ---
 \listoffigures
-\addcontentsline{toc}{section}{Liste des figures}
 \clearpage
 
 % --- Liste des tableaux ---
 \listoftables
-\addcontentsline{toc}{section}{Liste des tableaux}
+\clearpage
+
+% --- Remerciements ---
+\input{remerciements}
 \clearpage
 
 % --- Corps du rapport ---
@@ -166,7 +170,10 @@
 \input{manuel}
 \input{deroulement}
 \input{conclusion}
-\input{bibliographies}
+
+% --- Bibliographie (BibTeX) ---
+\bibliographystyle{alpha}
+\bibliography{references}
 
 % ============================================================
 \end{document}

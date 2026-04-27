@@ -21,11 +21,19 @@ la répartition des tâches a suivi un découpage fonctionnel cohérent avec les
 quatre modules du projet.
 
 \paragraph{Répartition du travail.}
-Feraoun Mohamed Amine a piloté l'architecture modulaire et la conception des hiérarchies de classes (biomes, événements), en implémentant le cœur du moteur de simulation ainsi que l'interface graphique complète. Il a également géré l'intégration des statistiques JFreeChart, le système de journalisation Log4j et la rédaction du rapport.
+Feraoun Mohamed Amine a conçu l'architecture modulaire et le cœur du moteur de
+simulation (classes Carte, ManageurBasique, règles de transformation). Il a
+réalisé les tests unitaires et rédigé la première partie du rapport.
 
-Anurajan Thenuxshan s'est concentré sur le module de configuration et la fenêtre d'édition (PanelEdition), assurant l'interface de paramétrage des événements. Il a fourni un support technique sur plusieurs composantes graphiques et participated aux tests d'intégration.
+Ouardani Nidhal a mis en place le système de journalisation Log4j et a développé
+l'algorithme de génération cohérente de la carte et la logique de déplacement
+des événements mobiles. Il a contribué à la rédaction de la deuxième partie du
+rapport.
 
-Ouardani Nidhal a conçu l'algorithme de génération cohérente de la carte et implémenté la logique de déplacement fluide des événements mobiles. Sa contribution a portée sur les mécanismes de formation spatiale et la gestion dynamique des entités sur la grille.
+Anurajan Thenuxshan a implémenté le module de configuration et la fenêtre
+d'édition (PanelEdition), assurant l'interface de paramétrage des événements. Il a
+apporté un support technique sur les composantes graphiques et participé aux tests
+d'intégration.
 
 Cette répartition n'a pas été strictement cloisonnée~: des révisions croisées du
 code ont été systématiquement organisées pour garantir la cohérence globale du
@@ -45,7 +53,7 @@ entre modules et d'ajuster le planning.
 Le développement s'est articulé en quatre phases successives dont les jalons sont
 présentés dans le tableau~\ref{tab:planning}.
 
-\begin{table}[H]
+\begin{table}[htbp]
   \centering
   \caption{Phases de développement et jalons du projet}
   \label{tab:planning}
@@ -60,43 +68,11 @@ présentés dans le tableau~\ref{tab:planning}.
                          événements, carte), module \texttt{config},
                          premières règles de transformation \\[0.4em]
     3 & Semaines 6--8  & Développement du moteur de simulation
-                         (\texttt{ManageurBasique}), intégration des fabriques,
+                         (\texttt{ManageurBasique}), intégration des factories,
                          réalisation de l'interface graphique \\[0.4em]
     4 & Semaines 9--10 & Finalisation des différents concepts du projet
                          (comme le mode édition), corrections des anomalies
                          et bilan de fin ; rédaction du rapport \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-La phase~1 décrite dans le tableau~\ref{tab:planning} a été déterminante pour la
-suite du projet~: la décision d'adopter une architecture à quatre modules dès le
-départ a considérablement facilité le travail en parallèle et limité les conflits
-de fusion sur le dépôt Git. La phase~3 a représenté la charge la plus lourde, car
-elle a impliqué l'intégration simultanée des modules \texttt{moteur} et
-\texttt{gui}, dont les interfaces devaient être compatibles.
-
-% ------------------------------------------------------------
-\subsection{Outils et environnement de développement}
-\label{subsec:outils}
-
-Le tableau~\ref{tab:outils} présente les principaux outils utilisés au cours du projet.
-
-\begin{table}[H]
-  \centering
-  \caption{Outils et technologies employés dans le projet}
-  \label{tab:outils}
-  \begin{tabular}{lp{9cm}}
-    \toprule
-    \textbf{Outil / Technologie} & \textbf{Rôle et justification} \\
-    \midrule
-    Java~8                       & Langage principal, choix justifié par sa stabilité et la disponibilité des bibliothèques nécessaires \\[0.4em]
-    Eclipse IDE                  & IDE principal, facilite la gestion du build path et des dépendances JAR \\[0.4em]
-    Git                          & Contrôle de version, permet le travail collaboratif par branches \\[0.4em]
-    Log4j                        & Journalisation, support natif de sorties multiples et configuration externe \\[0.4em]
-    Java Swing                   & Interface graphique, incluse dans le JDK et sans dépendance externe \\[0.4em]
-    JUnit                        & Tests unitaires pour la validation du moteur de simulation \\[0.4em]
-    JFreeChart                   & Génération de graphiques pour l'affichage des statistiques en temps réel \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -106,7 +82,7 @@ Le tableau~\ref{tab:outils} présente les principaux outils utilisés au cours d
 \label{subsec:difficultes}
 
 Plusieurs difficultés techniques ont été rencontrées au cours du développement.
-Chacune est décrite ci-après sous la forme d'un couple problème/solution afin
+Elles sont décrites dans la section~\ref{subsec:difficultes} sous la forme d'un couple problème/solution afin
 d'en faciliter la compréhension.
 
 \paragraph{Les statistiques.}
