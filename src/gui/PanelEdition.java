@@ -250,7 +250,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
         // === EVENEMENTS ALEATOIRES ===
         row = ajouterSection(panel, row, "Événements aléatoires", COULEUR_METEORE);
         
-        sliderMeteore = creerSlider(ConfigurationEvenement.METEORE_PROBABILITE, COULEUR_METEORE);
+        sliderMeteore = creerSliderMeteore(ConfigurationEvenement.METEORE_PROBABILITE, COULEUR_METEORE);
         lblMeteore = creerLabelValeur(ConfigurationEvenement.METEORE_PROBABILITE);
         row++;
         addRow(panel, "  Météore:", sliderMeteore, lblMeteore, gbc, row);
@@ -369,6 +369,12 @@ public class PanelEdition extends JPanel implements ChangeListener {
     
     private JSlider creerSlider(double valeur, Color couleur) {
         JSlider slider = deseign.creerBeauSlider((int)(valeur * 1000), 0, 50, couleur);
+        slider.addChangeListener(this);
+        return slider;
+    }
+    
+    private JSlider creerSliderMeteore(double valeur, Color couleur) {
+        JSlider slider = deseign.creerBeauSlider((int)(valeur * 1000), 0, 1000, couleur);
         slider.addChangeListener(this);
         return slider;
     }
