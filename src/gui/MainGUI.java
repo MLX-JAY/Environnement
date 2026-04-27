@@ -102,7 +102,7 @@ JTabbedPane onglets = new JTabbedPane();
              "<b>Ville</b> : Génère Pollution (mauvais). <span style='color:#dc6464'>-</span>",
              "<b>Montagne</b> : Neutre, ne genere rien, mais permet d'annihiler les evenements adjacents. <span style='color:#dcdc64'>!</span>"},
             {"<b>Evenements positifs</b> : Pluie, Purification, Pluie benite - Ameliorent l'ecosysteme",
-             "<b>Evenements negatifs</b> : Pollution, Smog, Nuage toxique, Pluie Acide - Detruisent l'ecosysteme",
+             "<b>Evenements negatifs</b> : Pollution, Smog, Nuage toxique, Pluie Acide, Météore - Detruisent l'ecosysteme",
              "<b>Evenements neutres</b> : Grèle, Orage, Tonnerre, Vent Chaud/Froid, Zephyr - Modifient les equilibres"},
             {"Survie des <b>Forets</b> et <b>Mers</b> = <span style='color:#64c864'>Bon signe</span>",
              "Pollution croissante = <span style='color:#dc6464'>Mauvais signe</span>",
