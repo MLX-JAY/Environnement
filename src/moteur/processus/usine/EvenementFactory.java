@@ -199,10 +199,10 @@ public class EvenementFactory {
         return new VentChaud(
             position,
             ConfigurationEvenement.VENT_CHAUD_DUREE,
-            ConfigurationEvenement.VENTFROID_IMPACT_TEMPERATURE,
-            ConfigurationEvenement.VENTFROID_IMPACT_HUMIDITE,
-            ConfigurationEvenement.VENTFROID_IMPACT_POLLUTION,
-            ConfigurationEvenement.VENTFROID_IMPACT_PURIFICATION
+            ConfigurationEvenement.VENTCHAUD_IMPACT_TEMPERATURE,
+            ConfigurationEvenement.VENTCHAUD_IMPACT_HUMIDITE,
+            ConfigurationEvenement.VENTCHAUD_IMPACT_POLLUTION,
+            ConfigurationEvenement.VENTCHAUD_IMPACT_PURIFICATION
         );
     }
     

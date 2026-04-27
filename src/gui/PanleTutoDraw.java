@@ -82,8 +82,8 @@ public class PanleTutoDraw extends JPanel {
         ajouterLigneEvenement(contenu, "Tonnerre", "Humidite +8", COULEUR_HUMIDITE, 8, 10, evenementFactory.creerTonnerre(blocReference));
         ajouterLigneEvenement(contenu, "Vent froid", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentFroid(blocReference));
         ajouterLigneEvenement(contenu, "Grele", "Temp -10, Humid +5", COULEUR_MIXTE, 10, 10, evenementFactory.creerGrele(blocReference));
-        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentChaud(blocReference));
-        ajouterLigneEvenement(contenu, "Zephyr", "Temperature +5", COULEUR_TEMPERATURE, 5, 10, evenementFactory.creerZephyr(blocReference));
+        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature +10", COULEUR_TEMPERATURE, 10, 10, evenementFactory.creerVentChaud(blocReference));
+        ajouterLigneEvenement(contenu, "Zephyr", "Temp +5, Purif +10", COULEUR_TEMPERATURE, 10, 10, evenementFactory.creerZephyr(blocReference));
         ajouterLigneEvenement(contenu, "Tornade", "Humid +5, Poll +5", COULEUR_MIXTE, 5, 10, evenementFactory.creerTornade(blocReference));
         ajouterLigneEvenement(contenu, "Pollution", "Pollution +10", COULEUR_POLLUTION, 10, 10, evenementFactory.creerPollution(blocReference));
         ajouterLigneEvenement(contenu, "Smog", "Pollution +15", COULEUR_POLLUTION, 15, 10, evenementFactory.creerSmog(blocReference));

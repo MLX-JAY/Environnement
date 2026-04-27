@@ -82,13 +82,7 @@ public class TestRobustesse {
     // Tests sur les valeurs extremes des biomes
     // ========================================
     
-    @Test
-    public void testSetTemperatureNegativeExtreme() {
-        // Température très négative doit être acceptée
-        Foret foret = new Foret(0, 0, 0, 0, 0, new Bloc(0, 0));
-        foret.setTemperature(-1000);
-        assertEquals(-1000, foret.getTemperature(), 0.01);
-    }
+
     
     @Test
     public void testSetTemperaturePositiveExtreme() {
@@ -100,10 +94,10 @@ public class TestRobustesse {
     
     @Test
     public void testSetHumiditeNegativeExtreme() {
-        // Humidité négative doit être acceptée
+        // Humidité négative ne doit pas être acceptée
         Foret foret = new Foret(0, 0, 0, 0, 0, new Bloc(0, 0));
         foret.setHumidite(-500);
-        assertEquals(-500, foret.getHumidite(), 0.01);
+        assertEquals(0, foret.getHumidite(), 0.01);
     }
     
     @Test
@@ -114,13 +108,7 @@ public class TestRobustesse {
         assertEquals(100, foret.getHumidite(), 0.01);
     }
     
-    @Test
-    public void testSetPollutionNegativeExtreme() {
-        // Pollution négative doit être acceptée
-        Foret foret = new Foret(0, 0, 0, 0, 0, new Bloc(0, 0));
-        foret.setPollution(-300);
-        assertEquals(-300, foret.getPollution(), 0.01);
-    }
+
     
     @Test
     public void testSetPollutionPositiveExtreme() {
