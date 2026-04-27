@@ -1,6 +1,7 @@
 package gui;
 
 import config.ConfigurationCreationEvenement;
+import config.ConfigurationEvenement;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,6 +32,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     private static final Color COULEUR_BANQUISE = new Color(150, 200, 220);
     private static final Color COULEUR_MONTAGNE = new Color(120, 120, 120);
     private static final Color COULEUR_TITRE = new Color(255, 220, 140); 
+    private static final Color COULEUR_METEORE = new Color(190, 120, 60);
 
     private JButton btnFin;
     private JButton btnReinitialiser;
@@ -44,6 +46,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     private JPanel vueEdition;
     
     private JSlider sliderPluie, sliderOrage, sliderTonnerre;
+    private JSlider sliderMeteore;
     private JSlider sliderVentChaud, sliderTornade, sliderZephyr;
     private JSlider sliderVentFroid, sliderGrele;
     private JSlider sliderPollutionVille, sliderSmog, sliderNuageToxique;
@@ -51,6 +54,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     private JSlider sliderPurification, sliderPluieBenite;
     
     private JLabel lblPluie, lblOrage, lblTonnerre;
+    private JLabel lblMeteore;
     private JLabel lblVentChaud, lblTornade, lblZephyr;
     private JLabel lblVentFroid, lblGrele;
     private JLabel lblPollutionVille, lblSmog, lblNuageToxique;
@@ -243,7 +247,17 @@ public class PanelEdition extends JPanel implements ChangeListener {
         
         gbc.gridwidth = 1;
 
+        // === EVENEMENTS ALEATOIRES ===
+        row = ajouterSection(panel, row, "Événements aléatoires", COULEUR_METEORE);
+        
+        sliderMeteore = creerSlider(ConfigurationEvenement.METEORE_PROBABILITE, COULEUR_METEORE);
+        lblMeteore = creerLabelValeur(ConfigurationEvenement.METEORE_PROBABILITE);
+        row++;
+        addRow(panel, "  Météore:", sliderMeteore, lblMeteore, gbc, row);
+        row++;
+        
         // === FORET ===
+        row++;
         row = ajouterSection(panel, row, "Événements des Forêts", COULEUR_FORET);
         
         sliderPurification = creerSlider(ConfigurationCreationEvenement.PROBABILITE_PURIFICATION_PAR_FORET, COULEUR_FORET);
@@ -427,6 +441,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     }
     
     private void majLabels() {
+        lblMeteore.setText(String.format("%.1f%%", sliderMeteore.getValue() / 10.0));
         lblPluie.setText(String.format("%.1f%%", sliderPluie.getValue() / 10.0));
         lblOrage.setText(String.format("%.1f%%", sliderOrage.getValue() / 10.0));
         lblTonnerre.setText(String.format("%.1f%%", sliderTonnerre.getValue() / 10.0));
@@ -454,6 +469,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     }
     
     public void sauvegarder() {
+        ConfigurationEvenement.METEORE_PROBABILITE = sliderMeteore.getValue() / 1000.0;
         ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER = sliderPluie.getValue() / 1000.0;
         ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER = sliderOrage.getValue() / 1000.0;
         ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER = sliderTonnerre.getValue() / 1000.0;
@@ -472,7 +488,9 @@ public class PanelEdition extends JPanel implements ChangeListener {
     
     public void reinitialiser() {
         ConfigurationCreationEvenement.reinitialiser();
+        ConfigurationEvenement.METEORE_PROBABILITE = 0.05;
         
+        sliderMeteore.setValue((int)(ConfigurationEvenement.METEORE_PROBABILITE * 1000));
         sliderPluie.setValue((int)(ConfigurationCreationEvenement.PROBABILITE_PLUVIE_PAR_MER * 1000));
         sliderOrage.setValue((int)(ConfigurationCreationEvenement.PROBABILITE_ORAGE_PAR_MER * 1000));
         sliderTonnerre.setValue((int)(ConfigurationCreationEvenement.PROBABILITE_TONNERRE_PAR_MER * 1000));
@@ -492,6 +510,7 @@ public class PanelEdition extends JPanel implements ChangeListener {
     }
 
     public void mettreAZero() {
+        sliderMeteore.setValue(0);
         sliderPluie.setValue(0);
         sliderOrage.setValue(0);
         sliderTonnerre.setValue(0);

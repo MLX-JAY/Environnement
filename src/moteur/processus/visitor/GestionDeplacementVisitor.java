@@ -79,7 +79,7 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
     
     @Override
     public Void visit(Meteore meteore) {
-        traiterEvenementStatique(meteore);
+		gererMeteore(meteore);
         return null;
     }
     
@@ -238,6 +238,37 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         } else if (doitSeTerminer(evenement)) {
             evenementsExpirés.add(evenement);
         }
+    }
+
+    private void gererMeteore(Meteore meteore) {
+        double dureeRestante = meteore.getDureeRestante();
+        if (dureeRestante > 0) {
+            meteore.setDureeRestante(Math.max(0, dureeRestante - 1));
+        }
+
+        if (meteore.getDureeRestante() > Meteore.SEUIL_AVERTISSEMENT) {
+            return;
+        }
+
+        if (!meteore.estAnimationTerminee()) {
+            return;
+        }
+
+        if (meteore.getPasRestants() > 0) {
+            Bloc position = meteore.getPosition();
+            int prochaineY = position.getY() + 1;
+            int x = position.getX();
+            if (!carte.estCoordonneeValide(x, prochaineY)) {
+                evenementsExpirés.add(meteore);
+                return;
+            }
+            Bloc prochainePosition = carte.getBloc(x, prochaineY);
+            meteore.definirPositionCible(prochainePosition);
+            meteore.decrementerPasRestants();
+            return;
+        }
+
+        evenementsExpirés.add(meteore);
     }
     
 }

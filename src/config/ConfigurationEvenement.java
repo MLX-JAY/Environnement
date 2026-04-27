@@ -26,7 +26,7 @@ public class ConfigurationEvenement
     public static final int PURIFICATION_IMPACT_POLLUTION  = 0;
     public static final int PURIFICATION_IMPACT_PURIFICATION  = 5;
     
-    public static final double METEORE_PROBABILITE = 0.05;  // 5% de chance
+    public static double METEORE_PROBABILITE = 0.05;  // 5% de chance
     public static final int METEORE_IMPACT_DUREE = 20;
     public static final int METEORE_IMPACT_TEMPERATURE  = 50;
     public static final int METEORE_IMPACT_HUMIDITE  = 0;

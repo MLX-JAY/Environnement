@@ -11,6 +11,8 @@ import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
 import moteur.donne.evenement.statique.Meteore;
 import moteur.processus.regle.RegleTransformation;
+import moteur.processus.usine.BiomeFactory;
+import moteur.processus.usine.BiomeFactory.TypeBiome;
 import moteur.processus.usine.EvenementFactory;
 import moteur.processus.visitor.GenerateurEvenementVisitor;
 import moteur.processus.visitor.GestionDeplacementVisitor;
@@ -25,6 +27,7 @@ public class ManageurBasique implements Manageur
 	private Carte carte;
 	private Map<Bloc, Biome> biomeMap = new HashMap<>();
 	private ArrayList<Evenement> evenements = new ArrayList<>();
+	private boolean meteoreDejaApparu = false;
 	private ArrayList<RegleTransformation> reglesTransformation = new ArrayList<>();
 	private int nbTransformationsDansRound = 0;
 	private EvenementFactory factory;
@@ -72,7 +75,7 @@ public class ManageurBasique implements Manageur
 	public void CarteHasard() 
     {
         biomeMap.clear();
-		biomeMap.putAll(moteur.processus.usine.BiomeFactory.creerBiomesCoherents(carte));
+		biomeMap.putAll(BiomeFactory.creerBiomesCoherents(carte));
     }
     
     public Biome getBiomeByPosition(Bloc position) {
@@ -108,11 +111,11 @@ public class ManageurBasique implements Manageur
 			for (int j = posY - rayon; j <= posY + rayon; j++) {
 				if (carte.estCoordonneeValide(i, j)) {
 					Bloc bloc = carte.getBloc(i, j);
-					Biome biome = biomeMap.get(bloc);
-					if (biome != null) {
-						double distance = Math.sqrt(Math.pow(i - posX, 2) + Math.pow(j - posY, 2));
-						if (distance <= rayon) {
-							biome.setTemperature(100);
+					double distance = Math.sqrt(Math.pow(i - posX, 2) + Math.pow(j - posY, 2));
+					if (distance <= rayon) {
+						Biome nouveauBiome = BiomeFactory.creerBiomeParType(TypeBiome.DESERT, bloc);
+						if (nouveauBiome != null) {
+							biomeMap.put(bloc, nouveauBiome);
 						}
 					}
 				}
@@ -127,6 +130,12 @@ public class ManageurBasique implements Manageur
 	private void ajouterEvenementAvecContraintes(Evenement evenement) {
 		if (evenement == null || !peutAjouterEvenement()) {
 			return;
+		}
+		if (evenement instanceof Meteore) {
+			if (meteoreDejaApparu) {
+				return;
+			}
+			meteoreDejaApparu = true;
 		}
 
 		evenements.add(evenement);
@@ -156,8 +165,9 @@ public class ManageurBasique implements Manageur
 			
 			if (nouveauxEvenements != null) {
 				for (Evenement e : nouveauxEvenements) {
-					if (e != null && peutAjouterEvenement()) {
-						evenements.add(e);
+					ajouterEvenementAvecContraintes(e);
+					if (!peutAjouterEvenement()) {
+						break;
 					}
 				}
 			}
@@ -182,7 +192,13 @@ public class ManageurBasique implements Manageur
 	
 	@Override
 	public ArrayList<Evenement> getDangers() {
-		return new ArrayList<>();
+		ArrayList<Evenement> dangers = new ArrayList<>();
+		for (Evenement evenement : evenements) {
+			if (evenement instanceof Meteore) {
+				dangers.add(evenement);
+			}
+		}
+		return dangers;
 	}
 	
 	public void remplacerBiome(Bloc position, Biome nouveauBiome) {
@@ -290,6 +306,9 @@ public class ManageurBasique implements Manageur
 		for (int i = 0; i < evenements.size(); i++)
 		{
 			Evenement evenement = evenements.get(i);
+			if (evenement instanceof Meteore) {
+				continue;
+			}
 			Biome biome = getBiomeByPosition(evenement.getPosition());
 			if (biome != null)
 			{

@@ -649,17 +649,27 @@ public class StrategiePeinture
         g2.dispose();
     }
     
-    public void paintDanger(Evenement e,Graphics graphics) {
-    	int size = config.GameConfiguration.TAILLE_BLOC;
+    public void paintDanger(Evenement e, Graphics graphics) {
+	    int size = config.GameConfiguration.TAILLE_BLOC;
         int x = (int) (e.getPositionAnimationX() * size);
         int y = (int) (e.getPositionAnimationY() * size);
+        paintDangerAt(x, y, size, graphics);
+    }
+
+    public void paintDanger(Bloc position, Graphics graphics) {
+	    int size = config.GameConfiguration.TAILLE_BLOC;
+        int x = position.getX() * size;
+        int y = position.getY() * size;
+        paintDangerAt(x, y, size, graphics);
+    }
+
+    private void paintDangerAt(int x, int y, int size, Graphics graphics) {
         if (danger != null) {
-            graphics.drawImage(danger, x, y, size*2, size*2, null);
+            graphics.drawImage(danger, x, y, size * 2, size * 2, null);
         } else {
             graphics.setColor(Color.RED);
             graphics.fillRect(x, y, size, size);
         }
-        
     }
     
     public void paint(Meteore meteore,Graphics graphics) {

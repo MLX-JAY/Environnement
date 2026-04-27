@@ -1,11 +1,10 @@
 package moteur.processus.usine;
 
-import java.util.Random;
+import config.ConfigurationDirection;
+import config.ConfigurationEvenement;
 import java.util.ArrayList;
 import java.util.List;
-
-import config.ConfigurationEvenement;
-import config.ConfigurationDirection;
+import java.util.Random;
 import moteur.donne.carte.Bloc;
 import moteur.donne.carte.Carte;
 import moteur.donne.evenement.Evenement;
@@ -27,6 +26,8 @@ import moteur.donne.evenement.statique.Meteore;
 
 public class EvenementFactory {
     
+    private static final int METEORE_DISTANCE_CHUTE = 3;
+    
     private final Random random = new Random();
     private final Carte carte;
     
@@ -38,7 +39,7 @@ public class EvenementFactory {
         Bloc position = getPositionAleatoire();
         
         if (random.nextDouble() < ConfigurationEvenement.METEORE_PROBABILITE) {
-            return creerMeteore(position);
+            return creerMeteore(getPositionAleatoireMeteore());
         }
         
         return null;
@@ -296,8 +297,16 @@ public class EvenementFactory {
         if (!carte.estCoordonneeValide(position.getX(), position.getY())) {
             return null;
         }
+        int cibleX = position.getX();
+        int cibleY = position.getY();
+        int departY = Math.max(0, cibleY - METEORE_DISTANCE_CHUTE);
+        Bloc depart = carte.getBloc(cibleX, departY);
+        Bloc cible = carte.getBloc(cibleX, cibleY);
+        int pasRestants = cibleY - departY;
         return new Meteore(
-            position,
+            depart,
+            cible,
+            pasRestants,
             ConfigurationEvenement.METEORE_IMPACT_DUREE,
             ConfigurationEvenement.METEORE_IMPACT_TEMPERATURE,
             ConfigurationEvenement.METEORE_IMPACT_HUMIDITE,
@@ -679,6 +688,17 @@ public class EvenementFactory {
     public Bloc getPositionAleatoire() {
         int ligne = random.nextInt(carte.getNombreLignes());
         int colonne = random.nextInt(carte.getNombreColonnes());
+        return carte.getBloc(ligne, colonne);
+    }
+
+    private Bloc getPositionAleatoireMeteore() {
+        int ligne = random.nextInt(carte.getNombreLignes());
+        int colonne;
+        if (carte.getNombreColonnes() > METEORE_DISTANCE_CHUTE) {
+            colonne = METEORE_DISTANCE_CHUTE + random.nextInt(carte.getNombreColonnes() - METEORE_DISTANCE_CHUTE);
+        } else {
+            colonne = random.nextInt(carte.getNombreColonnes());
+        }
         return carte.getBloc(ligne, colonne);
     }
     

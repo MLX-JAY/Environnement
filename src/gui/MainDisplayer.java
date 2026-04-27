@@ -156,7 +156,9 @@ public class MainDisplayer extends JPanel
 		List<Biome> biomes = new ArrayList<>(manageur.getBiomes());
 		
 		for (Evenement e : evenements) {
-			e.mettreAJourAnimation();
+			if (!(e instanceof Meteore)) {
+				e.mettreAJourAnimation();
+			}
 		}
 		for (Evenement danger : dangers) {
 			danger.mettreAJourAnimation();
@@ -168,7 +170,9 @@ public class MainDisplayer extends JPanel
         }
 		for (Evenement e : evenements)
 		{
-			dessinerEvenement(g, e);
+			if (!(e instanceof Meteore)) {
+				dessinerEvenement(g, e);
+			}
 		}
 		for (Evenement danger : dangers) {
 			dessinerDanger(g, danger);
@@ -255,9 +259,9 @@ public class MainDisplayer extends JPanel
 	private void dessinerDanger(Graphics g, Evenement danger) {
 		if (danger instanceof Meteore) {
 			Meteore meteore = (Meteore) danger;
-			if (danger.getDuree() > 10) {
-				if (danger.getDuree() % 2 == 0) {
-					stratDePeinture.paintDanger(danger, g);
+			if (meteore.getDureeRestante() > Meteore.SEUIL_AVERTISSEMENT) {
+				if (((int) meteore.getDureeRestante()) % 2 == 0) {
+					stratDePeinture.paintDanger(meteore.getCibleImpact(), g);
 				}
 			} else {
 				stratDePeinture.paint(meteore, g);
