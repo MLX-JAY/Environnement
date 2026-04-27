@@ -184,27 +184,22 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
         int nouvelleY = position.getY() + dy;
         
         if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-            // Si hors carte, changer de direction
-            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
-            dx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
-            dy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
-            nouvelleX = position.getX() + dx;
-            nouvelleY = position.getY() + dy;
-            
-            if (!carte.estCoordonneeValide(nouvelleX, nouvelleY)) {
-                logger.warn("[HorsCarte] " + evenement.getClass().getSimpleName() + " en (" + 
-                           position.getX() + "," + position.getY() + ")");
-                return;
-            }
+            logger.debug("[HorsCarte] " + evenement.getClass().getSimpleName() + " disparait en bordure (" + 
+                        position.getX() + "," + position.getY() + ")");
+            evenementsExpirés.add(evenement);
+            return;
         }
         
         Bloc candidate = carte.getBloc(nouvelleX, nouvelleY);
         Biome biomeDestination = biomeMap.get(candidate);
         
         if (biomeDestination instanceof Montagne) {
-            logger.debug("[StopMontagne] " + evenement.getClass().getSimpleName() + " stoppe par la montagne en ("
+            int dirIndex = random.nextInt(ConfigurationDirection.DIRECTIONS.length);
+            int newDx = ConfigurationDirection.DIRECTIONS[dirIndex][0];
+            int newDy = ConfigurationDirection.DIRECTIONS[dirIndex][1];
+            evenement.setDirection(newDx, newDy);
+            logger.debug("[RebondMontagne] " + evenement.getClass().getSimpleName() + " rebondit en ("
                 + nouvelleX + "," + nouvelleY + ")");
-            evenementsExpirés.add(evenement);
             return;
         }
         
@@ -235,6 +230,10 @@ public class GestionDeplacementVisitor implements EvenementVisitor<Void> {
 
         if (evenement.getDureeRestante() > 0) {
             evenement.setDureeRestante(evenement.getDureeRestante() - 1);
+        }
+        
+        if (evenement.getDureeRestante() == 0) {
+            evenementsExpirés.add(evenement);
         } else if (doitSeTerminer(evenement)) {
             evenementsExpirés.add(evenement);
         }

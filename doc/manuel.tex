@@ -134,15 +134,23 @@ présente l'aspect de cette fenêtre avec ses différentes zones de contrôle.
 Comme on peut le constater sur la figure~\ref{fig:manuel_edition}, les opérations
 disponibles dans cette fenêtre sont les suivantes~:
 
-\begin{itemize}
-  \item modifier les probabilités qu'un événement survienne via le menu de gauche~;
-  \item réinitialiser ou remettre à zéro les probabilités des événements avec les
-    boutons \textit{Réinitialiser} ou \textit{Mettre à zéro}~;
-  \item cliquer sur un biome pour ensuite changer sa nature avec le bouton
-    \textit{Modifier}~;
-  \item utiliser le bouton \textit{Génération aléatoire} pour remplir
-    automatiquement la carte avec une distribution pseudo-aléatoire de biomes.
-\end{itemize}
+\begin{table}[H]
+  \centering
+  \caption{Contrôles de l'édition et leurs effets}
+  \label{tab:controles_edition}
+  \begin{tabular}{lp{9cm}}
+    \toprule
+    \textbf{Contrôle} & \textbf{Effet} \\
+    \midrule
+    \textit{Menu de gauche} & Modifie les probabilités d'apparition de chaque événements\\
+    \textit{?} & Affiche l'aide\\
+    \textit{Générer Carte} & Génère une carte aléatoire \\
+    \textit{Réinitialiser} & Réinitialise aux valeurs par défaut les probabilités des événements \\
+    \textit{Mettre à zéro} & Met à zéro les probabilités des événements \\
+    \textit{Boutons biomes} & Modifie le biome cliqué après avoir sélectionné un des boutons biomes\\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \paragraph{Étape 2 — Lancement de la simulation.}
 Le bouton \textit{Lancer la simulation} ferme la fenêtre d'édition et ouvre la
@@ -172,6 +180,7 @@ bouton et son effet.
   \label{tab:controles}
 \end{table}
 
+\needspace{10\baselineskip}
 \paragraph{Étape 4 — Lecture des statistiques.}
 La figure~\ref{fig:manuel_simulation} illustre l'interface principale lors d'une
 session en cours, avec ses trois zones fonctionnelles~: la grille centrale de
@@ -192,6 +201,52 @@ centrale, ses propriétés détaillées (température, humidité, pollution,
 purification) s'affichent dans ce même panneau. La fenêtre \textit{Statistiques},
 accessible depuis le tableau~\ref{tab:controles}, présente une analyse agrégée
 de l'ensemble de la simulation sous forme graphique.
+
+\paragraph{Étape 5 — Bilan de fin de simulation.}
+Le bouton \textit{Bilan de fin}, accessible depuis le tableau~\ref{tab:controles},
+met fin à la simulation en cours et ouvre la fenêtre de bilan récapitulatif.
+Cette fenêtre synthétise l'ensemble des données collectées sur la totalité des
+rounds écoulés et s'articule autour de cinq rubriques principales~:
+
+\begin{itemize}
+  \item \textbf{Biomes~:} identifie le meilleur et le moins bon bloc de la
+        simulation, exprimés par le nom du biome et son score~;
+
+  \item \textbf{Évènements~:} indique l'événement le plus fréquent et le moins
+        fréquent enregistrés au fil des rounds, accompagnés de leur nombre
+        d'occurrences~;
+
+  \item \textbf{Métriques globales~:} présente les valeurs moyennes des quatre
+        propriétés fondamentales relevées sur l'ensemble de la simulation~:
+        température, humidité, pollution et purification~;
+\needspace{2\baselineskip}
+  \item \textbf{Santé de l'écosystème~:} évalue l'état général de
+        l'environnement à travers trois indicateurs~: le taux de survie, la
+        biodiversité (nombre de types de biomes distincts encore présents) et
+        l'évolution de la pollution par rapport au début de la simulation~;
+
+  \item \textbf{Moteur~:} renseigne sur le travail accompli par le moteur de
+        simulation, avec le nombre total de transformations effectuées et le
+        bilan purification moins pollution, accompagné d'un verdict qualitatif.
+\end{itemize}
+
+Depuis cette fenêtre, deux actions sont disponibles~:
+
+\begin{itemize}
+  \item \textbf{Recommencer~:} ferme la fenêtre de bilan et rouvre la fenêtre
+        d'édition, permettant de configurer et de lancer une nouvelle simulation
+        sans quitter l'application~;
+  \item \textbf{Statistiques~:} ouvre la fenêtre d'analyse détaillée sous forme
+        de graphiques, offrant une visualisation approfondie de l'évolution de
+        chaque métrique sur l'ensemble des rounds de la simulation terminée.
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{images/image_fin}
+  \caption{Fenêtre récapitulative du bilan de fin}
+  \label{fig:manuel_fin}
+\end{figure}
 
 \paragraph{Consultation des journaux d'exécution.}
 En cas d'anomalie ou à des fins d'analyse, les journaux de la session en cours sont

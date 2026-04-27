@@ -92,6 +92,25 @@ propriétés pour chaque type de biome, telles que définies dans la classe
 simulation et influencent directement la fréquence et la nature des transformations
 déclenchées.
 
+\begin{table}[htbp]
+  \centering
+  \caption{Valeurs initiales des propriétés des biomes (source~: \texttt{ConfigurationBiome})}
+  \label{tab:biomes_init}
+  \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Biome} & \textbf{Température} & \textbf{Humidité} & \textbf{Pollution} & \textbf{Purification} \\
+    \midrule
+    Forêt      & 50 & 70 &  5 & 20 \\
+    Désert     & 80 & 10 & 10 &  0 \\
+    Mer        & 40 & 90 &  0 & 10 \\
+    Montagne   & 20 & 30 &  0 &  0 \\
+    Banquise   &  0 & 50 &  0 &  5 \\
+    Ville      & 60 & 20 & 50 &  0 \\
+    Village    & 50 & 40 & 20 &  5 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 Les propriétés listées dans le tableau~\ref{tab:biomes_init} évoluent sous l'effet
 des événements climatiques et peuvent déclencher les transformations automatiques
 définies dans le tableau~\ref{tab:transformations}. La Montagne est la seule
@@ -161,10 +180,10 @@ manuelle des cellules est désactivée.
 \paragraph{Fenêtre de simulation.}
 Lorsque l'utilisateur clique sur le bouton \textit{Lancer}, la fenêtre d'édition
 se ferme et la fenêtre principale de simulation s'ouvre. Comme le montre la
-figure~\ref{fig:fenetre_simulation}, elle est composée de trois zones
+figure~\ref{fig:schema_simulation}, elle est composée de trois zones
 fonctionnelles.
 
-Les trois zones visibles dans la figure~\ref{fig:fenetre_simulation} sont les
+Les trois zones visibles dans la figure~\ref{fig:schema_simulation} sont les
 suivantes~:
 
 \begin{itemize}
@@ -178,7 +197,7 @@ suivantes~:
 \end{itemize}
 
 La structure logique de ces contrôles de pilotage est illustrée dans la
-figure~\ref{fig:schema_simulation}.
+figure~\ref{fig:fenetre_simulation}.
 
 \begin{figure}[htbp]
   \centering

@@ -138,17 +138,15 @@ public class ManageurBasique implements Manageur
 			meteoreDejaApparu = true;
 		}
 
-		evenements.add(evenement);
-	}
+        evenements.add(evenement);
+    }
 	
 	//la fonction est la mais sah elle sert a rien imo 
 	@Override
 	public void ajouterEvenement()
 	{
-		for (int i = 0; i < 3 && peutAjouterEvenement(); i++) {
 			Evenement evenement = factory.creerEvenementAleatoire();
 			ajouterEvenementAvecContraintes(evenement);
-		}
 	}
 	
 	public void genererEvenementsDepuisBiomes() {
