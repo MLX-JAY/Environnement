@@ -123,16 +123,9 @@ Au lancement, la fenêtre d'édition s'affiche. Elle permet de configurer manuel
 la carte avant de démarrer la simulation. La figure~\ref{fig:manuel_edition}
 présente l'aspect de cette fenêtre avec ses différentes zones de contrôle.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\textwidth]{images/image_edition}
-  \caption{Fenêtre d'édition~: configuration de la carte et des probabilités
-           d'événements}
-  \label{fig:manuel_edition}
-\end{figure}
 \needspace{8\baselineskip}
 Comme on peut le constater sur la figure~\ref{fig:manuel_edition}, les opérations
-disponibles dans cette fenêtre sont les suivantes~:
+disponibles dans cette fenêtre sont synthétisées dans le tableau~\ref{tab:controles_edition}~:
 
 \begin{table}[htbp]
   \centering
@@ -186,14 +179,6 @@ La figure~\ref{fig:manuel_simulation} illustre l'interface principale lors d'une
 session en cours, avec ses trois zones fonctionnelles~: la grille centrale de
 simulation, le panneau de statistiques et les contrôles de pilotage.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/image_simulation}
-  \caption{Fenêtre principale de simulation~: grille, statistiques JFreeChart et
-           contrôles}
-  \label{fig:manuel_simulation}
-\end{figure}
-
 Tel qu'illustré dans la figure~\ref{fig:manuel_simulation}, le panneau latéral
 droit affiche les statistiques en temps réel ainsi que les graphiques d'évolution
 des propriétés générés par JFreeChart. En cliquant sur un biome de la grille
@@ -204,7 +189,8 @@ de l'ensemble de la simulation sous forme graphique.
 
 \paragraph{Étape 5 — Bilan de fin de simulation.}
 Le bouton \textit{Bilan de fin}, accessible depuis le tableau~\ref{tab:controles},
-met fin à la simulation en cours et ouvre la fenêtre de bilan récapitulatif.
+met fin à la simulation en cours et ouvre la fenêtre de bilan récapitulatif,
+illustrée par la figure~\ref{fig:manuel_fin}.
 Cette fenêtre synthétise l'ensemble des données collectées sur la totalité des
 rounds écoulés et s'articule autour de cinq rubriques principales~:
 
@@ -232,6 +218,10 @@ rounds écoulés et s'articule autour de cinq rubriques principales~:
 
 Depuis cette fenêtre, deux actions sont disponibles~:
 
+\fig{images/image_edition}{0.85\textwidth}{!}{Fenêtre d'édition~: configuration de la carte et des probabilités d'événements}{manuel_edition}
+\fig{images/image_simulation}{0.9\textwidth}{!}{Fenêtre principale de simulation~: grille, statistiques JFreeChart et contrôles}{manuel_simulation}
+\fig{images/image_fin}{0.9\textwidth}{!}{Fenêtre récapitulative du bilan de fin}{manuel_fin}
+
 \begin{itemize}
   \item \textbf{Recommencer~:} ferme la fenêtre de bilan et rouvre la fenêtre
         d'édition, permettant de configurer et de lancer une nouvelle simulation
@@ -240,13 +230,6 @@ Depuis cette fenêtre, deux actions sont disponibles~:
         de graphiques, offrant une visualisation approfondie de l'évolution de
         chaque métrique sur l'ensemble des rounds de la simulation terminée.
 \end{itemize}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/image_fin}
-  \caption{Fenêtre récapitulative du bilan de fin}
-  \label{fig:manuel_fin}
-\end{figure}
 
 \paragraph{Consultation des journaux d'exécution.}
 En cas d'anomalie ou à des fins d'analyse, les journaux de la session en cours sont

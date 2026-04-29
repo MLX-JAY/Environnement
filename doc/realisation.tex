@@ -21,12 +21,6 @@ L'application est organisée en quatre modules distincts selon une architecture
 modulaire à responsabilités séparées. La figure~\ref{fig:architecture} représente
 cette décomposition ainsi que les dépendances entre modules.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\textwidth]{images/architecture.png}
-  \caption{Architecture modulaire de l'application Environnement}
-  \label{fig:architecture}
-\end{figure}
 \needspace{5\baselineskip}
 Les quatre modules identifiés dans la figure~\ref{fig:architecture} sont les
 suivants.
@@ -53,6 +47,8 @@ suivants.
 Cette séparation en modules garantit que toute modification d'un module n'impacte
   pas les autres, à condition de respecter les interfaces publiques définies. Elle
   facilite également les tests unitaires de chaque composant de manière isolée.
+
+\fig{images/architecture.png}{0.85\textwidth}{!}{Architecture modulaire de l'application Environnement}{architecture}
 
   \paragraph{Positionnement MVC.}
   L'architecture du projet s'articule autour du modèle MVC (Modèle-Vue-Contrôleur).
@@ -156,8 +152,8 @@ fenêtre principale.
 
 \paragraph{Fenêtre d'édition.}
 La fenêtre d'édition, implémentée par la classe \texttt{PanelEdition}, constitue le
-point d'entrée de l'application. Elle permet à l'utilisateur de configurer la carte
-avant le lancement de la simulation. La zone supérieure affiche la grille
+point d'entrée de l'application. Comme l'illustre la figure~\ref{fig:schema_edition},
+elle permet à l'utilisateur de configurer la carte avant le lancement de la simulation. La zone supérieure affiche la grille
 (\texttt{MainDisplayer}) où chaque cellule représente un biome. Un panneau
 latéral gauche (\texttt{PanelEdition}) donne accès aux sliders de configuration des
 probabilités d'événements, organisés par biome source (forêt, désert, mer, ville,
@@ -168,13 +164,6 @@ valeurs par défaut, ainsi que \textit{Modifier} pour changer manuellement un bi
 sélectionné sur la grille. Le mode édition est accessible uniquement avant le
 lancement de la simulation ; une fois celle-ci démarrée, la modification
 manuelle des cellules est désactivée.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/mode_edition.png}
-  \caption{Schéma conceptuel de l'interface de configuration initiale}
-  \label{fig:schema_edition}
-\end{figure}
 
 \needspace{7\baselineskip}
 \paragraph{Fenêtre de simulation.}
@@ -199,20 +188,6 @@ suivantes~:
 La structure logique de ces contrôles de pilotage est illustrée dans la
 figure~\ref{fig:fenetre_simulation}.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\textwidth]{images/mode_simulation.png}
-  \caption{Schéma conceptuel de l'interface de pilotage dynamique}
-  \label{fig:schema_simulation}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/fenetre_simulation.png}
-  \caption{Fenêtre principale de simulation avec ses trois zones fonctionnelles}
-  \label{fig:fenetre_simulation}
-\end{figure}
-
 \needspace{10\baselineskip}
 \paragraph{Fenêtre de tutoriel.}
 Afin d'améliorer l'accessibilité de l'application, une fenêtre de tutoriel a été
@@ -224,12 +199,10 @@ la logique des transformations écologiques. L'affichage modal garantit que
 l'utilisateur peut consulter ces informations contextuelles sans que la simulation
 en cours ne soit interrompue ni fermée.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{images/fenetre_aide.png}
-  \caption{Fenêtre de tutoriel}
-  \label{fig:fenetre_aide}
-\end{figure}
+\fig{images/mode_edition.png}{0.9\textwidth}{!}{Schéma conceptuel de l'interface de configuration initiale}{schema_edition}
+\fig{images/mode_simulation.png}{0.85\textwidth}{!}{Schéma conceptuel de l'interface de pilotage dynamique}{schema_simulation}
+\fig{images/fenetre_simulation.png}{0.9\textwidth}{!}{Fenêtre principale de simulation avec ses trois zones fonctionnelles}{fenetre_simulation}
+\fig{images/fenetre_aide.png}{0.9\textwidth}{!}{Fenêtre de tutoriel}{fenetre_aide}
 
 \paragraph{Strategy de rendu.}
 La classe \texttt{StrategiePeinture} centralise le rendu graphique de l'ensemble

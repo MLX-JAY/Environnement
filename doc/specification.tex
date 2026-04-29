@@ -22,13 +22,6 @@ Le fonctionnement repose sur un modèle de simulation par \emph{rounds} successi
 À chaque round, le système exécute un cycle complet divisé en quatre étapes
 distinctes, comme l'illustre la figure~\ref{fig:flux_round}.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.75\textwidth]{images/flux_round.png}
-  \caption{Flux d'exécution d'un round de simulation}
-  \label{fig:flux_round}
-\end{figure}
-
 \begin{enumerate}
   \item \textbf{Génération d'événements}~: au début de chaque round, de nouveaux
     événements météorologiques apparaissent aléatoirement sur la carte selon des
@@ -81,6 +74,8 @@ L'application présente plusieurs contraintes et limitations identifiées lors d
   \item \textbf{Les contraintes du modèle écologique (Limites conceptuelles).} Les quatre propriétés numériques d'un biome (température, humidité, pollution, purification) sont mathématiquement contraintes et bornées dans l'intervalle 0 à 100. Le biome Montagne constitue une exception : il est immuable et ses propriétés ne peuvent être modifiées par aucune règle ni aucun événement.
 \end{enumerate}
 
+\fig{images/flux_round.png}{0.75\textwidth}{!}{Flux d'exécution d'un round de simulation}{flux_round}
+
 % ------------------------------------------------------------
 \subsection{Fonctionnalités attendues du projet}
 \label{subsec:fonctionnalites}
@@ -95,28 +90,10 @@ $(x, y)$. Les dimensions de la grille sont configurables (par exemple
 $20 \times 20$ ou $30 \times 30$). La figure~\ref{fig:grille_biome} montre un
 exemple de grille peuplée de biomes variés.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{images/grille_biome.png}
-  \caption{Exemple de grille de biomes générée par l'application}
-  \label{fig:grille_biome}
-\end{figure}
-
 La génération de la carte peut s'effectuer de manière aléatoire, les probabilités
 de chaque type de biome étant définies dans le fichier de configuration. Chaque bloc
 est accessible et modifiable via des méthodes dédiées. Le système permet de consulter ou de modifier l'état de chaque case de la grille. Les coordonnées sont
 validées avant tout accès pour garantir la cohérence des données.
-
-\paragraph{Gestion des biomes.}
-L'application modélise sept types de biomes, chacun représentant un écosystème
-distinct avec des propriétés environnementales spécifiques (température, humidité,
-pollution, purification). La Montagne constitue une exception notable~: elle est
-immuable et ne peut être transformée par aucune règle. Les transformations entre
-biomes suivent des chaînes logiques reflétant des phénomènes écologiques
-plausibles~; par exemple, une Forêt soumise à la désertification devient un Désert,
-lequel peut, sous l'effet inverse de la forestation, redevenir une Forêt. Les
-valeurs initiales des propriétés de chaque biome et leur hiérarchie d'implémentation
-sont présentées dans la section~\ref{sec:realisation}.
 
 \paragraph{Gestion des événements.}
 L'application gère treize types d'événements divisés en deux catégories. Les
@@ -134,19 +111,21 @@ tableau~\ref{tab:evenements} synthétise les propriétés de chaque événement.
       & $\Delta$\textbf{Temp.} & $\Delta$\textbf{Hum.}
       & $\Delta$\textbf{Poll.} & $\Delta$\textbf{Purification} \\
     \midrule
-    Pluie         & Mobile  &  4 &   0   & $+$5  &   0   &  0 \\
-    VentFroid     & Mobile  &  4 & $-$5  &   0   &   0   &  0 \\
-    Pollution     & Mobile  &  4 &   0   &   0   & $+$10 &  0 \\
-    Purification  & Mobile  &  4 &   0   &   0   &   0   & $+$5 \\
+    Pluie         & Mobile  &  4 & $-$1  & $+$5  &   0   &  0 \\
+    VentFroid     & Mobile  &  4 & $-$10 &   0   &   0   &  0 \\
+    Pollution     & Mobile  &  4 &   0   &   0   & $+$10 & $-$10 \\
+    Purification  & Mobile  &  4 &   0   &   0   & $-$10 & $+$10 \\
     Météore       & Statique & 20 & $+$50 &   0   & $+$20 &  0 \\
-    Orage         & Mobile  &  6 &   0   & $+$10 &   0   &  0 \\
+    Orage         & Mobile  &  3 &   0   & $+$15 &   0   &  0 \\
     Grêle         & Mobile  &  3 & $-$10 & $+$5  &   0   &  0 \\
-    Tornade       & Mobile  &  8 &   0   & $+$5  & $+$5  &  0 \\
-    PluieBénite   & Mobile  &  5 &   0   & $+$8  & $-$5  & $+$10 \\
-    Zéphyr        & Mobile  &  3 & $+$5  &   0   &   0   &  0 \\
-    Tonnerre      & Mobile  &  2 &   0   & $+$8  &   0   &  0 \\
-    Smog          & Mobile  &  6 &   0   &   0   & $+$15 &  0 \\
+    Tornade       & Mobile  &  8 &   0   &   0   & $+$5  &  0 \\
+    PluieBénite   & Mobile  &  5 &   0   & $+$8  & $-$10 & $+$10 \\
+    Zéphyr        & Mobile  &  3 & $+$5  &   0   & $-$10 & $+$10 \\
+    Tonnerre      & Mobile  &  2 &   0   & $+$20 &   0   &  0 \\
+    Smog          & Mobile  &  6 &   0   &   0   & $+$15 & $-$15 \\
     NuageToxique  & Mobile  &  7 &   0   &   0   & $+$20 &  0 \\
+    VentChaud     & Mobile  &  4 & $+$10 &   0   &   0   &  0 \\
+    PluieAcide    & Mobile  &  4 &   0   & $+$5  & $+$10 & $-$10 \\
     \bottomrule
   \end{tabular}}
   \caption{Propriétés des événements météorologiques}
@@ -163,6 +142,27 @@ Chaque événement est généré selon une formation spatiale définie, lui conf
 une empreinte visuelle reconnaissable sur la grille. Le
 tableau~\ref{tab:formations} détaille la formation associée à chaque type
 d'événement.
+
+\paragraph{Système de transformation des biomes.}
+Six règles de transformation écologique contrôlent l'évolution des biomes au fil
+des rounds. Le tableau~\ref{tab:transformations} présente les conditions
+d'activation de chaque règle et le biome cible associé.
+
+Les conditions décrites dans le tableau~\ref{tab:transformations} sont évaluées à
+chaque round pour chaque biome de la carte.
+
+\paragraph{Interface graphique.}
+L'interface graphique permet de visualiser et de contrôler la simulation en temps
+réel. La carte est affichée sous forme de grille colorée où chaque cellule
+représente un biome distinct. Les événements sont superposés à la grille sous forme
+de symboles animés. L'interface propose les contrôles suivants~: Play pour démarrer
+la simulation, Pause pour la suspendre, Vitesse~$\times 2$ pour accélérer
+l'exécution, Bilan de fin pour consulter le récapitulatif, et Statistiques pour
+ouvrir la fenêtre d'analyse détaillée. Le mode édition permet de configurer manuellement
+la carte avant le lancement de la simulation ; une fois celle-ci démarrée, la
+modification manuelle des cellules est désactivée pour garantir l'intégrité du
+cycle de simulation. Une fenêtre de tutoriel
+est également disponible pour guider l'utilisateur lors de sa première utilisation.
 
 \begin{table}[htbp]
   \centering
@@ -184,11 +184,6 @@ d'événement.
   \label{tab:formations}
 \end{table}
 
-\paragraph{Système de transformation des biomes.}
-Six règles de transformation écologique contrôlent l'évolution des biomes au fil
-des rounds. Le tableau~\ref{tab:transformations} présente les conditions
-d'activation de chaque règle et le biome cible associé.
-
 \begin{table}[htbp]
   \centering
   \begin{tabular}{llp{7cm}}
@@ -207,18 +202,4 @@ d'activation de chaque règle et le biome cible associé.
   \label{tab:transformations}
 \end{table}
 
-Les conditions décrites dans le tableau~\ref{tab:transformations} sont évaluées à
-chaque round pour chaque biome de la carte.
-
-\paragraph{Interface graphique.}
-L'interface graphique permet de visualiser et de contrôler la simulation en temps
-réel. La carte est affichée sous forme de grille colorée où chaque cellule
-représente un biome distinct. Les événements sont superposés à la grille sous forme
-de symboles animés. L'interface propose les contrôles suivants~: Play pour démarrer
-la simulation, Pause pour la suspendre, Vitesse~$\times 2$ pour accélérer
-l'exécution, Bilan de fin pour consulter le récapitulatif, et Statistiques pour
-ouvrir la fenêtre d'analyse détaillée. Le mode édition permet de configurer manuellement
-la carte avant le lancement de la simulation ; une fois celle-ci démarrée, la
-modification manuelle des cellules est désactivée pour garantir l'intégrité du
-cycle de simulation. Une fenêtre de tutoriel
-est également disponible pour guider l'utilisateur lors de sa première utilisation.
+\fig{images/grille_biome.png}{0.7\textwidth}{!}{Exemple de grille de biomes générée par l'application}{grille_biome}

@@ -76,7 +76,7 @@ public class ConfigurationEvenement
     public static final int ZEPHYR_IMPACT_TEMPERATURE = 5;
     public static final int ZEPHYR_IMPACT_HUMIDITE = 0;
     public static final int ZEPHYR_IMPACT_POLLUTION = 0;
-    public static final int ZEPHYR_IMPACT_PURIFICATION = 0;
+    public static final int ZEPHYR_IMPACT_PURIFICATION = 10;
     
     public static final int TONNERRE_IMPACT_DUREE = 2;
     public static final int TONNERRE_IMPACT_TEMPERATURE = 0;
