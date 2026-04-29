@@ -77,20 +77,20 @@ public class PanleTutoDraw extends JPanel {
         contenu.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
         ajouterSection(contenu, "Evenements");
-        ajouterLigneEvenement(contenu, "Pluie", "Humidite +5", COULEUR_HUMIDITE, 5, 10, evenementFactory.creerPluie(blocReference));
-        ajouterLigneEvenement(contenu, "Orage", "Humidite +10", COULEUR_HUMIDITE, 10, 10, evenementFactory.creerOrage(blocReference));
-        ajouterLigneEvenement(contenu, "Tonnerre", "Humidite +8", COULEUR_HUMIDITE, 8, 10, evenementFactory.creerTonnerre(blocReference));
-        ajouterLigneEvenement(contenu, "Vent froid", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentFroid(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie", "Temp -1, Humid +5", COULEUR_HUMIDITE, 5, 10, evenementFactory.creerPluie(blocReference));
+        ajouterLigneEvenement(contenu, "Orage", "Humidite +15", COULEUR_HUMIDITE, 15, 10, evenementFactory.creerOrage(blocReference));
+        ajouterLigneEvenement(contenu, "Tonnerre", "Humidite +20", COULEUR_HUMIDITE, 20, 10, evenementFactory.creerTonnerre(blocReference));
+        ajouterLigneEvenement(contenu, "Vent froid", "Temperature -10", COULEUR_TEMPERATURE, -10, 10, evenementFactory.creerVentFroid(blocReference));
         ajouterLigneEvenement(contenu, "Grele", "Temp -10, Humid +5", COULEUR_MIXTE, 10, 10, evenementFactory.creerGrele(blocReference));
-        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature -5", COULEUR_TEMPERATURE, -5, 10, evenementFactory.creerVentChaud(blocReference));
-        ajouterLigneEvenement(contenu, "Zephyr", "Temperature +5", COULEUR_TEMPERATURE, 5, 10, evenementFactory.creerZephyr(blocReference));
-        ajouterLigneEvenement(contenu, "Tornade", "Humid +5, Poll +5", COULEUR_MIXTE, 5, 10, evenementFactory.creerTornade(blocReference));
-        ajouterLigneEvenement(contenu, "Pollution", "Pollution +10", COULEUR_POLLUTION, 10, 10, evenementFactory.creerPollution(blocReference));
-        ajouterLigneEvenement(contenu, "Smog", "Pollution +15", COULEUR_POLLUTION, 15, 10, evenementFactory.creerSmog(blocReference));
+        ajouterLigneEvenement(contenu, "Vent chaud", "Temperature +10", COULEUR_TEMPERATURE, 10, 10, evenementFactory.creerVentChaud(blocReference));
+        ajouterLigneEvenement(contenu, "Zephyr", "Temp +5, Poll -10, Purif +10", COULEUR_TEMPERATURE, 10, 10, evenementFactory.creerZephyr(blocReference));
+        ajouterLigneEvenement(contenu, "Tornade", "Pollution +5", COULEUR_MIXTE, 5, 10, evenementFactory.creerTornade(blocReference));
+        ajouterLigneEvenement(contenu, "Pollution", "Poll +10, Purif -10", COULEUR_POLLUTION, 10, 10, evenementFactory.creerPollution(blocReference));
+        ajouterLigneEvenement(contenu, "Smog", "Pollution +15, Purif -15", COULEUR_POLLUTION, 15, 10, evenementFactory.creerSmog(blocReference));
         ajouterLigneEvenement(contenu, "Nuage toxique", "Pollution +20", COULEUR_POLLUTION, 20, 10, evenementFactory.creerNuageToxique(blocReference));
-        ajouterLigneEvenement(contenu, "Purification", "Purification +5", COULEUR_PURIFICATION, 5, 10, evenementFactory.creerPurification(blocReference));
-        ajouterLigneEvenement(contenu, "Pluie benite", "Humid +8, Poll -5", COULEUR_PURIFICATION, 8, 10, evenementFactory.creerPluieBenite(blocReference));
-        ajouterLigneEvenement(contenu, "Pluie acide", "Humid +5, Poll +10", COULEUR_MIXTE, 10, 10, evenementFactory.creerPluieAcide(blocReference));
+        ajouterLigneEvenement(contenu, "Purification", "Poll -10, Purif +10", COULEUR_PURIFICATION, 5, 10, evenementFactory.creerPurification(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie benite", "Humid +8, Poll -10, Purif +10", COULEUR_PURIFICATION, 8, 10, evenementFactory.creerPluieBenite(blocReference));
+        ajouterLigneEvenement(contenu, "Pluie acide", "Humid +5, Poll +10, Purif -10", COULEUR_MIXTE, 10, 10, evenementFactory.creerPluieAcide(blocReference));
         ajouterLigneEvenement(contenu, "Meteore", "Temp +50, Poll +20", COULEUR_MIXTE, 20, 10, evenementFactory.creerMeteore(blocReference));
 
         ajouterSection(contenu, "Biomes");
